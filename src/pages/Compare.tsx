@@ -6,6 +6,7 @@ import { useInView, useTweenArray } from '../lib/util';
 
 const LEVEL = ['Not addressed', 'Guidance only', 'Required in some cases', 'Detailed binding rule'];
 const SERIES = ['#6cc5b0', '#e0b25c', '#a99be0', '#e0896b'];
+const SHORT: Record<string, string> = { transparency: 'Transparency', oversight: 'Human oversight', fairness: 'Fairness', risk: 'Risk assessment', data: 'Data & privacy', genai: 'Generative AI', incidents: 'Monitoring', enforcement: 'Enforcement' };
 
 function Bars({ lv, delay = 0, seen = true }: { lv: number; delay?: number; seen?: boolean }) {
   return (
@@ -104,7 +105,7 @@ function Radar({ initial }: { initial: FwId[] }) {
         {TOPICS.map((t, i) => (
           <g key={t.id}>
             <line x1={cxx} y1={c} x2={cxx + Math.cos(ang(i)) * R} y2={c + Math.sin(ang(i)) * R} stroke="rgba(255,255,255,.08)" />
-            <text x={cxx + Math.cos(ang(i)) * (R + 24)} y={c + Math.sin(ang(i)) * (R + 24) + 4} textAnchor={Math.abs(Math.cos(ang(i))) < 0.2 ? 'middle' : Math.cos(ang(i)) > 0 ? 'start' : 'end'} fontSize="15" fill="#c8ccd3" fontWeight={600}>{t.label}</text>
+            <text x={cxx + Math.cos(ang(i)) * (R + 24)} y={c + Math.sin(ang(i)) * (R + 24) + 4} textAnchor={Math.abs(Math.cos(ang(i))) < 0.2 ? 'middle' : Math.cos(ang(i)) > 0 ? 'start' : 'end'} fontSize="15" fill="#c8ccd3" fontWeight={600}>{SHORT[t.id]}</text>
           </g>
         ))}
         {[1, 2, 3].map((lv) => <text key={lv} x={cxx + 8} y={c - (R * lv) / 3 + 14} fontSize="10" fill="#5c626c" fontFamily="IBM Plex Mono">{['', 'guidance', 'some cases', 'binding'][lv]}</text>)}
