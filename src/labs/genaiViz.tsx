@@ -44,9 +44,9 @@ function Bubble({ who, text, tag, tone, typed }: { who: 'user' | 'bot'; text: st
   const bot = who === 'bot';
   return (
     <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} style={{ display: 'flex', justifyContent: bot ? 'flex-start' : 'flex-end', gap: 8 }}>
-      {bot && <div style={{ width: 28, height: 28, borderRadius: 9, background: 'linear-gradient(135deg,#ffc857,#ff7a59)', display: 'grid', placeItems: 'center', fontSize: 12, fontWeight: 700, color: '#1a0700', flex: 'none' }}>M</div>}
+      {bot && <div style={{ width: 28, height: 28, borderRadius: 9, background: 'linear-gradient(135deg,#f0b44c,#ff7a59)', display: 'grid', placeItems: 'center', fontSize: 12, fontWeight: 700, color: '#1a0700', flex: 'none' }}>M</div>}
       <div style={{ maxWidth: '76%' }}>
-        <div style={{ padding: '10px 14px', borderRadius: bot ? '4px 14px 14px 14px' : '14px 4px 14px 14px', background: bot ? (tone === 'bad' ? 'rgba(255,90,110,.13)' : 'rgba(255,255,255,.06)') : 'linear-gradient(120deg,#3b5bdb,#6b8cff)', border: bot && tone === 'bad' ? '1px solid rgba(255,90,110,.5)' : '1px solid transparent', fontSize: 13.5, lineHeight: 1.5 }}>
+        <div style={{ padding: '10px 14px', borderRadius: bot ? '4px 14px 14px 14px' : '14px 4px 14px 14px', background: bot ? (tone === 'bad' ? 'rgba(239,91,107,.13)' : 'rgba(255,255,255,.06)') : 'linear-gradient(120deg,#3b5bdb,#6f8ff0)', border: bot && tone === 'bad' ? '1px solid rgba(239,91,107,.5)' : '1px solid transparent', fontSize: 13.5, lineHeight: 1.5 }}>
           {thinking ? <span className="dots" style={{ letterSpacing: 3 }}>● ● ●</span> : typed ? <Typed text={text} /> : text}
         </div>
         {tag && !thinking && <div style={{ marginTop: 5 }}><Flag tone={tone === 'bad' ? 'bad' : 'good'}>{tag}</Flag></div>}
@@ -155,18 +155,18 @@ export function RagViz({ s, m }: VizProps) {
       </VizHead>
       <svg viewBox="0 0 680 110" className="viz-svg">
         <defs>
-          <linearGradient id="pipe" x1="0" x2="1"><stop offset="0" stopColor="#6b8cff" stopOpacity=".2" /><stop offset="1" stopColor="#7cf7e4" stopOpacity=".4" /></linearGradient>
+          <linearGradient id="pipe" x1="0" x2="1"><stop offset="0" stopColor="#6f8ff0" stopOpacity=".2" /><stop offset="1" stopColor="#6fcfc0" stopOpacity=".4" /></linearGradient>
         </defs>
         <rect x="50" y="52" width="580" height="4" rx="2" fill="url(#pipe)" />
         {[0, 1, 2, 3, 4].map((k) => {
           const ph = (t * 0.35 + k / 5) % 1;
-          return <circle key={k} cx={50 + ph * 580} cy="54" r="4" fill={bad && ph > 0.55 ? C.bad : '#7cf7e4'} style={{ filter: 'drop-shadow(0 0 4px #7cf7e4)' }} />;
+          return <circle key={k} cx={50 + ph * 580} cy="54" r="4" fill={bad && ph > 0.55 ? C.bad : '#6fcfc0'} style={{ filter: 'drop-shadow(0 0 4px #6fcfc0)' }} />;
         })}
         {stages.map((st, i) => (
           <g key={st}>
-            <circle cx={sx(i)} cy="54" r="19" fill="#0e1634" stroke={i === 5 && bad ? C.bad : 'rgba(160,180,255,.5)'} strokeWidth="2" />
-            <text x={sx(i)} y="58" textAnchor="middle" fontSize="12" fill="#c9d1f2">{['?', '⟁', '▤', '★', '◈', '✎'][i]}</text>
-            <text x={sx(i)} y="96" textAnchor="middle" fontSize="10.5" fill="#9aa6cf" fontFamily="JetBrains Mono">{st}</text>
+            <circle cx={sx(i)} cy="54" r="19" fill="#1f222b" stroke={i === 5 && bad ? C.bad : 'rgba(160,180,255,.5)'} strokeWidth="2" />
+            <text x={sx(i)} y="58" textAnchor="middle" fontSize="12" fill="#d5d8e0">{['?', '⟁', '▤', '★', '◈', '✎'][i]}</text>
+            <text x={sx(i)} y="96" textAnchor="middle" fontSize="10.5" fill="#a3a9b8" fontFamily="IBM Plex Mono">{st}</text>
           </g>
         ))}
       </svg>
@@ -177,19 +177,19 @@ export function RagViz({ s, m }: VizProps) {
             {ranked.slice(0, 5).map((d) => {
               const inTop = top.includes(d);
               return (
-                <motion.div layout key={d.id} initial={{ opacity: 0, x: -10 }} animate={{ opacity: blocked(d) ? 0.5 : 1, x: 0 }} exit={{ opacity: 0 }} style={{ padding: '9px 12px', borderRadius: 10, border: `1px solid ${inTop ? (d.flag ? 'rgba(255,90,110,.6)' : 'rgba(124,247,228,.45)') : 'var(--line)'}`, background: inTop ? 'rgba(124,247,228,.05)' : 'transparent' }}>
+                <motion.div layout key={d.id} initial={{ opacity: 0, x: -10 }} animate={{ opacity: blocked(d) ? 0.5 : 1, x: 0 }} exit={{ opacity: 0 }} style={{ padding: '9px 12px', borderRadius: 10, border: `1px solid ${inTop ? (d.flag ? 'rgba(239,91,107,.6)' : 'rgba(111,207,192,.45)') : 'var(--line)'}`, background: inTop ? 'rgba(111,207,192,.05)' : 'transparent' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
                     <b style={{ fontSize: 12.5, textDecoration: blocked(d) ? 'line-through' : 'none' }}>{d.title}</b>
                     <span style={{ display: 'flex', gap: 6, alignItems: 'center' }}>{badge(d)}<span className="mono" style={{ fontSize: 11, color: 'var(--muted)' }}>{d.sim.toFixed(2)}</span></span>
                   </div>
-                  <div style={{ fontSize: 11.5, color: d.flag === 'poison' && !blocked(d) ? '#ff9aa6' : 'var(--muted)', marginTop: 3 }}>{d.text}</div>
-                  <div style={{ height: 3, borderRadius: 2, background: 'rgba(255,255,255,.06)', marginTop: 6 }}><motion.div animate={{ width: `${d.sim * 100}%` }} style={{ height: 3, borderRadius: 2, background: inTop ? '#7cf7e4' : '#66729c' }} /></div>
+                  <div style={{ fontSize: 11.5, color: d.flag === 'poison' && !blocked(d) ? '#f39aa4' : 'var(--muted)', marginTop: 3 }}>{d.text}</div>
+                  <div style={{ height: 3, borderRadius: 2, background: 'rgba(255,255,255,.06)', marginTop: 6 }}><motion.div animate={{ width: `${d.sim * 100}%` }} style={{ height: 3, borderRadius: 2, background: inTop ? '#6fcfc0' : '#7a8090' }} /></div>
                 </motion.div>
               );
             })}
           </AnimatePresence>
         </div>
-        <div style={{ padding: 16, borderRadius: 14, border: `1px solid ${bad ? 'rgba(255,90,110,.6)' : 'rgba(124,247,228,.4)'}`, background: bad ? 'rgba(255,90,110,.07)' : 'rgba(124,247,228,.05)', alignSelf: 'start' }}>
+        <div style={{ padding: 16, borderRadius: 14, border: `1px solid ${bad ? 'rgba(239,91,107,.6)' : 'rgba(111,207,192,.4)'}`, background: bad ? 'rgba(239,91,107,.07)' : 'rgba(111,207,192,.05)', alignSelf: 'start' }}>
           <div className="mono dim" style={{ fontSize: 10.5, marginBottom: 8 }}>ASSISTANT ANSWER</div>
           <div style={{ fontSize: 14.5, lineHeight: 1.6 }}><Typed key={answer} text={answer} speed={12} /></div>
           <div style={{ marginTop: 12, display: 'flex', gap: 6, flexWrap: 'wrap' }}>
@@ -212,12 +212,12 @@ export function RagViz({ s, m }: VizProps) {
    13. IMAGE GENERATION — marketing visuals
    ===================================================================== */
 const SKINS = ['#f3d2bd', '#e2b18f', '#c58c63', '#9a6440', '#6e4428', '#4a2c19'];
-type Av = { skin: number; hair: 'short' | 'long' | 'bun' | 'curly' | 'bald'; hc: string; suit: string; glasses?: boolean; bg: string };
-function Avatar({ a, label, i }: { a: Av; label?: boolean; i: number }) {
+export type Av = { skin: number; hair: 'short' | 'long' | 'bun' | 'curly' | 'bald'; hc: string; suit: string; glasses?: boolean; bg: string };
+export function Avatar({ a, label, i }: { a: Av; label?: boolean; i: number }) {
   return (
     <svg viewBox="0 0 100 110" className="viz-svg">
       <defs>
-        <linearGradient id={`bg${i}`} x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor={a.bg} /><stop offset="1" stopColor="#0b1230" /></linearGradient>
+        <linearGradient id={`bg${i}`} x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor={a.bg} /><stop offset="1" stopColor="#1b1e26" /></linearGradient>
       </defs>
       <rect width="100" height="110" fill={`url(#bg${i})`} />
       {a.hair === 'long' && <path d="M27,46 C25,20 75,20 73,46 L76,84 L24,84 Z" fill={a.hc} />}
@@ -237,7 +237,7 @@ function Avatar({ a, label, i }: { a: Av; label?: boolean; i: number }) {
       {label && (
         <g>
           <rect x="4" y="4" width="34" height="13" rx="3" fill="rgba(0,0,0,.6)" />
-          <text x="21" y="13.5" textAnchor="middle" fontSize="7" fill="#fff" fontFamily="JetBrains Mono">AI · CR</text>
+          <text x="21" y="13.5" textAnchor="middle" fontSize="7" fill="#fff" fontFamily="IBM Plex Mono">AI · CR</text>
         </g>
       )}
     </svg>
@@ -282,13 +282,13 @@ export function ImageGenViz({ s, m }: VizProps) {
             </motion.div>
           ))}
           {deep && (
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} style={{ gridColumn: 'span 3', borderRadius: 10, padding: 12, border: `1px solid ${deepBlocked ? 'rgba(46,230,197,.5)' : 'rgba(255,90,110,.6)'}`, background: deepBlocked ? 'rgba(46,230,197,.06)' : 'rgba(255,90,110,.08)', fontSize: 12 }}>
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} style={{ gridColumn: 'span 3', borderRadius: 10, padding: 12, border: `1px solid ${deepBlocked ? 'rgba(60,198,173,.5)' : 'rgba(239,91,107,.6)'}`, background: deepBlocked ? 'rgba(60,198,173,.06)' : 'rgba(239,91,107,.08)', fontSize: 12 }}>
               <div className="mono" style={{ fontSize: 10.5, color: 'var(--muted)', marginBottom: 4 }}>PROMPT: “photorealistic Senator R. Vale shaking hands with our CEO”</div>
               {deepBlocked ? <Flag tone="good">Blocked: likeness of a real public figure</Flag> : <><Flag tone="bad">Synthetic image of a real politician</Flag><div style={{ marginTop: 6 }}>Shared 48k times before anyone noticed it was fake.</div></>}
             </motion.div>
           )}
           {style && (
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} style={{ gridColumn: 'span 3', borderRadius: 10, padding: 12, border: `1px solid ${styleBlocked ? 'rgba(46,230,197,.5)' : 'rgba(255,200,87,.6)'}`, background: styleBlocked ? 'rgba(46,230,197,.06)' : 'rgba(255,200,87,.08)', fontSize: 12 }}>
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} style={{ gridColumn: 'span 3', borderRadius: 10, padding: 12, border: `1px solid ${styleBlocked ? 'rgba(60,198,173,.5)' : 'rgba(240,180,76,.6)'}`, background: styleBlocked ? 'rgba(60,198,173,.06)' : 'rgba(240,180,76,.08)', fontSize: 12 }}>
               <div className="mono" style={{ fontSize: 10.5, color: 'var(--muted)', marginBottom: 4 }}>PROMPT: “campaign poster in the style of [living illustrator]”</div>
               {styleBlocked ? <Flag tone="good">Held for legal & brand review</Flag> : <><Flag tone="warn">Possible IP / style infringement</Flag><div style={{ marginTop: 6 }}>Artist’s lawyers send a cease-and-desist.</div></>}
             </motion.div>
@@ -364,7 +364,7 @@ export function CodeViz({ s, m }: VizProps) {
   const velocity = s.has('accept') ? (m.has('review') ? 31 : 55) : 22;
   const hl = (c: string) =>
     c.split(/(".*?"|'.*?'|#.*$|\b(?:from|import|def|return|as)\b)/g).map((p, i) =>
-      /^["']/.test(p) ? <span key={i} style={{ color: '#ffd98a' }}>{p}</span> : /^#/.test(p) ? <span key={i} style={{ color: '#66729c' }}>{p}</span> : /^(from|import|def|return|as)$/.test(p) ? <span key={i} style={{ color: '#b892ff' }}>{p}</span> : <span key={i}>{p}</span>,
+      /^["']/.test(p) ? <span key={i} style={{ color: '#ffd98a' }}>{p}</span> : /^#/.test(p) ? <span key={i} style={{ color: '#7a8090' }}>{p}</span> : /^(from|import|def|return|as)$/.test(p) ? <span key={i} style={{ color: '#b892ff' }}>{p}</span> : <span key={i}>{p}</span>,
     );
   return (
     <div>
@@ -379,16 +379,16 @@ export function CodeViz({ s, m }: VizProps) {
           </div>
           <div className="mono scroll-x" style={{ fontSize: 12, lineHeight: 1.85, padding: '10px 0' }}>
             {lines.slice(0, shown).map((ln, i) => (
-              <motion.div key={sig + i} initial={{ opacity: 0, x: -6 }} animate={{ opacity: 1, x: 0 }} style={{ display: 'grid', gridTemplateColumns: '34px 1fr', background: ln.tone === 'bad' ? 'rgba(255,90,110,.13)' : ln.tone === 'good' ? 'rgba(46,230,197,.09)' : undefined, borderLeft: `3px solid ${ln.tone === 'bad' ? C.bad : ln.tone === 'good' ? C.good : 'transparent'}` }}>
+              <motion.div key={sig + i} initial={{ opacity: 0, x: -6 }} animate={{ opacity: 1, x: 0 }} style={{ display: 'grid', gridTemplateColumns: '34px 1fr', background: ln.tone === 'bad' ? 'rgba(239,91,107,.13)' : ln.tone === 'good' ? 'rgba(60,198,173,.09)' : undefined, borderLeft: `3px solid ${ln.tone === 'bad' ? C.bad : ln.tone === 'good' ? C.good : 'transparent'}` }}>
                 <span style={{ color: '#3d4a78', textAlign: 'right', paddingRight: 10 }}>{i + 1}</span>
-                <span style={{ whiteSpace: 'pre', paddingRight: 12 }}>{hl(ln.code)}{ln.note && <span style={{ color: ln.tone === 'bad' ? '#ff9aa6' : C.good, marginLeft: 14, fontSize: 10.5 }}>← {ln.note}</span>}</span>
+                <span style={{ whiteSpace: 'pre', paddingRight: 12 }}>{hl(ln.code)}{ln.note && <span style={{ color: ln.tone === 'bad' ? '#f39aa4' : C.good, marginLeft: 14, fontSize: 10.5 }}>← {ln.note}</span>}</span>
               </motion.div>
             ))}
           </div>
           {pkg && (
             <div className="mono" style={{ fontSize: 11.5, padding: '10px 14px', borderTop: '1px solid var(--line)', background: '#04060f' }}>
-              <div style={{ color: '#9aa6cf' }}>$ pip install flask-securelogin</div>
-              {pkgFix ? <div style={{ color: C.good }}>✖ blocked by policy: no provenance, not on internal allow-list</div> : <div style={{ color: '#ff9aa6' }}>Successfully installed flask-securelogin-0.0.3 (published 2 days ago by “pyd3v”) — runs post-install script…</div>}
+              <div style={{ color: '#a3a9b8' }}>$ pip install flask-securelogin</div>
+              {pkgFix ? <div style={{ color: C.good }}>✖ blocked by policy: no provenance, not on internal allow-list</div> : <div style={{ color: '#f39aa4' }}>Successfully installed flask-securelogin-0.0.3 (published 2 days ago by “pyd3v”) — runs post-install script…</div>}
             </div>
           )}
         </div>

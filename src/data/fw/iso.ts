@@ -1,0 +1,35 @@
+import type { FwEntry, Req } from '../frameworks';
+
+const owner: Req = ['Assign clear roles: who owns, approves and monitors the system', 'A.3.2'];
+const impact = (sg?: string[]): Req => ['Assess and document the impact on individuals and groups before use', 'A.5', sg];
+const vv = (sg?: string[]): Req => ['Verify and validate the system against defined requirements before release', 'A.6.2.4', sg];
+const ops = (sg?: string[]): Req => ['Monitor the system in operation and keep event logs', 'A.6.2.6, A.6.2.8', sg];
+const data = (sg?: string[]): Req => ['Control data quality, provenance and preparation', 'A.7', sg];
+const info = (sg?: string[]): Req => ['Give users and affected people the information they need', 'A.8', sg];
+const use = (sg?: string[]): Req => ['Keep use within the intended purpose and responsible-use objectives', 'A.9', sg];
+const supplier = (sg?: string[]): Req => ['Agree responsibilities with suppliers and check what they provide', 'A.10', sg];
+
+export const ISO: Record<string, FwEntry> = {
+  spam: { cat: 'low', status: 'Light touch', summary: 'Inside a certified management system, a spam filter needs an owner, basic validation and monitoring, but no detailed impact assessment.', reqs: [owner, vv(['threshold']), ops(['retrain', 'reportguard'])] },
+  salary: { cat: 'high', status: 'Full impact assessment', summary: 'Pay decisions directly affect individuals, so the impact assessment and data-quality controls need real depth.', reqs: [impact(['equity']), data(['equity', 'robust']), use(['bounds']), info()] },
+  credit: { cat: 'high', status: 'Full impact assessment', summary: 'Credit decisions have legal effects on people. Expect auditors to look closely at impact assessment, data and monitoring.', reqs: [impact(['dropzip', 'reweigh']), data(['reweigh']), ops(['monitor']), info(['explain'])] },
+  benefits: { cat: 'high', status: 'Full impact assessment', summary: 'A public-sector system that can sanction families needs the most thorough impact assessment and life-cycle controls.', reqs: [impact(['features']), data(['cv']), vv(['prune', 'cv']), use(['hitl'])] },
+  fraud: { cat: 'medium', status: 'Standard controls', summary: 'Customers are affected when cards are frozen, so validation, monitoring and information to users matter.', reqs: [vv(['cost', 'redteam']), ops(['champion']), info(['shap']), owner] },
+  segments: { cat: 'medium', status: 'Standard controls', summary: 'Moderate impact on people, but data acquisition rules matter because of broker data.', reqs: [['Check that data acquired from third parties is lawful and fit for purpose', 'A.7.3', ['dpia']], impact(['audit']), use(['behaviour'])] },
+  staffing: { cat: 'medium', status: 'Standard controls', summary: 'Indirect but serious effect on patient safety. Validation and operational monitoring are the key controls.', reqs: [vv(['backtest']), ops(['anomaly']), use(['hitl']), owner] },
+  lesion: { cat: 'high', status: 'Full impact assessment', summary: 'Health outcomes are at stake. ISO 42001 sits alongside the medical-device quality standard ISO 13485.', reqs: [impact(['diverse']), data(['diverse', 'saliency']), vv(['advtrain', 'saliency']), use(['clinician'])] },
+  face: { cat: 'high', status: 'Full impact assessment', summary: 'Every visitor is affected. The impact assessment should weigh whether the system should be used at all.', reqs: [impact(['dpia']), supplier(['demotest']), vv(['threshold']), data(['watchquality']), use(['tworeview'])] },
+  emotion: { cat: 'high', status: 'Full impact assessment', summary: 'Using a system of doubtful validity to judge staff is a serious impact. The standard expects you to act on the assessment, including by not deploying.', reqs: [impact(['stop']), vv(['validate']), info(['notice']), ['Give staff a way to raise concerns about AI', 'A.3.3']] },
+  cv: { cat: 'high', status: 'Full impact assessment', summary: 'Hiring affects people’s livelihoods. Supplier controls matter because most hiring AI is bought in.', reqs: [impact(['cf']), supplier(['cf']), data(['proxy']), use(['human'])] },
+  feed: { cat: 'medium', status: 'Standard controls (societal impact)', summary: 'Each individual decision is small, but A.5 also asks about effects on society as a whole.', reqs: [['Assess effects on society, not only on individuals', 'A.5.5', ['quality']], use(['diversity']), info(['nonprof'])] },
+  pricing: { cat: 'medium', status: 'Standard controls', summary: 'Set responsible-use objectives the agent cannot override, and monitor outcomes.', reqs: [['Define responsible-development objectives and constraints', 'A.6.1.2', ['reward']], use(['caps']), ops(['audit'])] },
+  foundation: { cat: 'high', status: 'Full impact assessment', summary: 'For a model developer, data provenance and documentation for downstream users are central controls.', reqs: [data(['optout', 'piifilter']), vv(['evals']), ['Provide technical documentation to downstream users', 'A.6.2.7, A.8.2'], ops(['frontier'])] },
+  chatbot: { cat: 'medium', status: 'Standard controls', summary: 'Customer-facing, with the model bought from a supplier. Supplier and information controls matter.', reqs: [supplier(['guard']), vv(['rag', 'guard']), info(['handoff']), ops()] },
+  rag: { cat: 'medium', status: 'Standard controls', summary: 'Data controls dominate: the documents connected to the assistant are the system’s real behaviour.', reqs: [data(['fresh', 'sanitize']), use(['acl']), info(['cite'])] },
+  imagegen: { cat: 'medium', status: 'Standard controls', summary: 'Published content reaches the public. Responsible-use rules and information controls are key.', reqs: [vv(['bias']), use(['policy', 'review']), info(['c2pa'])] },
+  code: { cat: 'low', status: 'Light touch (security controls apply)', summary: 'Little direct effect on individuals; the risk is to the software. ISO 27001 security controls do most of the work.', reqs: [use(['review']), supplier(['deps']), vv(['sast'])] },
+  'travel-agent': { cat: 'medium', status: 'Standard controls', summary: 'The agent acts on employees’ behalf with money and personal data, so use and resource controls matter.', reqs: [['Document the resources and tools the agent can access', 'A.4', ['least']], use(['approval']), ops(['log']), vv(['untrusted'])] },
+  'devops-agent': { cat: 'medium', status: 'Standard controls', summary: 'Operational controls and logs are what auditors will ask about.', reqs: [ops(['verify']), use(['sandbox', 'gates']), ['Control deployment of changes', 'A.6.2.5', ['review']]] },
+  swarm: { cat: 'medium', status: 'Standard controls', summary: 'The system spans several agents and outside parties, so roles and third-party controls matter most.', reqs: [owner, supplier(['protocol']), ops(['breaker']), vv(['verify'])] },
+};
+ISO.swarm.reqs[0] = [owner[0], owner[1], ['raci']];

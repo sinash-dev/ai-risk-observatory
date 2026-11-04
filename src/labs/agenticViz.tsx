@@ -8,10 +8,10 @@ import { C, VizHead } from '../viz/kit';
 type Tone = 'ok' | 'bad' | 'blocked' | 'warn';
 interface Step { tool: string; title: string; detail?: string; tone: Tone }
 const TONE: Record<Tone, { c: string; l: string }> = {
-  ok: { c: '#7cf7e4', l: 'done' },
-  bad: { c: '#ff5a6e', l: 'harm' },
-  blocked: { c: '#2ee6c5', l: 'stopped by control' },
-  warn: { c: '#ffc857', l: 'warning' },
+  ok: { c: '#6fcfc0', l: 'done' },
+  bad: { c: '#ef5b6b', l: 'harm' },
+  blocked: { c: '#3cc6ad', l: 'stopped by control' },
+  warn: { c: '#f0b44c', l: 'warning' },
 };
 
 function AgentTrace({ steps, tools, task, sig }: { steps: Step[]; tools: { id: string; icon: string; l: string }[]; task: string; sig: string }) {
@@ -39,18 +39,18 @@ function AgentTrace({ steps, tools, task, sig }: { steps: Step[]; tools: { id: s
         })}
       </div>
       <div>
-        <div style={{ padding: '10px 14px', borderRadius: 12, border: '1px solid var(--line2)', background: 'rgba(107,140,255,.07)', fontSize: 13, marginBottom: 10 }}>
+        <div style={{ padding: '10px 14px', borderRadius: 12, border: '1px solid var(--line2)', background: 'rgba(111,143,240,.07)', fontSize: 13, marginBottom: 10 }}>
           <span className="mono" style={{ color: '#9db1ff', fontSize: 11 }}>GOAL › </span>{task}
         </div>
         <div style={{ position: 'relative', display: 'grid', gap: 8 }}>
-          <div style={{ position: 'absolute', left: 13, top: 6, bottom: 6, width: 2, background: 'rgba(130,160,255,.15)' }} />
+          <div style={{ position: 'absolute', left: 13, top: 6, bottom: 6, width: 2, background: 'rgba(200,205,220,.15)' }} />
           <AnimatePresence>
             {steps.slice(0, n).map((st, i) => (
               <motion.div key={sig + i} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.35 }} style={{ display: 'grid', gridTemplateColumns: '28px 1fr', gap: 10, alignItems: 'start' }}>
-                <div style={{ width: 28, height: 28, borderRadius: '50%', background: '#0e1634', border: `2px solid ${TONE[st.tone].c}`, display: 'grid', placeItems: 'center', fontSize: 12, zIndex: 1, boxShadow: `0 0 12px -3px ${TONE[st.tone].c}` }}>
+                <div style={{ width: 28, height: 28, borderRadius: '50%', background: '#1f222b', border: `2px solid ${TONE[st.tone].c}`, display: 'grid', placeItems: 'center', fontSize: 12, zIndex: 1, boxShadow: `0 0 12px -3px ${TONE[st.tone].c}` }}>
                   {tools.find((t) => t.id === st.tool)?.icon ?? '◆'}
                 </div>
-                <div style={{ padding: '8px 12px', borderRadius: 10, border: `1px solid ${st.tone === 'ok' ? 'var(--line)' : TONE[st.tone].c + '88'}`, background: st.tone === 'bad' ? 'rgba(255,90,110,.09)' : st.tone === 'blocked' ? 'rgba(46,230,197,.07)' : st.tone === 'warn' ? 'rgba(255,200,87,.07)' : 'rgba(255,255,255,.02)' }}>
+                <div style={{ padding: '8px 12px', borderRadius: 10, border: `1px solid ${st.tone === 'ok' ? 'var(--line)' : TONE[st.tone].c + '88'}`, background: st.tone === 'bad' ? 'rgba(239,91,107,.09)' : st.tone === 'blocked' ? 'rgba(60,198,173,.07)' : st.tone === 'warn' ? 'rgba(240,180,76,.07)' : 'rgba(255,255,255,.02)' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', gap: 8, flexWrap: 'wrap' }}>
                     <span style={{ fontSize: 13, fontWeight: 600 }}>{st.title}</span>
                     <span className="mono" style={{ fontSize: 10, color: TONE[st.tone].c }}>{st.tool} · {TONE[st.tone].l}</span>
@@ -209,28 +209,28 @@ export function SwarmViz({ s, m }: VizProps) {
     <div>
       <VizHead title="agent network · messages in flight · live">
         <div className="legend">
-          <span><i className="dot" style={{ background: '#7cf7e4' }} /> message</span>
+          <span><i className="dot" style={{ background: '#6fcfc0' }} /> message</span>
           <span><i className="dot" style={{ background: C.bad }} /> contaminated / harmful</span>
           <span><i className="dot" style={{ background: C.good }} /> control</span>
         </div>
       </VizHead>
       <svg viewBox="0 0 700 330" className="viz-svg" style={{ background: 'rgba(255,255,255,.02)', borderRadius: 14 }}>
         <defs>
-          <radialGradient id="nodeg"><stop offset="0" stopColor="#1c2a5e" /><stop offset="1" stopColor="#0e1634" /></radialGradient>
+          <radialGradient id="nodeg"><stop offset="0" stopColor="#2a2f3d" /><stop offset="1" stopColor="#1f222b" /></radialGradient>
         </defs>
         {edges.map(([a, b, n, ext], ei) => {
           const A = NODES[a], B = NODES[b];
           const hot = (ext && collude) || (infected(a) && infected(b));
           return (
             <g key={ei}>
-              <line x1={A.x} y1={A.y} x2={B.x} y2={B.y} stroke={hot ? 'rgba(255,90,110,.55)' : a === 'human' || b === 'ver' || a === 'ver' ? 'rgba(46,230,197,.5)' : 'rgba(130,160,255,.22)'} strokeWidth={hot ? 2.5 : 1.5} strokeDasharray={ext ? '5 4' : undefined} />
+              <line x1={A.x} y1={A.y} x2={B.x} y2={B.y} stroke={hot ? 'rgba(239,91,107,.55)' : a === 'human' || b === 'ver' || a === 'ver' ? 'rgba(60,198,173,.5)' : 'rgba(200,205,220,.22)'} strokeWidth={hot ? 2.5 : 1.5} strokeDasharray={ext ? '5 4' : undefined} />
               {Array.from({ length: n * (runaway && !ext ? rate : 1) }, (_, k) => {
                 const ph = (t * (runaway ? 0.9 : 0.35) + k / (n * (runaway && !ext ? rate : 1)) + ei * 0.13) % 1;
                 const dir = k % 2 === 0;
                 const x = dir ? A.x + (B.x - A.x) * ph : B.x + (A.x - B.x) * ph;
                 const y = dir ? A.y + (B.y - A.y) * ph : B.y + (A.y - B.y) * ph;
                 const red = hot || (cascade && infected(dir ? a : b));
-                return <circle key={k} cx={x} cy={y} r="3" fill={red ? C.bad : '#7cf7e4'} opacity=".9" />;
+                return <circle key={k} cx={x} cy={y} r="3" fill={red ? C.bad : '#6fcfc0'} opacity=".9" />;
               })}
             </g>
           );
@@ -241,19 +241,19 @@ export function SwarmViz({ s, m }: VizProps) {
           const ctrl = k === 'ver' || k === 'human';
           return (
             <g key={k}>
-              {inf && <circle cx={nd.x} cy={nd.y} r="34" fill="rgba(255,90,110,.18)"><animate attributeName="r" values="28;38;28" dur="1.2s" repeatCount="indefinite" /></circle>}
-              <circle cx={nd.x} cy={nd.y} r="25" fill="url(#nodeg)" stroke={inf ? C.bad : ctrl ? C.good : k === 'vend' ? '#9aa6cf' : 'rgba(160,180,255,.6)'} strokeWidth="2" strokeDasharray={k === 'vend' ? '4 3' : undefined} />
+              {inf && <circle cx={nd.x} cy={nd.y} r="34" fill="rgba(239,91,107,.18)"><animate attributeName="r" values="28;38;28" dur="1.2s" repeatCount="indefinite" /></circle>}
+              <circle cx={nd.x} cy={nd.y} r="25" fill="url(#nodeg)" stroke={inf ? C.bad : ctrl ? C.good : k === 'vend' ? '#a3a9b8' : 'rgba(160,180,255,.6)'} strokeWidth="2" strokeDasharray={k === 'vend' ? '4 3' : undefined} />
               <text x={nd.x} y={nd.y + 5} textAnchor="middle" fontSize="15">{nd.i}</text>
-              <text x={nd.x} y={nd.y + 42} textAnchor="middle" fontSize="11" fill={inf ? '#ff9aa6' : '#c9d1f2'} fontWeight={600}>{nd.l}</text>
+              <text x={nd.x} y={nd.y + 42} textAnchor="middle" fontSize="11" fill={inf ? '#f39aa4' : '#d5d8e0'} fontWeight={600}>{nd.l}</text>
             </g>
           );
         })}
-        {cascade && <text x={140} y={30} textAnchor="middle" fontSize="10.5" fill="#ff9aa6" fontFamily="JetBrains Mono">“Supplier X is ISO 27001 certified” (invented)</text>}
-        {s.has('cascade') && m.has('verify') && <text x={250} y={226} textAnchor="middle" fontSize="10.5" fill={C.good} fontFamily="JetBrains Mono">claim rejected: no certificate found</text>}
-        <text x={650} y={238} textAnchor="middle" fontSize="11" fill={collude ? '#ff9aa6' : '#9aa6cf'} fontFamily="JetBrains Mono">€{price.toFixed(2)}/unit</text>
-        {!owner && <text x={340} y={30} textAnchor="middle" fontSize="11" fill={s.has('noowner') ? '#ff9aa6' : '#66729c'} fontFamily="JetBrains Mono">accountable owner: {s.has('noowner') ? 'none' : 'procurement lead'}</text>}
-        {runaway && <text x={340} y={322} textAnchor="middle" fontSize="11" fill="#ff9aa6" fontFamily="JetBrains Mono">recursive delegation loop · {msgs.toLocaleString()} messages</text>}
-        {s.has('runaway') && m.has('breaker') && <text x={340} y={322} textAnchor="middle" fontSize="11" fill={C.good} fontFamily="JetBrains Mono">circuit breaker: 20 msg/min · budget €400/day</text>}
+        {cascade && <text x={140} y={30} textAnchor="middle" fontSize="10.5" fill="#f39aa4" fontFamily="IBM Plex Mono">“Supplier X is ISO 27001 certified” (invented)</text>}
+        {s.has('cascade') && m.has('verify') && <text x={250} y={226} textAnchor="middle" fontSize="10.5" fill={C.good} fontFamily="IBM Plex Mono">claim rejected: no certificate found</text>}
+        <text x={650} y={238} textAnchor="middle" fontSize="11" fill={collude ? '#f39aa4' : '#a3a9b8'} fontFamily="IBM Plex Mono">€{price.toFixed(2)}/unit</text>
+        {!owner && <text x={340} y={30} textAnchor="middle" fontSize="11" fill={s.has('noowner') ? '#f39aa4' : '#7a8090'} fontFamily="IBM Plex Mono">accountable owner: {s.has('noowner') ? 'none' : 'procurement lead'}</text>}
+        {runaway && <text x={340} y={322} textAnchor="middle" fontSize="11" fill="#f39aa4" fontFamily="IBM Plex Mono">recursive delegation loop · {msgs.toLocaleString()} messages</text>}
+        {s.has('runaway') && m.has('breaker') && <text x={340} y={322} textAnchor="middle" fontSize="11" fill={C.good} fontFamily="IBM Plex Mono">circuit breaker: 20 msg/min · budget €400/day</text>}
       </svg>
       <div className="stats" style={{ marginTop: 12 }}>
         <Stat l="Orders on false data" v={cascade ? 37 : 0} tone={cascade ? 'bad' : 'good'} s="per month" />

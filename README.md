@@ -1,44 +1,22 @@
-# AI Risk Observatory
+# AI Risk Explorer
 
-An interactive, visual training lab for AI governance. Pick a model — from linear regression to multi-agent systems — apply it to a real business problem, **break it** with shortcuts, drift and attacks, **fix it** with governance controls, then **ship it** and see what happens six months later.
+A training website that shows, with working examples, how AI and machine learning systems fail and how the main governance frameworks deal with them.
 
 **Live site:** https://sinash-dev.github.io/ai-risk-observatory/
 
-## What's inside
+## How it is organised
 
-| Page | What you do |
-|---|---|
-| **Landing** | The Meridian Group story, the trust-vs-value trade-off and the autonomy ladder |
-| **Observatory** | An animated constellation of 17 models on four orbits (Classical → Deep → GenAI → Agentic), linked by shared risk fingerprints |
-| **Lab** (×17) | Mission brief · live model · Break it / Fix it · risk radar · Trust & Value gauges · *Ship to production* consequence reel · Governance Board verdict · debrief with real incidents, checklist and framework mapping |
-| **Risk Atlas** | Model × risk heatmap, tier → risk flow diagram, escalation chart, risk-correlation matrix, control library by life-cycle stage, framework crosswalk |
-| **Passport** | Stamps and grades per lab, printable certificate |
+- **Models**: one overview of 21 AI uses, from a naive Bayes spam filter to a multi-agent procurement system, grouped into four families (classical machine learning, deep learning, generative AI, AI agents). Each example has its own page with:
+  - a plain explanation of how the model works and the situation it is used in
+  - a working simulation: switch on a problem, see what goes wrong, switch on a safeguard and see whether it helps
+  - a summary of what is still unhandled and an indicative risk level
+  - how each framework classifies the use and what it requires, linked to the safeguards in the simulation
+  - real cases from public reporting
+- **Rules and frameworks**: a comparison of six frameworks and a full guide to each (who it applies to, categories, key requirements, timeline, penalties, and how it treats every example). Twelve more frameworks are summarised.
+- **Basics**: a short tutorial on how models work, where risk comes from, eight kinds of harm, laws vs. standards vs. security guides, and a glossary.
+- **View through**: a switch in the header that shows the whole site through one framework (EU AI Act, US federal and state laws, NIST AI RMF, ISO/IEC 42001, OWASP, GDPR). The overview is recoloured by that framework’s categories and model pages show only its requirements.
 
-### The 17 labs
-
-| Tier | Model | Application |
-|---|---|---|
-| Classical ML | Linear regression | Salary setting |
-| | Logistic regression | Credit scoring |
-| | Decision tree | Benefit-claim risk flags |
-| | Gradient boosting | Card fraud detection |
-| | k-Means clustering | Customer segmentation |
-| | Time-series forecasting | Hospital staffing |
-| Deep learning | CNN | Skin-lesion triage |
-| | NLP text classifier | CV screening |
-| | Recommender system | News-feed ranking |
-| | Reinforcement learning | Dynamic pricing |
-| Generative AI | Large language model | Customer-service chatbot |
-| | Retrieval-augmented generation | Internal policy assistant |
-| | Image generation | Marketing visuals |
-| | Code assistant | Developer copilot |
-| Agentic AI | Tool-using agent | Travel & expense agent |
-| | Autonomous coding agent | DevOps automation |
-| | Multi-agent system | Autonomous procurement |
-
-Classical models (OLS/Huber regression, logistic regression, CART, k-means, seasonal forecasting) are **trained live in the browser** on seeded synthetic data. GenAI and agent behaviour is scripted so sessions are free, safe and repeatable.
-
-Every risk maps to eight lenses (fairness, robustness, transparency, privacy, security, safety, accountability, misuse) and every control to the **EU AI Act, NIST AI RMF, ISO/IEC 42001 and OWASP LLM Top 10 (2025)**.
+Classical models (OLS/Huber regression, logistic regression, CART, k-means, seasonal forecasting) are trained live in the browser on synthetic data. Generative AI and agent behaviour is scripted so sessions are free and repeatable.
 
 ## Run locally
 
@@ -47,13 +25,12 @@ npm install
 npm run dev
 ```
 
-Build: `npm run build` (output in `dist/`). Deployment to GitHub Pages runs automatically on every push to `main` via `.github/workflows/deploy.yml`.
+`npm run build` writes the site to `dist/`. Every push to `main` deploys to GitHub Pages via `.github/workflows/deploy.yml`.
 
-## Adding a lab
+## Adding content
 
-Each lab is a `LabDef` object (see `src/data/types.ts`) plus a visualisation component. Add it to one of `src/labs/{classical,deep,genai,agentic}.ts` — the observatory, atlas, passport and scoring pick it up automatically.
-
-See [docs/PLAN.md](docs/PLAN.md) for the full design and roadmap.
+- A new example: add a `LabDef` (see `src/data/types.ts`) and a simulation component in `src/labs/`, then add an entry for it in each file in `src/data/fw/`.
+- A new framework: add it to `src/data/frameworks.ts` and create `src/data/fw/<id>.ts` with an entry per example.
 
 ---
-Meridian Group and all people, outlets and quotes inside scenarios are fictional. "It happened for real" cases are short summaries of public reporting. Framework mappings are indicative and for training purposes.
+Meridian and all people and headlines inside the simulations are fictional. Legal summaries are simplified and dated November 2026; they are not legal advice.

@@ -1,39 +1,47 @@
-import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect } from 'react';
-import { Mark } from './components/ui';
-import { LABS } from './data/labs';
-import { useProgress, useRoute } from './lib/util';
-import { Atlas } from './pages/Atlas';
-import { LabPage } from './pages/Lab';
-import { Landing } from './pages/Landing';
-import { Observatory } from './pages/Observatory';
-import { Passport } from './pages/Passport';
+import { Logo } from './components/ui';
+import { FRAMEWORKS, FW_BY_ID, type Lens } from './data/frameworks';
+import { setLens, useLens } from './lib/lens';
+import { useRoute } from './lib/util';
+import { Basics } from './pages/Basics';
+import { FrameworkPage, Frameworks } from './pages/Frameworks';
+import { Home } from './pages/Home';
+import { ModelPage } from './pages/Model';
 
-function Nav({ page }: { page: string }) {
-  const p = useProgress();
-  const n = Object.keys(p.labs).length;
+function Header({ page }: { page: string }) {
+  const lens = useLens();
   const links = [
-    { href: '#/observatory', l: 'Observatory', k: 'observatory' },
-    { href: '#/atlas', l: 'Risk Atlas', k: 'atlas' },
-    { href: '#/passport', l: 'Passport', k: 'passport' },
+    { href: '#/', l: 'Models', on: page === '' || page === 'model' },
+    { href: '#/rules', l: 'Rules and frameworks', on: page === 'rules' },
+    { href: '#/basics', l: 'Basics', on: page === 'basics' },
   ];
   return (
-    <nav className="nav no-print">
-      <div className="wrap nav-in">
-        <a href="#/" className="brand">
-          <Mark />
-          <span className="brand-text">AI Risk Observatory</span>
-        </a>
-        <div className="nav-links">
-          {links.map((x) => (
-            <a key={x.k} href={x.href} className={`nav-link ${page === x.k || (x.k === 'observatory' && page === 'lab') ? 'active' : ''}`}>{x.l}</a>
-          ))}
+    <>
+      <header className="header">
+        <div className="wrap header-in">
+          <a href="#/" className="brand"><Logo /> AI Risk Explorer</a>
+          <nav className="nav">
+            {links.map((x) => <a key={x.href} href={x.href} className={x.on ? 'active' : ''}>{x.l}</a>)}
+          </nav>
+          <label className="lens">
+            View through
+            <select value={lens} onChange={(e) => setLens(e.target.value as Lens)} aria-label="View the site through a framework">
+              <option value="all">All frameworks</option>
+              {FRAMEWORKS.map((f) => <option key={f.id} value={f.id}>{f.short}</option>)}
+            </select>
+          </label>
         </div>
-        <div className="nav-score" title="Labs completed">
-          <span>Passport</span> <b>{n}/{LABS.length}</b>
+      </header>
+      {lens !== 'all' && (
+        <div className="lens-bar">
+          <div className="wrap">
+            <span>You are viewing everything through the <b>{FW_BY_ID[lens].name}</b>.</span>
+            <a href={`#/rules/${lens}`}>About it</a>
+            <button onClick={() => setLens('all')}>Show all frameworks</button>
+          </div>
         </div>
-      </div>
-    </nav>
+      )}
+    </>
   );
 }
 
@@ -41,23 +49,19 @@ export default function App() {
   const { page, param, hash } = useRoute();
   useEffect(() => { window.scrollTo(0, 0); }, [hash]);
   let view;
-  if (page === 'observatory') view = <Observatory />;
-  else if (page === 'lab' && param) view = <LabPage key={param} id={param} />;
-  else if (page === 'atlas') view = <Atlas />;
-  else if (page === 'passport') view = <Passport />;
-  else view = <Landing />;
+  if ((page === 'model' || page === 'lab') && param) view = <ModelPage key={param} id={param} />;
+  else if (page === 'rules' && param) view = <FrameworkPage id={param} />;
+  else if (page === 'rules') view = <Frameworks />;
+  else if (page === 'basics') view = <Basics />;
+  else view = <Home />;
   return (
     <>
-      <Nav page={page} />
-      <AnimatePresence mode="wait">
-        <motion.main key={hash} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.28 }}>
-          {view}
-        </motion.main>
-      </AnimatePresence>
-      <footer className="footer no-print">
-        <div className="wrap" style={{ display: 'flex', justifyContent: 'space-between', gap: 20, flexWrap: 'wrap' }}>
-          <span>AI Risk Observatory — an interactive AI governance training lab. Meridian Group and all people, outlets and quotes in scenarios are fictional; “It happened for real” cases are summarised from public reporting.</span>
-          <span className="mono">EU AI Act · NIST AI RMF · ISO/IEC 42001 · OWASP LLM Top 10</span>
+      <Header page={page === 'lab' ? 'model' : page} />
+      <main>{view}</main>
+      <footer className="footer">
+        <div className="wrap" style={{ display: 'grid', gap: 6 }}>
+          <span><b>AI Risk Explorer</b> is a training resource. The organisation “Meridian” and the people and headlines in the simulations are fictional; the real cases are summarised from public reporting.</span>
+          <span>Legal summaries are simplified and dated November 2026. They are not legal advice; check official sources before relying on them.</span>
         </div>
       </footer>
     </>

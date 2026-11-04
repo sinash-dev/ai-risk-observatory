@@ -61,7 +61,7 @@ export function LesionViz({ s, m }: VizProps) {
           const correct = predMal === t.mal;
           const isAdv = adv && i === 2;
           return (
-            <motion.div key={i} layout style={{ borderRadius: 12, overflow: 'hidden', border: `1px solid ${correct ? 'var(--line)' : 'rgba(255,90,110,.7)'}`, background: 'rgba(255,255,255,.02)', boxShadow: correct ? 'none' : '0 0 18px -6px rgba(255,90,110,.8)' }}>
+            <motion.div key={i} layout style={{ borderRadius: 12, overflow: 'hidden', border: `1px solid ${correct ? 'var(--line)' : 'rgba(239,91,107,.7)'}`, background: 'rgba(255,255,255,.02)', boxShadow: correct ? 'none' : '0 0 18px -6px rgba(239,91,107,.8)' }}>
               <svg viewBox="0 0 100 92" className="viz-svg">
                 <defs>
                   <radialGradient id={`skin${i}`} cx="40%" cy="35%" r="80%">
@@ -70,8 +70,8 @@ export function LesionViz({ s, m }: VizProps) {
                   </radialGradient>
                   <radialGradient id={`heat${i}`}>
                     <stop offset="0" stopColor="#ff2d2d" stopOpacity=".9" />
-                    <stop offset=".45" stopColor="#ffc857" stopOpacity=".55" />
-                    <stop offset="1" stopColor="#ffc857" stopOpacity="0" />
+                    <stop offset=".45" stopColor="#f0b44c" stopOpacity=".55" />
+                    <stop offset="1" stopColor="#f0b44c" stopOpacity="0" />
                   </radialGradient>
                   <pattern id={`noise${i}`} width="4" height="4" patternUnits="userSpaceOnUse">
                     <rect width="2" height="2" fill="#ff00ff" opacity=".35" />
@@ -89,11 +89,11 @@ export function LesionViz({ s, m }: VizProps) {
                   </g>
                 )}
                 {isAdv && view === 'img' && <rect width="100" height="92" fill={`url(#noise${i})`}><animate attributeName="opacity" values=".4;.9;.4" dur="1.4s" repeatCount="indefinite" /></rect>}
-                {view === 'sal' && <rect width="100" height="92" fill="#050816" opacity=".55" />}
+                {view === 'sal' && <rect width="100" height="92" fill="#15171d" opacity=".55" />}
                 {view === 'sal' && (ruler && t.ruler ? <ellipse cx="79" cy="78" rx="26" ry="18" fill={`url(#heat${i})`} /> : isAdv ? <rect width="100" height="92" fill={`url(#heat${i})`} opacity=".5" /> : <ellipse cx="50" cy="46" rx="30" ry="27" fill={`url(#heat${i})`} />)}
               </svg>
               <div style={{ padding: '6px 8px', fontSize: 10.5, fontFamily: 'var(--mono)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 4 }}>
-                <span style={{ color: predMal ? '#ff9aa6' : '#8fdcf7', fontWeight: 600 }}>{predMal ? 'MALIG.' : 'BENIGN'} {(predMal ? p : 1 - p).toFixed(2)}</span>
+                <span style={{ color: predMal ? '#f39aa4' : '#8fdcf7', fontWeight: 600 }}>{predMal ? 'MALIG.' : 'BENIGN'} {(predMal ? p : 1 - p).toFixed(2)}</span>
                 <span style={{ color: correct ? C.good : C.bad }}>{correct ? '✓' : '✗'}</span>
               </div>
               <div style={{ padding: '0 8px 7px', fontSize: 9.5, color: 'var(--dim)', fontFamily: 'var(--mono)' }}>
@@ -109,7 +109,7 @@ export function LesionViz({ s, m }: VizProps) {
           <div style={{ display: 'flex', gap: 8, alignItems: 'flex-end', height: 110 }}>
             {sens.map((v, i) => (
               <div key={i} style={{ flex: 1, textAlign: 'center' }}>
-                <div className="mono" style={{ fontSize: 10, color: v < 0.75 ? '#ff9aa6' : 'var(--muted)' }}>{Math.round(v * 100)}</div>
+                <div className="mono" style={{ fontSize: 10, color: v < 0.75 ? '#f39aa4' : 'var(--muted)' }}>{Math.round(v * 100)}</div>
                 <motion.div animate={{ height: `${(v - 0.4) * 140}px` }} transition={{ type: 'spring', stiffness: 120, damping: 16 }} style={{ borderRadius: '6px 6px 2px 2px', background: `linear-gradient(180deg, ${v < 0.75 ? C.bad : C.good}, ${TONES[i]})` }} />
                 <div className="mono dim" style={{ fontSize: 10, marginTop: 4 }}>{['I', 'II', 'III', 'IV', 'V', 'VI'][i]}</div>
               </div>
@@ -210,7 +210,7 @@ export function CvViz({ s, m }: VizProps) {
               <div style={{ marginTop: 8 }}><Flag tone={c.v >= 60 ? 'good' : auto ? 'bad' : 'warn'}>{status(c.v)}</Flag></div>
             </div>
           ))}
-          {sJ !== sT && <div style={{ fontSize: 12, color: '#ff9aa6' }}>Changing only gendered words moves the score by <b>{sT - sJ}</b> points.</div>}
+          {sJ !== sT && <div style={{ fontSize: 12, color: '#f39aa4' }}>Changing only gendered words moves the score by <b>{sT - sJ}</b> points.</div>}
         </div>
       </div>
       <div className="stats" style={{ marginTop: 14 }}>
@@ -227,7 +227,7 @@ export function CvViz({ s, m }: VizProps) {
    9. RECOMMENDER — news feed
    ===================================================================== */
 const TOPICS = [
-  { n: 'Politics', c: '#ff6b9a' }, { n: 'Science', c: '#4cc9f0' }, { n: 'Sport', c: '#2ee6c5' }, { n: 'Culture', c: '#b892ff' }, { n: 'Local', c: '#ffc857' },
+  { n: 'Politics', c: '#e07799' }, { n: 'Science', c: '#4cc9f0' }, { n: 'Sport', c: '#3cc6ad' }, { n: 'Culture', c: '#b892ff' }, { n: 'Local', c: '#f0b44c' },
 ];
 function simulateFeed(alpha: number, eps: number, boost: number) {
   let p = [0.22, 0.2, 0.2, 0.2, 0.18];
@@ -273,7 +273,7 @@ export function FeedViz({ s, m }: VizProps) {
     const R = 92, r = 64;
     const big = a1 - a0 > Math.PI ? 1 : 0;
     const P = (a: number, rad: number) => `${130 + Math.cos(a) * rad},${130 + Math.sin(a) * rad}`;
-    return <path key={i} d={`M${P(a0, R)} A${R},${R} 0 ${big} 1 ${P(a1, R)} L${P(a1, r)} A${r},${r} 0 ${big} 0 ${P(a0, r)} Z`} fill={TOPICS[i].c} opacity=".88" stroke="#050816" strokeWidth="2" />;
+    return <path key={i} d={`M${P(a0, R)} A${R},${R} 0 ${big} 1 ${P(a1, R)} L${P(a1, r)} A${r},${r} 0 ${big} 0 ${P(a0, r)} Z`} fill={TOPICS[i].c} opacity=".88" stroke="#15171d" strokeWidth="2" />;
   });
   const top = Math.max(...cur.p);
   return (
@@ -284,7 +284,7 @@ export function FeedViz({ s, m }: VizProps) {
       <div style={{ display: 'grid', gridTemplateColumns: '260px minmax(0,1fr)', gap: 16, alignItems: 'center' }}>
         <svg viewBox="0 0 260 260" className="viz-svg">
           <defs>
-            <radialGradient id="bub"><stop offset="0" stopColor="#6b8cff" stopOpacity=".05" /><stop offset="1" stopColor="#6b8cff" stopOpacity=".3" /></radialGradient>
+            <radialGradient id="bub"><stop offset="0" stopColor="#6f8ff0" stopOpacity=".05" /><stop offset="1" stopColor="#6f8ff0" stopOpacity=".3" /></radialGradient>
           </defs>
           {arcs}
           <circle cx="130" cy="130" r={58 - (1 - cur.div) * 26} fill="url(#bub)" stroke="rgba(160,180,255,.5)" />
@@ -296,19 +296,19 @@ export function FeedViz({ s, m }: VizProps) {
             for (let k = 0; k < 5; k++) { cum += cur.p[k]; if (u <= cum) { c = k; break; } }
             return <circle key={i} cx={130 + Math.cos(a) * rad} cy={130 + Math.sin(a) * rad} r="3.4" fill={TOPICS[c].c} />;
           })}
-          <text x="130" y="128" textAnchor="middle" fontSize="20" fill="#fff" fontFamily="Space Grotesk" fontWeight={600}>{Math.round(cur.div * 100)}%</text>
-          <text x="130" y="144" textAnchor="middle" fontSize="9" fill="#9aa6cf" fontFamily="JetBrains Mono">DIVERSITY</text>
+          <text x="130" y="128" textAnchor="middle" fontSize="20" fill="#fff" fontFamily="IBM Plex Sans" fontWeight={600}>{Math.round(cur.div * 100)}%</text>
+          <text x="130" y="144" textAnchor="middle" fontSize="9" fill="#a3a9b8" fontFamily="IBM Plex Mono">DIVERSITY</text>
         </svg>
         <svg viewBox={`0 0 ${W} ${H}`} className="viz-svg">
           <AxisX x={x} y={H - b} ticks={[0, 15, 30, 45, 60]} label="day" />
           <AxisY x={l} y={yD} w={W - l - rr} ticks={[0, 0.25, 0.5, 0.75, 1]} fmt={(v) => `${v * 100}`} />
-          {[20, 40, 60, 80].map((v) => <text key={v} x={W - rr + 6} y={yE(v) + 3} fontSize="10" fill="#ffc857" fontFamily="JetBrains Mono">{v}</text>)}
+          {[20, 40, 60, 80].map((v) => <text key={v} x={W - rr + 6} y={yE(v) + 3} fontSize="10" fill="#f0b44c" fontFamily="IBM Plex Mono">{v}</text>)}
           <path d={lineD} stroke="#4cc9f0" strokeWidth="2.5" fill="none" />
-          <path d={lineE} stroke="#ffc857" strokeWidth="2.5" fill="none" />
+          <path d={lineE} stroke="#f0b44c" strokeWidth="2.5" fill="none" />
           <circle cx={x(day)} cy={yD(cur.div)} r="4" fill="#4cc9f0" />
-          <circle cx={x(day)} cy={yE(cur.eng)} r="4" fill="#ffc857" />
-          <text x={l + 4} y={t + 4} fontSize="10.5" fill="#4cc9f0" fontFamily="JetBrains Mono">topic diversity %</text>
-          <text x={W - rr} y={t + 4} textAnchor="end" fontSize="10.5" fill="#ffc857" fontFamily="JetBrains Mono">watch-time min/day</text>
+          <circle cx={x(day)} cy={yE(cur.eng)} r="4" fill="#f0b44c" />
+          <text x={l + 4} y={t + 4} fontSize="10.5" fill="#4cc9f0" fontFamily="IBM Plex Mono">topic diversity %</text>
+          <text x={W - rr} y={t + 4} textAnchor="end" fontSize="10.5" fill="#f0b44c" fontFamily="IBM Plex Mono">watch-time min/day</text>
         </svg>
       </div>
       <div className="stats" style={{ marginTop: 10 }}>
@@ -361,7 +361,7 @@ export function PricingViz({ s, m }: VizProps) {
       <VizHead title="RL pricing agent · bottled water, 14 days (4 decisions/day) · competitors also algorithmic">
         <div className="legend">
           <span><i className="dot" style={{ background: C.warn }} /> our agent</span>
-          <span><i className="dot" style={{ background: '#6b8cff' }} /> competitor bots</span>
+          <span><i className="dot" style={{ background: '#6f8ff0' }} /> competitor bots</span>
           <span><i className="dot" style={{ background: 'rgba(76,201,240,.6)' }} /> demand</span>
         </div>
       </VizHead>
@@ -372,16 +372,16 @@ export function PricingViz({ s, m }: VizProps) {
           <path d={demandPath} fill="rgba(76,201,240,.13)" stroke="rgba(76,201,240,.5)" />
           {storm && (
             <g>
-              <rect x={x(22)} y={t} width={x(34) - x(22)} height={H - t - b} fill="rgba(255,90,110,.07)" />
-              <text x={x(28)} y={t + 14} textAnchor="middle" fontSize="10.5" fill="#ff9aa6" fontFamily="JetBrains Mono">⛈ STORM · STATE OF EMERGENCY</text>
+              <rect x={x(22)} y={t} width={x(34) - x(22)} height={H - t - b} fill="rgba(239,91,107,.07)" />
+              <text x={x(28)} y={t + 14} textAnchor="middle" fontSize="10.5" fill="#f39aa4" fontFamily="IBM Plex Mono">⛈ STORM · STATE OF EMERGENCY</text>
             </g>
           )}
           <line x1={l} x2={W - rr} y1={y(100)} y2={y(100)} stroke="rgba(255,255,255,.3)" strokeDasharray="3 4" />
-          <motion.path key={`c1${key}`} d={path('c1')} stroke="#6b8cff" strokeWidth="1.6" fill="none" opacity=".75" initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 1.4 }} />
-          <motion.path key={`c2${key}`} d={path('c2')} stroke="#9b7bff" strokeWidth="1.6" fill="none" opacity=".75" initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 1.4 }} />
-          <motion.path key={`o${key}`} d={path('ours')} stroke={C.warn} strokeWidth="3" fill="none" initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 1.4 }} style={{ filter: 'drop-shadow(0 0 6px rgba(255,200,87,.6))' }} />
-          {collude && <text x={x(50)} y={y(series[50].ours) - 12} textAnchor="end" fontSize="10.5" fill="#ff9aa6" fontFamily="JetBrains Mono">prices rise in lock-step — no agreement needed</text>}
-          {capped && <text x={x(28)} y={y(118) - 8} textAnchor="middle" fontSize="10.5" fill={C.good} fontFamily="JetBrains Mono">emergency cap +10%</text>}
+          <motion.path key={`c1${key}`} d={path('c1')} stroke="#6f8ff0" strokeWidth="1.6" fill="none" opacity=".75" initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 1.4 }} />
+          <motion.path key={`c2${key}`} d={path('c2')} stroke="#9a86e0" strokeWidth="1.6" fill="none" opacity=".75" initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 1.4 }} />
+          <motion.path key={`o${key}`} d={path('ours')} stroke={C.warn} strokeWidth="3" fill="none" initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 1.4 }} style={{ filter: 'drop-shadow(0 0 6px rgba(240,180,76,.6))' }} />
+          {collude && <text x={x(50)} y={y(series[50].ours) - 12} textAnchor="end" fontSize="10.5" fill="#f39aa4" fontFamily="IBM Plex Mono">prices rise in lock-step — no agreement needed</text>}
+          {capped && <text x={x(28)} y={y(118) - 8} textAnchor="middle" fontSize="10.5" fill={C.good} fontFamily="IBM Plex Mono">emergency cap +10%</text>}
         </svg>
         <div style={{ display: 'grid', gap: 10, alignContent: 'start' }}>
           <div style={{ padding: 10, borderRadius: 12, border: '1px solid var(--line)' }}>

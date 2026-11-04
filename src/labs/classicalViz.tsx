@@ -59,15 +59,15 @@ export function SalaryViz({ s, m }: VizProps) {
         <AxisX x={x} y={H - b} ticks={extrap ? [0, 5, 10, 15, 20, 25, 30, 35] : [0, 5, 10, 15, 20]} label="years" />
         {extrap && (
           <g>
-            <rect x={x(20)} y={t} width={x(xMax) - x(20)} height={H - b - t} fill={bounded ? 'rgba(46,230,197,.06)' : 'rgba(255,90,110,.07)'} />
-            <text x={x(27.5)} y={t + 18} textAnchor="middle" fontSize="11" fill={bounded ? C.good : C.bad} fontFamily="JetBrains Mono">
+            <rect x={x(20)} y={t} width={x(xMax) - x(20)} height={H - b - t} fill={bounded ? 'rgba(60,198,173,.06)' : 'rgba(239,91,107,.07)'} />
+            <text x={x(27.5)} y={t + 18} textAnchor="middle" fontSize="11" fill={bounded ? C.good : C.bad} fontFamily="IBM Plex Mono">
               {bounded ? 'OUT OF RANGE → REFER TO PAY COMMITTEE' : 'NO TRAINING DATA — EXTRAPOLATING'}
             </text>
             {!bounded && (
-              <path d={`M${x(20)},${y(predA(20))} L${x(35)},${y(predA(35) + 32)} L${x(35)},${y(predA(35) - 32)} Z`} fill="rgba(255,90,110,.12)" />
+              <path d={`M${x(20)},${y(predA(20))} L${x(35)},${y(predA(35) + 32)} L${x(35)},${y(predA(35) - 32)} Z`} fill="rgba(239,91,107,.12)" />
             )}
             <path d={Array.from({ length: 16 }, (_, i) => `${i ? 'L' : 'M'}${x(20 + i)},${y(truePay(20 + i))}`).join(' ')} stroke="#fff" strokeOpacity=".5" strokeDasharray="2 4" fill="none" />
-            <text x={x(34)} y={y(truePay(34)) + 16} fontSize="10" fill="#c9d1f2" textAnchor="end">actual market pay</text>
+            <text x={x(34)} y={y(truePay(34)) + 16} fontSize="10" fill="#d5d8e0" textAnchor="end">actual market pay</text>
           </g>
         )}
         {data.map((p, i) => (
@@ -89,7 +89,7 @@ export function SalaryViz({ s, m }: VizProps) {
         {proxy && (
           <g>
             <line x1={x(14)} x2={x(14)} y1={y(predA(14))} y2={y(predB(14))} stroke="#fff" strokeWidth="1.5" />
-            <rect x={x(14) + 8} y={(y(predA(14)) + y(predB(14))) / 2 - 12} width="132" height="24" rx="6" fill="rgba(255,90,110,.18)" stroke={C.bad} />
+            <rect x={x(14) + 8} y={(y(predA(14)) + y(predB(14))) / 2 - 12} width="132" height="24" rx="6" fill="rgba(239,91,107,.18)" stroke={C.bad} />
             <text x={x(14) + 74} y={(y(predA(14)) + y(predB(14))) / 2 + 4} textAnchor="middle" fontSize="11.5" fill="#fff" fontWeight={600}>
               learned gap {(gapPct * 100).toFixed(1)}%
             </text>
@@ -207,16 +207,16 @@ export function CreditViz({ s, m }: VizProps) {
           const col = r.yLab ? C.good : C.bad;
           const flipped = r.yLab !== r.yTrue;
           return r.B ? (
-            <motion.rect key={i} initial={false} animate={{ x: x(r.x1) - 3.5, y: y(r.x2) - 3.5 }} transition={{ duration: 0.6 }} width="7" height="7" transform={`rotate(45 ${x(r.x1)} ${y(r.x2)})`} fill={col} stroke={flipped ? '#fff' : '#050816'} strokeWidth={flipped ? 1.6 : 0.8} opacity={r.isTest ? 1 : 0.55} />
+            <motion.rect key={i} initial={false} animate={{ x: x(r.x1) - 3.5, y: y(r.x2) - 3.5 }} transition={{ duration: 0.6 }} width="7" height="7" transform={`rotate(45 ${x(r.x1)} ${y(r.x2)})`} fill={col} stroke={flipped ? '#fff' : '#15171d'} strokeWidth={flipped ? 1.6 : 0.8} opacity={r.isTest ? 1 : 0.55} />
           ) : (
-            <motion.circle key={i} initial={false} animate={{ cx: x(r.x1), cy: y(r.x2) }} transition={{ duration: 0.6 }} r="3.6" fill={col} stroke="#050816" strokeWidth="0.8" opacity={r.isTest ? 1 : 0.55} />
+            <motion.circle key={i} initial={false} animate={{ cx: x(r.x1), cy: y(r.x2) }} transition={{ duration: 0.6 }} r="3.6" fill={col} stroke="#15171d" strokeWidth="0.8" opacity={r.isTest ? 1 : 0.55} />
           );
         })}
         {useZip && (
           <g>
             <rect x={W - rr - 238} y={t + 8} width="230" height="40" rx="8" fill="rgba(10,16,40,.9)" stroke={C.B} />
             <text x={W - rr - 226} y={t + 24} fontSize="11" fill="#fff" fontWeight={600}>Dashed = Southfield postcode</text>
-            <text x={W - rr - 226} y={t + 39} fontSize="10.5" fill="#c9d1f2">same income & debt → stricter boundary</text>
+            <text x={W - rr - 226} y={t + 39} fontSize="10.5" fill="#d5d8e0">same income & debt → stricter boundary</text>
           </g>
         )}
       </svg>
@@ -330,7 +330,7 @@ export function TreeViz({ s, m }: VizProps) {
         <div className="legend">
           <span><i className="dot" style={{ background: C.good }} /> claim in order</span>
           <span><i className="dot" style={{ background: C.bad }} /> flag for investigation</span>
-          <span><i className="dot" style={{ background: 'transparent', border: '2px solid #ff5a6e' }} /> protected attribute</span>
+          <span><i className="dot" style={{ background: 'transparent', border: '2px solid #ef5b6b' }} /> protected attribute</span>
         </div>
       </VizHead>
       <svg viewBox={`0 0 ${W} 330`} className="viz-svg" key={sig}>
@@ -345,15 +345,15 @@ export function TreeViz({ s, m }: VizProps) {
           const internal = q.n.feature !== undefined && q.n.depth < 4;
           return (
             <motion.g key={q.n.id} initial={{ opacity: 0, scale: 0.4 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: q.n.depth * 0.18 + 0.1, type: 'spring', stiffness: 200, damping: 16 }} style={{ transformOrigin: `${q.x}px ${q.y}px` }}>
-              {prot && <circle cx={q.x} cy={q.y} r="22" fill="rgba(255,90,110,.18)"><animate attributeName="r" values="17;24;17" dur="1.6s" repeatCount="indefinite" /></circle>}
-              <circle cx={q.x} cy={q.y} r={13} fill={col} fillOpacity={0.9} stroke={prot ? C.bad : '#050816'} strokeWidth={prot ? 3 : 2} />
-              <text x={q.x} y={q.y + 3.5} textAnchor="middle" fontSize="9" fill="#050816" fontWeight={700} fontFamily="JetBrains Mono">{q.n.n}</text>
+              {prot && <circle cx={q.x} cy={q.y} r="22" fill="rgba(239,91,107,.18)"><animate attributeName="r" values="17;24;17" dur="1.6s" repeatCount="indefinite" /></circle>}
+              <circle cx={q.x} cy={q.y} r={13} fill={col} fillOpacity={0.9} stroke={prot ? C.bad : '#15171d'} strokeWidth={prot ? 3 : 2} />
+              <text x={q.x} y={q.y + 3.5} textAnchor="middle" fontSize="9" fill="#15171d" fontWeight={700} fontFamily="IBM Plex Mono">{q.n.n}</text>
               {internal && (
-                <text x={q.x} y={q.y - 19} textAnchor="middle" fontSize={q.n.depth < 2 ? 11 : 9} fill={prot ? '#ff9aa6' : '#c9d1f2'} fontWeight={600}>
+                <text x={q.x} y={q.y - 19} textAnchor="middle" fontSize={q.n.depth < 2 ? 11 : 9} fill={prot ? '#f39aa4' : '#d5d8e0'} fontWeight={600}>
                   {prot ? '⚠ ' : ''}{FEAT[q.n.feature!]} ≤ {q.n.thr!.toFixed(2)}
                 </text>
               )}
-              {q.cut > 0 && <text x={q.x} y={q.y + 28} textAnchor="middle" fontSize="9.5" fill={C.warn} fontFamily="JetBrains Mono">+{q.cut} leaves</text>}
+              {q.cut > 0 && <text x={q.x} y={q.y + 28} textAnchor="middle" fontSize="9.5" fill={C.warn} fontFamily="IBM Plex Mono">+{q.cut} leaves</text>}
             </motion.g>
           );
         })}
@@ -410,19 +410,19 @@ export function FraudViz({ s, m }: VizProps) {
     <div>
       <VizHead title="live transaction stream → boosted-tree score → decision gate">
         <div className="legend">
-          <span><i className="dot" style={{ background: '#8fa3d9' }} /> legit</span>
+          <span><i className="dot" style={{ background: '#9aa8c4' }} /> legit</span>
           <span><i className="dot" style={{ background: C.bad }} /> fraud</span>
         </div>
       </VizHead>
       <svg viewBox={`0 0 ${W} 150`} className="viz-svg" style={{ borderRadius: 12, background: 'rgba(255,255,255,.02)' }}>
         <rect x={W * 0.52} y={8} width="10" height="134" rx="5" fill="url(#gate)" />
         <defs>
-          <linearGradient id="gate" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stopColor="#7cf7e4" /><stop offset="1" stopColor="#6b8cff" /></linearGradient>
+          <linearGradient id="gate" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stopColor="#6fcfc0" /><stop offset="1" stopColor="#6f8ff0" /></linearGradient>
         </defs>
-        <text x={W * 0.52 + 5} y={146} textAnchor="middle" fontSize="9" fill="#9aa6cf" fontFamily="JetBrains Mono">MODEL</text>
-        <text x={W - 10} y={30} textAnchor="end" fontSize="10.5" fill="#9aa6cf" fontFamily="JetBrains Mono">APPROVED</text>
-        <text x={W - 10} y={128} textAnchor="end" fontSize="10.5" fill={C.bad} fontFamily="JetBrains Mono">{blackbox ? 'CARD FROZEN' : 'ANALYST REVIEW'}</text>
-        <line x1={W * 0.56} x2={W - 10} y1={108} y2={108} stroke="rgba(255,90,110,.3)" strokeDasharray="3 4" />
+        <text x={W * 0.52 + 5} y={146} textAnchor="middle" fontSize="9" fill="#a3a9b8" fontFamily="IBM Plex Mono">MODEL</text>
+        <text x={W - 10} y={30} textAnchor="end" fontSize="10.5" fill="#a3a9b8" fontFamily="IBM Plex Mono">APPROVED</text>
+        <text x={W - 10} y={128} textAnchor="end" fontSize="10.5" fill={C.bad} fontFamily="IBM Plex Mono">{blackbox ? 'CARD FROZEN' : 'ANALYST REVIEW'}</text>
+        <line x1={W * 0.56} x2={W - 10} y1={108} y2={108} stroke="rgba(239,91,107,.3)" strokeDasharray="3 4" />
         {STREAM.map((d, i) => {
           const ph = (t * 0.09 + d.off) % 1;
           let score: number;
@@ -435,16 +435,16 @@ export function FraudViz({ s, m }: VizProps) {
           const px = 10 + ph * (W - 20);
           const baseY = 30 + d.lane * 50;
           const py = px > W * 0.55 && flagged ? baseY + Math.min(1, (px - W * 0.55) / 60) * (112 - baseY) : baseY;
-          return <circle key={i} cx={px} cy={py} r={d.fraud ? 4.2 : 3.2} fill={d.fraud ? C.bad : '#8fa3d9'} opacity={d.fraud ? 1 : 0.65} />;
+          return <circle key={i} cx={px} cy={py} r={d.fraud ? 4.2 : 3.2} fill={d.fraud ? C.bad : '#9aa8c4'} opacity={d.fraud ? 1 : 0.65} />;
         })}
       </svg>
       <svg viewBox={`0 0 ${W} ${H}`} className="viz-svg" style={{ marginTop: 8 }}>
         <AxisX x={x} y={H - 30} ticks={[0, 0.2, 0.4, 0.6, 0.8, 1]} label="fraud score" />
-        <path d={`${legitPath} L${x(1)},${yD(0)} L${x(0)},${yD(0)} Z`} fill="rgba(143,163,217,.18)" stroke="#8fa3d9" />
-        <motion.path animate={{ d: `${fraudPath} L${x(1)},${yD(0)} L${x(0)},${yD(0)} Z` }} transition={{ duration: 0.6 }} fill="rgba(255,90,110,.2)" stroke={C.bad} strokeWidth="1.5" />
+        <path d={`${legitPath} L${x(1)},${yD(0)} L${x(0)},${yD(0)} Z`} fill="rgba(143,163,217,.18)" stroke="#9aa8c4" />
+        <motion.path animate={{ d: `${fraudPath} L${x(1)},${yD(0)} L${x(0)},${yD(0)} Z` }} transition={{ duration: 0.6 }} fill="rgba(239,91,107,.2)" stroke={C.bad} strokeWidth="1.5" />
         <motion.line animate={{ x1: x(thr), x2: x(thr) }} y1={10} y2={H - 30} stroke="#fff" strokeWidth="2" strokeDasharray="5 4" />
-        <motion.text animate={{ x: thr > 0.75 ? x(thr) - 6 : x(thr) + 6 }} y={22} fontSize="11" fill="#fff" fontFamily="JetBrains Mono" textAnchor={thr > 0.75 ? 'end' : 'start'}>threshold {thr.toFixed(2)}</motion.text>
-        <text x={W - 16} y={H - 40} textAnchor="end" fontSize="10" fill="#9aa6cf">fraud density not to scale (0.6% of volume)</text>
+        <motion.text animate={{ x: thr > 0.75 ? x(thr) - 6 : x(thr) + 6 }} y={22} fontSize="11" fill="#fff" fontFamily="IBM Plex Mono" textAnchor={thr > 0.75 ? 'end' : 'start'}>threshold {thr.toFixed(2)}</motion.text>
+        <text x={W - 16} y={H - 40} textAnchor="end" fontSize="10" fill="#a3a9b8">fraud density not to scale (0.6% of volume)</text>
       </svg>
       <div style={{ display: 'grid', gridTemplateColumns: shap ? 'minmax(0,1fr) 280px' : '1fr', gap: 16, marginTop: 4 }}>
         <div className="ctrl">
@@ -460,7 +460,7 @@ export function FraudViz({ s, m }: VizProps) {
                 <div style={{ height: 8, position: 'relative' }}>
                   <motion.div initial={{ width: 0 }} animate={{ width: `${Math.abs(v as number) * 260}%` }} style={{ position: 'absolute', left: (v as number) < 0 ? undefined : '30%', right: (v as number) < 0 ? '70%' : undefined, height: 8, borderRadius: 3, background: (v as number) > 0 ? C.bad : C.good }} />
                 </div>
-                <span className="mono" style={{ color: (v as number) > 0 ? '#ff9aa6' : C.good }}>{(v as number) > 0 ? '+' : ''}{v}</span>
+                <span className="mono" style={{ color: (v as number) > 0 ? '#f39aa4' : C.good }}>{(v as number) > 0 ? '+' : ''}{v}</span>
               </div>
             ))}
           </div>
@@ -499,7 +499,7 @@ const HH = (() => {
     };
   });
 })();
-const KC = ['#7cf7e4', '#ffc857', '#b892ff'];
+const KC = ['#6fcfc0', '#f0b44c', '#b892ff'];
 
 export function SegmentViz({ s, m }: VizProps) {
   const loc = s.has('location') && !m.has('behaviour');
@@ -541,14 +541,14 @@ export function SegmentViz({ s, m }: VizProps) {
         <svg viewBox={`0 0 ${W} ${H}`} className="viz-svg" style={{ background: 'rgba(255,255,255,.02)', borderRadius: 12 }}>
           <defs>
             <filter id="blur"><feGaussianBlur stdDeviation="22" /></filter>
-            <pattern id="streets" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0H0V40" fill="none" stroke="rgba(130,160,255,.06)" /></pattern>
+            <pattern id="streets" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0H0V40" fill="none" stroke="rgba(200,205,220,.06)" /></pattern>
           </defs>
           <rect width={W} height={H} fill="url(#streets)" />
           <path d="M0,205 C150,175 260,230 400,195 S600,160 680,190" stroke="rgba(76,201,240,.25)" strokeWidth="14" fill="none" />
           {DISTRICTS.map((d) => (
             <g key={d.name}>
               <ellipse cx={d.x} cy={d.y} rx="120" ry="78" fill={`rgba(${Math.round(107 + d.b * 148)},${Math.round(140 - d.b * 40)},${Math.round(255 - d.b * 100)},.16)`} filter="url(#blur)" />
-              <text x={d.x} y={d.y - 74} textAnchor="middle" fontSize="12" fill="#c9d1f2" fontWeight={600} letterSpacing="1">{d.name.toUpperCase()}</text>
+              <text x={d.x} y={d.y - 74} textAnchor="middle" fontSize="12" fill="#d5d8e0" fontWeight={600} letterSpacing="1">{d.name.toUpperCase()}</text>
             </g>
           ))}
           {HH.map((h, i) => {
@@ -558,15 +558,15 @@ export function SegmentViz({ s, m }: VizProps) {
           {broker && (
             <g>
               <rect x={W - 250} y={H - 52} width="236" height="40" rx="8" fill="rgba(10,16,40,.92)" stroke={C.bad} />
-              <text x={W - 238} y={H - 36} fontSize="11" fill="#ff9aa6" fontWeight={600}>+ broker data: inferred religion, health,</text>
-              <text x={W - 238} y={H - 21} fontSize="11" fill="#ff9aa6" fontWeight={600}>ethnicity · 2.1M profiles</text>
+              <text x={W - 238} y={H - 36} fontSize="11" fill="#f39aa4" fontWeight={600}>+ broker data: inferred religion, health,</text>
+              <text x={W - 238} y={H - 21} fontSize="11" fill="#f39aa4" fontWeight={600}>ethnicity · 2.1M profiles</text>
             </g>
           )}
-          <text x={14} y={H - 14} fontSize="10.5" fill="#9aa6cf" fontFamily="JetBrains Mono">○ white ring = receives premium offer & same-day delivery</text>
+          <text x={14} y={H - 14} fontSize="10.5" fill="#a3a9b8" fontFamily="IBM Plex Mono">○ white ring = receives premium offer & same-day delivery</text>
         </svg>
         <div style={{ display: 'grid', gap: 10, alignContent: 'start' }}>
           <svg viewBox="0 0 220 220" className="viz-svg" style={{ background: 'rgba(255,255,255,.02)', borderRadius: 12 }}>
-            <text x={10} y={14} fontSize="9.5" fill="#9aa6cf" fontFamily="JetBrains Mono">FEATURE SPACE</text>
+            <text x={10} y={14} fontSize="9.5" fill="#a3a9b8" fontFamily="IBM Plex Mono">FEATURE SPACE</text>
             {HH.map((h, i) => {
               const P = loc ? [h.x / 340, 2 - h.y / 190] : [h.spend * 2, h.freq * 2];
               return <circle key={i} cx={fx(P[0])} cy={fy(P[1])} r="2.2" fill={KC[A[i]]} opacity=".7" />;
@@ -586,7 +586,7 @@ export function SegmentViz({ s, m }: VizProps) {
             {clusters.map((c) => (
               <div key={c.k} style={{ display: 'grid', gridTemplateColumns: '14px 1fr 38px', gap: 8, alignItems: 'center', marginBottom: 5 }}>
                 <span className="dot" style={{ background: KC[c.k] }} />
-                <div style={{ height: 8, borderRadius: 4, background: 'rgba(107,140,255,.3)', overflow: 'hidden' }}>
+                <div style={{ height: 8, borderRadius: 4, background: 'rgba(111,143,240,.3)', overflow: 'hidden' }}>
                   <motion.div animate={{ width: `${c.b * 100}%` }} style={{ height: 8, background: C.B }} />
                 </div>
                 <span className="mono" style={{ fontSize: 11 }}>{Math.round(c.b * 100)}%</span>
@@ -676,8 +676,8 @@ export function StaffingViz({ s, m }: VizProps) {
     <div>
       <VizHead title="daily admissions · history | forecast window (90 days) · staffed capacity">
         <div className="legend">
-          <span><i className="dot" style={{ background: '#c9d1f2' }} /> actual</span>
-          <span><i className="dot" style={{ background: '#6b8cff' }} /> forecast ± band</span>
+          <span><i className="dot" style={{ background: '#d5d8e0' }} /> actual</span>
+          <span><i className="dot" style={{ background: '#6f8ff0' }} /> forecast ± band</span>
           <span><i className="dot" style={{ background: C.warn }} /> staffed beds</span>
           <span><i className="dot" style={{ background: C.bad }} /> understaffed</span>
         </div>
@@ -685,23 +685,23 @@ export function StaffingViz({ s, m }: VizProps) {
       <svg viewBox={`0 0 ${W} ${H}`} className="viz-svg">
         <AxisY x={l} y={y} w={W - l - rr} ticks={[80, 120, 160, 200, 240]} />
         <AxisX x={x} y={H - b} ticks={[T0 - 98, T0 - 56, T0 - 14, T0, T0 + 28, T0 + 56, T0 + 84]} fmt={(d) => (d === T0 ? 'today' : `${d < T0 ? '' : '+'}${Math.round((d - T0) / 7)}w`)} />
-        <rect x={x(T0)} y={t} width={x(T0 + 90) - x(T0)} height={H - t - b} fill="rgba(107,140,255,.05)" />
+        <rect x={x(T0)} y={t} width={x(T0 + 90) - x(T0)} height={H - t - b} fill="rgba(111,143,240,.05)" />
         <line x1={x(T0)} x2={x(T0)} y1={t} y2={H - b} stroke="rgba(255,255,255,.35)" strokeDasharray="3 4" />
         {short && <rect x={x(T0 - 90)} y={H - b - 6} width={x(T0) - x(T0 - 90)} height="4" rx="2" fill={C.warn} />}
-        {short && <text x={x(T0 - 45)} y={H - b - 10} textAnchor="middle" fontSize="9.5" fill={C.warn} fontFamily="JetBrains Mono">training window</text>}
-        <path d={band} fill="rgba(107,140,255,.16)" />
+        {short && <text x={x(T0 - 45)} y={H - b - 10} textAnchor="middle" fontSize="9.5" fill={C.warn} fontFamily="IBM Plex Mono">training window</text>}
+        <path d={band} fill="rgba(111,143,240,.16)" />
         {win.map((d) =>
           actual[d] > cap[d] ? <rect key={d} x={x(d) - 1.6} y={y(actual[d])} width="3.2" height={y(cap[d]) - y(actual[d])} fill={C.bad} opacity=".75" /> : null,
         )}
-        <path d={line(actual, T0 - 110, T0)} stroke="#c9d1f2" strokeWidth="1.6" fill="none" />
+        <path d={line(actual, T0 - 110, T0)} stroke="#d5d8e0" strokeWidth="1.6" fill="none" />
         <motion.path key={`a${key}`} d={line(actual, T0, T0 + 90)} stroke="#fff" strokeWidth="2" fill="none" initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 1.6, ease: 'easeOut' }} />
-        <path d={line(forecast, T0, T0 + 90)} stroke="#6b8cff" strokeWidth="2" strokeDasharray="6 4" fill="none" />
+        <path d={line(forecast, T0, T0 + 90)} stroke="#6f8ff0" strokeWidth="2" strokeDasharray="6 4" fill="none" />
         <path d={line(cap, T0, T0 + 90)} stroke={C.warn} strokeWidth="2" fill="none" />
         {shock && (
           <g>
             <line x1={x(385)} x2={x(385)} y1={t} y2={H - b} stroke={C.bad} strokeDasharray="2 3" />
-            <text x={x(385) + 6} y={t + 14} fontSize="10.5" fill="#ff9aa6" fontFamily="JetBrains Mono">virus wave begins</text>
-            {adapt && <text x={x(393) + 6} y={t + 30} fontSize="10.5" fill={C.good} fontFamily="JetBrains Mono">anomaly alert → re-forecast</text>}
+            <text x={x(385) + 6} y={t + 14} fontSize="10.5" fill="#f39aa4" fontFamily="IBM Plex Mono">virus wave begins</text>
+            {adapt && <text x={x(393) + 6} y={t + 30} fontSize="10.5" fill={C.good} fontFamily="IBM Plex Mono">anomaly alert → re-forecast</text>}
           </g>
         )}
       </svg>
