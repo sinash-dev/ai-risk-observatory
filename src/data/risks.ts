@@ -1,23 +1,23 @@
 import type { LabDef, RiskKey, Stage, TierId } from './types';
 
 export const RISKS: { key: RiskKey; label: string; short: string; color: string; desc: string }[] = [
-  { key: 'fairness', label: 'Unfair treatment', short: 'Fairness', color: '#b4446c', desc: 'Some groups of people get worse outcomes or more errors than others.' },
-  { key: 'robustness', label: 'Errors and breakdowns', short: 'Reliability', color: '#2f6f9f', desc: 'The system gets things wrong, or stops working when conditions change.' },
-  { key: 'transparency', label: 'Lack of transparency', short: 'Transparency', color: '#6d5bb0', desc: 'People cannot tell that AI is involved, or cannot understand or challenge a decision.' },
-  { key: 'privacy', label: 'Privacy', short: 'Privacy', color: '#2f7d5b', desc: 'Personal or confidential information is collected, exposed or used in ways people did not expect.' },
-  { key: 'security', label: 'Security attacks', short: 'Security', color: '#b8612a', desc: 'Someone deliberately tricks, poisons, steals from or takes over the system.' },
-  { key: 'safety', label: 'Harm to people', short: 'Safety', color: '#b03a3a', desc: 'People lose money, health, access to services or are otherwise hurt.' },
-  { key: 'accountability', label: 'Unclear responsibility', short: 'Accountability', color: '#8a6d1f', desc: 'Nobody clearly owns the system, checks it, or can stop it.' },
-  { key: 'misuse', label: 'Misuse and IP', short: 'Misuse', color: '#4f6b7a', desc: 'The system is used to deceive, collude or copy other people’s work.' },
+  { key: 'fairness', label: 'Unfair treatment', short: 'Fairness', color: '#e08aa8', desc: 'Some groups of people get worse outcomes or more errors than others.' },
+  { key: 'robustness', label: 'Errors and breakdowns', short: 'Reliability', color: '#7fb0d8', desc: 'The system gets things wrong, or stops working when conditions change.' },
+  { key: 'transparency', label: 'Lack of transparency', short: 'Transparency', color: '#a99be0', desc: 'People cannot tell that AI is involved, or cannot understand or challenge a decision.' },
+  { key: 'privacy', label: 'Privacy', short: 'Privacy', color: '#7cc49a', desc: 'Personal or confidential information is collected, exposed or used in ways people did not expect.' },
+  { key: 'security', label: 'Security attacks', short: 'Security', color: '#e0a070', desc: 'Someone deliberately tricks, poisons, steals from or takes over the system.' },
+  { key: 'safety', label: 'Harm to people', short: 'Safety', color: '#e0716b', desc: 'People lose money, health, access to services or are otherwise hurt.' },
+  { key: 'accountability', label: 'Unclear responsibility', short: 'Accountability', color: '#d6c06a', desc: 'Nobody clearly owns the system, checks it, or can stop it.' },
+  { key: 'misuse', label: 'Misuse and IP', short: 'Misuse', color: '#95aebb', desc: 'The system is used to deceive, collude or copy other people’s work.' },
 ];
 
 export const RISK_BY_KEY = Object.fromEntries(RISKS.map((r) => [r.key, r])) as Record<RiskKey, (typeof RISKS)[number]>;
 
 export const TIERS: { id: TierId; label: string; color: string; ring: number; tagline: string }[] = [
-  { id: 'classical', label: 'Classical machine learning', color: '#2f7d6d', ring: 1, tagline: 'Learns patterns from tables of data to predict a number or a category. A person usually acts on the result.' },
-  { id: 'deep', label: 'Deep learning', color: '#6a4fb3', ring: 2, tagline: 'Neural networks that learn directly from images, text, sound or behaviour. Powerful, but harder to explain.' },
-  { id: 'genai', label: 'Generative AI', color: '#a8741a', ring: 3, tagline: 'Models that produce new text, images or code in response to a prompt.' },
-  { id: 'agentic', label: 'AI agents', color: '#b9472f', ring: 4, tagline: 'Systems that plan and carry out tasks on their own, using tools such as email, payments or code.' },
+  { id: 'classical', label: 'Classical machine learning', color: '#6fb59d', ring: 1, tagline: 'Learns patterns from tables of data to predict a number or a category. A person usually acts on the result.' },
+  { id: 'deep', label: 'Deep learning', color: '#9c8fd0', ring: 2, tagline: 'Neural networks that learn directly from images, text, sound or behaviour. Powerful, but harder to explain.' },
+  { id: 'genai', label: 'Generative AI', color: '#d6b06a', ring: 3, tagline: 'Models that produce new text, images or code in response to a prompt.' },
+  { id: 'agentic', label: 'AI agents', color: '#e0896b', ring: 4, tagline: 'Systems that plan and carry out tasks on their own, using tools such as email, payments or code.' },
 ];
 
 export const TIER_BY_ID = Object.fromEntries(TIERS.map((t) => [t.id, t])) as Record<TierId, (typeof TIERS)[number]>;
@@ -51,7 +51,7 @@ export function computeScores(lab: LabDef, s: Set<string>, m: Set<string>) {
 }
 
 export function level(v: number) {
-  if (v >= 50) return { label: 'High', color: '#b03a3a' };
-  if (v >= 28) return { label: 'Medium', color: '#b8761f' };
-  return { label: 'Low', color: '#3d7d5b' };
+  if (v >= 50) return { label: 'High', color: '#e0716b' };
+  if (v >= 28) return { label: 'Medium', color: '#e0b25c' };
+  return { label: 'Low', color: '#6cc5b0' };
 }

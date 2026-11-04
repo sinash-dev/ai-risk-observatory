@@ -1,10 +1,11 @@
-import { useState } from 'react';
-import { FW_BY_ID, type FwId } from '../data/frameworks';
+import { motion } from 'framer-motion';
+import { useRef, useState } from 'react';
+import { FW_BY_ID, fwName, type FwId } from '../data/frameworks';
 import { LABS, fwEntry } from '../data/labs';
 import { TIERS, TIER_BY_ID } from '../data/risks';
 import type { LabDef } from '../data/types';
 import { useLens } from '../lib/lens';
-import { go } from '../lib/util';
+import { go, useClock } from '../lib/util';
 
 export const SHORT_NAME: Record<string, string> = {
   spam: 'Naive Bayes', salary: 'Linear regression', credit: 'Logistic regression', benefits: 'Decision tree', fraud: 'Gradient boosting',
@@ -13,79 +14,107 @@ export const SHORT_NAME: Record<string, string> = {
   rag: 'Retrieval (RAG) assistant', imagegen: 'Image generator', code: 'Code assistant', 'travel-agent': 'Tool-using agent', 'devops-agent': 'Coding agent', swarm: 'Multi-agent system',
 };
 
-const W = 1100, H = 690, CX = 550, CY = 330, RY = 0.6;
-const RX = [160, 280, 390, 500];
-const EXTRA = [0, 0.51, 0, 0];
+const W = 1100, H = 640, CX = 550, CY = 320;
+const RX = [165, 285, 395, 500];
+const SPEED = [0.07, 0.05, 0.036, 0.026];
 
-function positions() {
-  const pos: Record<string, { x: number; y: number }> = {};
-  TIERS.forEach((t, ti) => {
-    const labs = LABS.filter((l) => l.tier === t.id);
-    labs.forEach((l, k) => {
-      const a = -Math.PI / 2 + Math.PI / labs.length + EXTRA[ti] + (k / labs.length) * Math.PI * 2;
-      pos[l.id] = { x: CX + Math.cos(a) * RX[ti], y: CY + Math.sin(a) * RX[ti] * RY };
-    });
-  });
-  return pos;
-}
-const POS = positions();
-
-function colourFor(lab: LabDef, lens: FwId | 'all') {
-  if (lens === 'all') return { stroke: TIER_BY_ID[lab.tier].color, fill: '#fff', status: TIER_BY_ID[lab.tier].label };
+export function colourFor(lab: LabDef, lens: FwId | 'all') {
+  if (lens === 'all') return { c: TIER_BY_ID[lab.tier].color, status: TIER_BY_ID[lab.tier].label };
   const e = fwEntry(lens, lab.id);
-  const cat = FW_BY_ID[lens].cats.find((c) => c.id === e.cat)!;
-  return { stroke: cat.color, fill: cat.color, status: e.status };
+  const cat = FW_BY_ID[lens].cats.find((x) => x.id === e.cat)!;
+  return { c: cat.color, status: e.status };
 }
 
-function ModelMap() {
+/** Rotating, tilting orbit of all models. Hover pauses; mouse height tilts the rings. */
+function Orbit() {
   const lens = useLens();
   const [hover, setHover] = useState<string | null>(null);
-  const hl = hover ? LABS.find((l) => l.id === hover)! : null;
+  const [tilt, setTilt] = useState(0.5);
+  const t = useClock();
+  const frozen = useRef({ at: 0, off: 0 });
+  if (hover && !frozen.current.at) frozen.current.at = t || 0.0001;
+  if (!hover && frozen.current.at) { frozen.current.off += t - frozen.current.at; frozen.current.at = 0; }
+  const time = (hover ? frozen.current.at : t) - frozen.current.off;
+  const ry = 0.32 + tilt * 0.34;
+
+  const pos = (lab: LabDef) => {
+    const ti = TIER_BY_ID[lab.tier].ring - 1;
+    const peers = LABS.filter((l) => l.tier === lab.tier);
+    const k = peers.indexOf(lab);
+    const a = (k / peers.length) * Math.PI * 2 + ti * 0.7 + time * SPEED[ti];
+    const depth = (Math.sin(a) + 1) / 2;
+    return { x: CX + Math.cos(a) * RX[ti], y: CY + Math.sin(a) * RX[ti] * ry, depth };
+  };
+  const nodes = LABS.map((l) => ({ l, p: pos(l) })).sort((a, b) => a.p.depth - b.p.depth);
+  const hl = hover ? nodes.find((n) => n.l.id === hover) : null;
+
   return (
-    <div className="map-wrap">
-      <svg viewBox={`0 0 ${W} ${H}`} className="viz-svg" role="img" aria-label="Map of all models, from classical machine learning at the centre to AI agents at the edge">
-        {TIERS.map((t, i) => (
-          <g key={t.id}>
-            <ellipse cx={CX} cy={CY} rx={RX[i]} ry={RX[i] * RY} fill="none" stroke={lens === 'all' ? t.color : '#d8d4ca'} strokeOpacity={lens === 'all' ? 0.35 : 1} strokeWidth="1.4" strokeDasharray="4 5" />
-          </g>
+    <div className="map-wrap" onMouseMove={(e) => { const r = e.currentTarget.getBoundingClientRect(); setTilt(Math.min(1, Math.max(0, (e.clientY - r.top) / r.height))); }}>
+      <svg viewBox={`0 0 ${W} ${H}`} className="viz-svg" role="img" aria-label="All models orbiting from classical machine learning in the centre to AI agents at the edge">
+        <defs>
+          <radialGradient id="core"><stop offset="0" stopColor="#ffffff" stopOpacity=".55" /><stop offset=".35" stopColor="#6cc5b0" stopOpacity=".18" /><stop offset="1" stopColor="#6cc5b0" stopOpacity="0" /></radialGradient>
+          <filter id="soft"><feGaussianBlur stdDeviation="1.2" /></filter>
+        </defs>
+        <ellipse cx={CX} cy={CY} rx={130} ry={130 * ry} fill="url(#core)" />
+        {TIERS.map((tr, i) => (
+          <ellipse key={tr.id} cx={CX} cy={CY} rx={RX[i]} ry={RX[i] * ry} fill="none" stroke={lens === 'all' ? tr.color : '#ffffff'} strokeOpacity={lens === 'all' ? 0.28 : 0.1} strokeWidth="1.2" strokeDasharray="3 6" />
         ))}
-        
-        
-        {LABS.map((lab) => {
-          const p = POS[lab.id];
-          const c = colourFor(lab, lens);
-          const on = hover === lab.id;
+        <circle cx={CX} cy={CY} r="5" fill="#fff" opacity=".85" />
+        {nodes.map(({ l, p }) => {
+          const { c } = colourFor(l, lens);
+          const on = hover === l.id;
+          const s = 0.72 + p.depth * 0.38;
+          const r = (on ? 24 : 19) * s;
+          const showLabel = on || p.depth > 0.32;
           return (
-            <g key={lab.id} style={{ cursor: 'pointer' }}
-              onMouseEnter={() => setHover(lab.id)} onMouseLeave={() => setHover(null)} onClick={() => go(`/model/${lab.id}`)}>
-              <circle cx={p.x} cy={p.y} r={on ? 23 : 20} fill={lens === 'all' ? '#fff' : c.fill} fillOpacity={lens === 'all' ? 1 : 0.9} stroke={c.stroke} strokeWidth={2.2} style={{ transition: 'r .2s, fill .4s, stroke .4s' }} />
-              <text x={p.x} y={p.y + 4.5} textAnchor="middle" fontSize="12" fontWeight={700} fill={lens === 'all' ? '#1d2028' : '#fff'} style={{ pointerEvents: 'none' }}>{lab.glyph}</text>
-              <text x={p.x} y={p.y + 37} textAnchor="middle" fontSize="12.5" fill="#2c303a" fontWeight={500} stroke="#f6f5f1" strokeWidth="4" style={{ paintOrder: 'stroke', pointerEvents: 'none' }}>{SHORT_NAME[lab.id]}</text>
+            <g key={l.id} style={{ cursor: 'pointer' }} opacity={on ? 1 : 0.38 + p.depth * 0.62} onMouseEnter={() => setHover(l.id)} onMouseLeave={() => setHover(null)} onClick={() => go(`/model/${l.id}`)}>
+              <ellipse cx={p.x} cy={p.y + r + 6} rx={r * 0.9} ry={r * 0.22} fill="#000" opacity={0.35 * p.depth} filter="url(#soft)" />
+              <circle cx={p.x} cy={p.y} r={r} fill="#14171c" stroke={c} strokeWidth={on ? 2.6 : 1.8} />
+              <circle cx={p.x} cy={p.y} r={r} fill={c} opacity={lens === 'all' ? 0.08 : 0.28} />
+              <circle cx={p.x - r * 0.3} cy={p.y - r * 0.35} r={r * 0.35} fill="#fff" opacity=".06" />
+              <text x={p.x} y={p.y + 4 * s} textAnchor="middle" fontSize={11.5 * s} fontWeight={700} fill={c} fontFamily="Sora" style={{ pointerEvents: 'none' }}>{l.glyph}</text>
+              {showLabel && <text x={p.x} y={p.y + r + 16} textAnchor="middle" fontSize={12 * s} fill="#c8ccd3" stroke="#0c0e11" strokeWidth="4" style={{ paintOrder: 'stroke', pointerEvents: 'none' }}>{SHORT_NAME[l.id]}</text>}
             </g>
           );
         })}
       </svg>
       {hl && (
-        <div className="tooltip" style={{ left: `min(calc(${(POS[hl.id].x / W) * 100}% + 26px), calc(100% - 270px))`, top: `${(POS[hl.id].y / H) * 100}%`, transform: 'translateY(-50%)' }}>
-          <div style={{ fontWeight: 600 }}>{hl.model}</div>
-          <div className="muted small">Example: {hl.app}</div>
-          <div className="small" style={{ marginTop: 6 }}>{colourFor(hl, lens).status}</div>
+        <div className="tooltip" style={{ left: `min(calc(${(hl.p.x / W) * 100}% + 28px), calc(100% - 280px))`, top: `${(hl.p.y / H) * 100}%`, transform: 'translateY(-50%)' }}>
+          <div style={{ fontWeight: 700 }}>{hl.l.model}</div>
+          <div className="muted small">Example: {hl.l.app}</div>
+          <div className="small" style={{ marginTop: 6, display: 'flex', gap: 8, alignItems: 'baseline' }}><span className="swatch" style={{ background: colourFor(hl.l, lens).c }} />{colourFor(hl.l, lens).status}</div>
+          <div className="dim small" style={{ marginTop: 6 }}>Click to open the simulation</div>
         </div>
       )}
+      <div className="dim small" style={{ textAlign: 'center', marginTop: -8 }}>Hover a model to pause. Move your mouse up or down to tilt the view.</div>
     </div>
   );
+}
+
+const PURPOSES = [
+  { t: 'Learn one framework properly', d: 'Pick it under “View through”. The map, every example and every requirement switch to that framework. Then follow its learning path.', href: '#/rules', cta: 'Choose a framework' },
+  { t: 'Compare frameworks on a topic', d: 'How do ten frameworks treat transparency, human oversight or bias? See it side by side in one 3D chart.', href: '#/compare', cta: 'Open the comparison' },
+  { t: 'See how a model fails', d: 'Pick any example below, switch on a problem, then add a safeguard and see whether it helps.', href: '#/model/credit', cta: 'Start with credit scoring' },
+  { t: 'Run a training session', d: 'A ready-made 60-minute workshop plan, plus a primer on how models work and where risk comes from.', href: '#/basics', cta: 'Open the basics' },
+];
+
+function Icon({ i }: { i: number }) {
+  const p = [
+    <path key="a" d="M4 6h16M4 12h10M4 18h7" />,
+    <path key="b" d="M5 19V9m7 10V5m7 14v-7" />,
+    <path key="c" d="M12 3l9 16H3z M12 10v4 M12 17h.01" />,
+    <path key="d" d="M4 5h16v11H4z M8 20h8 M12 16v4" />,
+  ][i];
+  return <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">{p}</svg>;
 }
 
 function Row({ lab, lens }: { lab: LabDef; lens: FwId | 'all' }) {
   const e = lens === 'all' ? null : fwEntry(lens, lab.id);
   const cat = e ? FW_BY_ID[lens as FwId].cats.find((c) => c.id === e.cat) : null;
   return (
-    <a href={`#/model/${lab.id}`} style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) auto', gap: 16, padding: '12px 16px', borderTop: '1px solid var(--line)', color: 'inherit' }} className="row-link">
-      <span>
-        <span style={{ fontWeight: 600 }}>{lab.model}</span>
-        <span className="muted"> · {lab.app}</span>
-      </span>
-      {cat ? <span className="tag"><span className="swatch" style={{ background: cat.color }} />{cat.label}</span> : <span className="dim small">Open →</span>}
+    <a href={`#/model/${lab.id}`} style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) auto', gap: 16, padding: '12px 18px', borderTop: '1px solid var(--line)', color: 'inherit' }} className="row-link">
+      <span><span style={{ fontWeight: 700 }}>{lab.model}</span><span className="muted"> · {lab.app}</span></span>
+      {cat ? <span className="tag"><span className="swatch" style={{ background: cat.color }} />{cat.label}</span> : <span className="dim small">→</span>}
     </a>
   );
 }
@@ -98,50 +127,58 @@ export function Home() {
     : TIERS.map((t) => ({ key: t.id, title: t.label, color: t.color, desc: t.tagline, labs: LABS.filter((l) => l.tier === t.id) }));
   return (
     <div>
-      <section className="wrap" style={{ padding: '44px 0 10px' }}>
-        <div className="narrow stack">
-          <h1>{fw ? `AI systems under the ${fw.short}` : 'How AI systems go wrong, and what the rules say'}</h1>
+      <section className="wrap" style={{ padding: '48px 0 0' }}>
+        <motion.div className="narrow stack" initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
+          <div className="label accent">{fw ? `Viewing through: ${fw.short}` : 'AI Risk Explorer'}</div>
+          <h1>{fw ? `21 AI systems, seen through ${fwName(fw.id)}` : 'Every AI system fails in its own way. Here is how, and what the rules expect you to do about it.'}</h1>
           {fw ? (
-            <p className="lead">{fw.intro.split('. ').slice(0, 2).join('. ')}. Each circle below is coloured by how the {fw.short} treats that use. <a href={`#/rules/${fw.id}`}>Read the full guide to the {fw.short}</a>.</p>
+            <p className="lead">{fw.intro.split('. ').slice(0, 2).join('. ')}. Each model is coloured by how {fwName(fw.id)} treats it. <a href={`#/rules/${fw.id}`}>Open the full guide</a>, including a learning path through these examples.</p>
           ) : (
-            <p className="lead">
-              Below are {LABS.length} common uses of AI, from a simple spam filter to a team of AI agents. Each one has a working simulation: switch on a problem, see what goes wrong, then add a safeguard and check whether it helps. Use the <b>View through</b> menu at the top to see everything from the point of view of one framework, such as the EU AI Act.
-            </p>
+            <p className="lead">Twenty-one real uses of AI, from a spam filter to a team of buying agents. Each one runs as a small simulation you can break and repair. Ten governance frameworks, from the EU AI Act to China’s and Korea’s rules, are mapped onto every one of them.</p>
           )}
-          {!fw && <p className="muted small">New to the topic? <a href="#/basics">Start with the basics</a>, a short guide to how models work and where risk comes from.</p>}
+        </motion.div>
+      </section>
+
+      <section className="wrap" style={{ marginTop: 10 }}>
+        <div style={{ display: 'flex', gap: 18, flexWrap: 'wrap', justifyContent: 'center', marginTop: 18 }}>
+          {fw
+            ? fw.cats.map((c) => { const n = LABS.filter((l) => fwEntry(fw.id, l.id).cat === c.id).length; return n ? <span key={c.id} className="small muted" style={{ display: 'inline-flex', gap: 7, alignItems: 'center' }}><span className="swatch" style={{ background: c.color }} />{c.label} ({n})</span> : null; })
+            : TIERS.map((t, i) => <span key={t.id} className="small muted" style={{ display: 'inline-flex', gap: 7, alignItems: 'center' }}><span className="swatch" style={{ background: t.color }} />{['Inner ring', 'Second ring', 'Third ring', 'Outer ring'][i]}: {t.label}</span>)}
         </div>
+        <div className="scroll-x"><div style={{ minWidth: 760 }}><Orbit /></div></div>
       </section>
 
-      <section className="wrap">
-        {!fw && (
-          <div style={{ display: 'flex', gap: 18, flexWrap: 'wrap', marginTop: 18 }}>
-            <span className="small muted">From the centre outwards:</span>
-            {TIERS.map((t) => <span key={t.id} className="small" style={{ display: 'inline-flex', gap: 7, alignItems: 'center' }}><span className="swatch" style={{ background: t.color, borderRadius: '50%' }} />{t.label}</span>)}
+      {!fw && (
+        <section className="wrap section">
+          <h2>What do you want to do?</h2>
+          <div className="grid4" style={{ marginTop: 20 }}>
+            {PURPOSES.map((p, i) => (
+              <motion.a key={p.t} href={p.href} className="card card-pad lift" style={{ color: 'inherit', display: 'flex', flexDirection: 'column', gap: 10 }} initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.08 }}>
+                <Icon i={i} />
+                <h3>{p.t}</h3>
+                <p className="muted small" style={{ flex: 1 }}>{p.d}</p>
+                <span className="accent small" style={{ fontWeight: 700 }}>{p.cta} →</span>
+              </motion.a>
+            ))}
           </div>
-        )}
-        {fw && (
-          <div style={{ display: 'flex', gap: 18, flexWrap: 'wrap', marginTop: 18 }}>
-            {fw.cats.map((c) => {
-              const n = LABS.filter((l) => fwEntry(fw.id, l.id).cat === c.id).length;
-              return n ? <span key={c.id} className="small" style={{ display: 'inline-flex', gap: 7, alignItems: 'center' }}><span className="swatch" style={{ background: c.color }} />{c.label} ({n})</span> : null;
-            })}
-          </div>
-        )}
-        <div className="scroll-x"><div style={{ minWidth: 760 }}><ModelMap /></div></div>
-      </section>
+        </section>
+      )}
 
-      <section className="wrap" style={{ paddingBottom: 30 }}>
-        <h2 style={{ marginBottom: 6 }}>{fw ? `All ${LABS.length} examples, grouped by ${fw.short} category` : `All ${LABS.length} examples, by type of model`}</h2>
-        <p className="muted" style={{ marginBottom: 20 }}>Click any example to open its simulation and see how the rules apply.</p>
+      <section className="wrap section">
+        <h2>{fw ? `Grouped by category under ${fwName(fw.id)}` : 'All 21 examples, by type of model'}</h2>
+        <p className="muted" style={{ marginTop: 6, marginBottom: 20 }}>Every example opens a simulation and shows how the rules apply to it.</p>
         <div className="grid2" style={{ alignItems: 'start' }}>
-          {groups.map((g) => (
-            <div key={g.key} className="card" style={{ overflow: 'hidden' }}>
-              <div style={{ padding: '16px 16px 12px', borderTop: `4px solid ${g.color}` }}>
-                <h3>{g.title}</h3>
-                <p className="muted small" style={{ marginTop: 4 }}>{g.desc}</p>
+          {groups.map((g, i) => (
+            <motion.div key={g.key} className="card" style={{ overflow: 'hidden' }} initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: (i % 2) * 0.08 }}>
+              <div style={{ padding: '18px 18px 14px', display: 'flex', gap: 12 }}>
+                <span className="swatch" style={{ background: g.color, width: 10, height: 10, marginTop: 7 }} />
+                <div>
+                  <h3>{g.title}</h3>
+                  <p className="muted small" style={{ marginTop: 4 }}>{g.desc}</p>
+                </div>
               </div>
               {g.labs.map((l) => <Row key={l.id} lab={l} lens={lens} />)}
-            </div>
+            </motion.div>
           ))}
         </div>
       </section>

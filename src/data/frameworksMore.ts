@@ -1,0 +1,179 @@
+import type { Framework } from './frameworks';
+import { SEV } from './palette';
+
+export const MORE: Framework[] = [
+  {
+    id: 'cn',
+    name: 'China: algorithm, generative AI and data rules',
+    short: 'China',
+    type: 'Law (set of regulations)',
+    where: 'China',
+    binding: 'Binding law',
+    intro:
+      'China has no single AI act. Instead it regulates AI through a series of targeted rules issued mainly by the Cyberspace Administration of China (CAC): one for recommendation algorithms (2022), one for "deep synthesis" such as deepfakes (2023), one for public generative AI services (2023) and mandatory labelling of AI-generated content (2025). The Personal Information Protection Law (PIPL) covers automated decisions and sensitive data such as faces. A distinctive feature is registration: many algorithms must be filed with the regulator before launch.',
+    who:
+      'Organisations offering these services to the public in mainland China, including foreign providers. Internal tools used only inside a company are mostly outside the generative AI rules, but PIPL applies to any personal data.',
+    approach:
+      'Service-based and registration-based. The question is what kind of service you offer to the public (recommendations, synthetic media, generative AI) and whether it can shape public opinion. Those services must be filed with the regulator, label their output and meet content rules.',
+    catsTitle: 'Which rules apply',
+    cats: [
+      { id: 'genai', label: 'Generative AI and deep synthesis rules', color: SEV.high, desc: 'Public generative AI or synthetic-media services: algorithm filing, security assessment where they can shape opinion, lawful training data, content rules and labelling.' },
+      { id: 'algo', label: 'Recommendation algorithm rules', color: SEV.mid, desc: 'Services that rank, push or price using algorithms: filing, transparency, an option to switch off personalisation, and no unfair price discrimination.' },
+      { id: 'sensitive', label: 'Sensitive personal information', color: SEV.severe, desc: 'Biometrics, health and similar data need separate consent and a personal information impact assessment. Face recognition has its own rules from June 2025.' },
+      { id: 'pi', label: 'Automated decisions under PIPL', color: SEV.info, desc: 'Decisions made by automated means must be transparent and fair; people can ask for an explanation and refuse decisions made solely by automation that significantly affect them.' },
+      { id: 'general', label: 'General law', color: SEV.neutral, desc: 'No AI-specific rule applies beyond general data, cybersecurity and consumer law.' },
+    ],
+    keyTitle: 'The main rules',
+    keyReqs: [
+      { t: 'Algorithm Recommendation Provisions (2022)', d: 'File algorithms with the CAC, explain the basic logic to users, offer an option to turn off personalisation, protect minors, the elderly and gig workers, and do not set different prices for the same goods based on user profiles.' },
+      { t: 'Deep Synthesis Provisions (2023)', d: 'Synthetic text, audio, images and video must be labelled; providers must verify users’ real identities and must not produce fake news.' },
+      { t: 'Interim Measures for Generative AI Services (2023)', d: 'Public generative AI services need lawful training data that respects IP, must prevent discrimination, label output, handle complaints and pass a security assessment if they can shape public opinion.' },
+      { t: 'Labelling Measures for AI-Generated Content (Sept 2025)', d: 'Visible labels on AI-generated content and hidden labels (metadata) in the files, backed by a mandatory national standard. Platforms must check and add labels.' },
+      { t: 'Personal Information Protection Law (2021)', d: 'Automated decisions must be transparent and fair, with no unreasonable differential treatment in prices or terms. Sensitive data needs separate consent and an impact assessment.' },
+      { t: 'Facial recognition security measures (June 2025)', d: 'Face recognition needs a clear purpose, signs in public places, an alternative way to verify identity where possible, and an impact assessment; large deployments must be filed.' },
+    ],
+    timeline: [
+      { date: 'Nov 2021', text: 'Personal Information Protection Law takes effect.' },
+      { date: 'Mar 2022', text: 'Algorithm recommendation rules take effect.' },
+      { date: 'Jan 2023', text: 'Deep synthesis rules take effect.' },
+      { date: 'Aug 2023', text: 'Generative AI interim measures take effect.' },
+      { date: 'Jun 2025', text: 'Facial recognition security measures take effect.' },
+      { date: 'Sep 2025', text: 'Mandatory labelling of AI-generated content.' },
+      { date: 'Jan 2026', text: 'Amended Cybersecurity Law adds provisions on AI.' },
+    ],
+    penalties: 'Under PIPL, fines up to RMB 50 million or 5% of the previous year’s turnover, plus suspension of services and removal of apps. The algorithm and generative AI rules rely on warnings, orders to correct, fines and suspension.',
+    sources: [
+      { label: 'Cyberspace Administration of China', url: 'https://www.cac.gov.cn/' },
+      { label: 'DigiChina translations (Stanford)', url: 'https://digichina.stanford.edu/' },
+    ],
+    region: 'Asia',
+  },
+  {
+    id: 'kr',
+    name: 'South Korea AI Basic Act',
+    short: 'Korea AI Basic Act',
+    type: 'Law',
+    where: 'South Korea',
+    binding: 'Binding law',
+    intro:
+      'The Framework Act on the Development of Artificial Intelligence and Establishment of Trust, known as the AI Basic Act, took effect on 22 January 2026. After the EU, Korea is the second jurisdiction with a broad AI law. It combines support for the AI industry with duties for "high-impact" AI and for generative AI, and it applies to foreign companies whose AI affects the Korean market.',
+    who:
+      'AI business operators that develop or provide AI used in Korea, including foreign companies. Foreign companies above set size thresholds must appoint a local representative.',
+    approach:
+      'Risk-based but lighter than the EU. Instead of banning uses, it defines "high-impact AI" in sensitive areas and sets duties for it, adds transparency duties for generative AI and safety duties for the largest models. Penalties are modest and the government announced a grace period of at least a year before fines.',
+    catsTitle: 'The categories',
+    cats: [
+      { id: 'high', label: 'High-impact AI', color: SEV.high, desc: 'AI that can significantly affect life, safety or basic rights in listed areas: health care and medical devices, energy and water, transport, hiring and loan screening, biometric analysis, public services and student evaluation.' },
+      { id: 'genai', label: 'Generative AI duties', color: SEV.mid, desc: 'Users must be told in advance that a product uses generative AI, outputs must be labelled, and realistic deepfakes must be clearly marked.' },
+      { id: 'general', label: 'General duties only', color: SEV.neutral, desc: 'No specific obligations beyond the Act’s general principles and existing laws such as the Personal Information Protection Act.' },
+    ],
+    keyTitle: 'What the Act requires',
+    keyReqs: [
+      { t: 'Check whether your AI is high-impact', d: 'Operators should assess whether their system falls into a high-impact area and can ask the Ministry of Science and ICT to confirm.' },
+      { t: 'Risk management for high-impact AI', d: 'A plan to identify and reduce risks, measures to explain results and the main criteria and training data, user protection, and human management and oversight, with records kept.' },
+      { t: 'Advance notice', d: 'Tell users beforehand when a product or service is based on high-impact or generative AI.' },
+      { t: 'Labelling', d: 'Label outputs of generative AI, and clearly mark deepfakes that are hard to tell from reality.' },
+      { t: 'Safety for very large models', d: 'Models trained above a compute threshold set by decree must identify and reduce risks across their life cycle and set up incident response.' },
+      { t: 'Domestic representative', d: 'Foreign operators above revenue or user thresholds must appoint a representative in Korea.' },
+      { t: 'Personal Information Protection Act (automated decisions)', d: 'Since 2024, people can refuse or ask for an explanation of fully automated decisions that significantly affect their rights.' },
+    ],
+    timeline: [
+      { date: 'Mar 2024', text: 'PIPA rights on automated decisions take effect.' },
+      { date: 'Dec 2024', text: 'AI Basic Act passed by the National Assembly.' },
+      { date: 'Jan 2025', text: 'Act promulgated.' },
+      { date: 'Jan 2026', text: 'AI Basic Act takes effect (22 January).' },
+      { date: 'Jan 2027', text: 'Earliest end of the announced grace period for fines.' },
+    ],
+    penalties: 'Administrative fines of up to KRW 30 million, for example for failing to give notice, appoint a representative or follow a corrective order. The government has said it will focus on guidance rather than fines in the first year.',
+    sources: [
+      { label: 'Ministry of Science and ICT', url: 'https://www.msit.go.kr/eng/' },
+      { label: 'Korea Law Information Center', url: 'https://www.law.go.kr/' },
+    ],
+    region: 'Asia',
+  },
+  {
+    id: 'sg',
+    name: 'Singapore: Model AI Governance Framework and AI Verify',
+    short: 'Singapore',
+    type: 'Voluntary framework',
+    where: 'Singapore',
+    binding: 'Voluntary (plus binding data protection law)',
+    intro:
+      'Singapore has chosen practical guidance and testing tools over an AI law. The Model AI Governance Framework (2019, updated 2020) shows organisations how to put ethical principles into practice. A separate framework for generative AI followed in 2024. AI Verify is an open-source toolkit for testing AI systems against these principles. The binding layer is the Personal Data Protection Act (PDPA), with official guidance on using personal data in AI.',
+    who: 'Any organisation deploying AI, in Singapore or elsewhere. Financial institutions also follow the central bank’s FEAT principles (fairness, ethics, accountability, transparency).',
+    approach:
+      'Practice-based. Its best-known tool is a simple matrix: weigh how severe and how likely harm is, then choose how much a human should be involved in each decision: in the loop, over the loop or out of the loop.',
+    catsTitle: 'How much human involvement the framework suggests',
+    cats: [
+      { id: 'hitl', label: 'Human in the loop', color: SEV.high, desc: 'Severe or likely harm: a person keeps full control and the AI only recommends.' },
+      { id: 'hotl', label: 'Human over the loop', color: SEV.mid, desc: 'Moderate harm: the AI decides, but a person monitors and can step in or change parameters.' },
+      { id: 'hootl', label: 'Human out of the loop', color: SEV.neutral, desc: 'Low harm: the AI can decide on its own, with normal monitoring.' },
+    ],
+    keyTitle: 'The four areas of the Model Framework',
+    keyReqs: [
+      { t: 'Internal governance', d: 'Clear roles, responsibilities, risk controls and staff training for AI.' },
+      { t: 'Human involvement in AI-augmented decisions', d: 'Decide the level of human involvement using the severity-and-probability matrix, and review it as conditions change.' },
+      { t: 'Operations management', d: 'Good data practices, explainability, repeatability, robustness, regular tuning and traceability.' },
+      { t: 'Stakeholder communication', d: 'Tell people that AI is used, explain decisions, offer a way to give feedback and appeal.' },
+      { t: 'Generative AI framework (2024)', d: 'Nine dimensions: accountability, data, trusted development and deployment, incident reporting, testing and assurance, security, content provenance, safety and alignment research, and AI for public good.' },
+      { t: 'PDPA and AI guidance (2024)', d: 'Consent or a valid exception for personal data used in AI, notice to people about AI recommendations and decisions, and accountability for data use.' },
+    ],
+    timeline: [
+      { date: 'Jan 2019', text: 'Model AI Governance Framework, first edition.' },
+      { date: 'Jan 2020', text: 'Second edition published.' },
+      { date: 'May 2022', text: 'AI Verify testing toolkit launched.' },
+      { date: 'Mar 2024', text: 'PDPC guidelines on personal data in AI systems.' },
+      { date: 'May 2024', text: 'Model AI Governance Framework for Generative AI.' },
+      { date: 'Oct 2024', text: 'Election law bans deepfakes of candidates during elections.' },
+    ],
+    penalties: 'None for the framework itself. Under the PDPA, fines of up to 10% of annual turnover in Singapore or SGD 1 million, whichever is higher.',
+    sources: [
+      { label: 'PDPC: Model AI Governance Framework', url: 'https://www.pdpc.gov.sg/help-and-resources/2020/01/model-ai-governance-framework' },
+      { label: 'AI Verify Foundation', url: 'https://aiverifyfoundation.sg/' },
+    ],
+    region: 'Asia',
+  },
+  {
+    id: 'uk',
+    name: 'United Kingdom: principles, regulators and data law',
+    short: 'UK',
+    type: 'Principles + existing law',
+    where: 'United Kingdom',
+    binding: 'Mixed: principles voluntary, underlying laws binding',
+    intro:
+      'The UK has no AI act. It asks its existing regulators (the data protection regulator ICO, the financial regulator FCA, the competition authority CMA, the medicines regulator MHRA, the online-safety regulator Ofcom and others) to apply five cross-cutting principles within their own remits. Binding rules come from existing law: UK GDPR, as changed by the Data (Use and Access) Act 2025, the Equality Act, consumer law, the Online Safety Act and sector rules.',
+    who: 'Anyone using AI in the UK. Which rules bite depends on the sector and the regulator responsible for it.',
+    approach:
+      'Context-based. The same AI technique is judged by the regulator for the setting it is used in, against five principles: safety and robustness; transparency and explainability; fairness; accountability and governance; contestability and redress.',
+    catsTitle: 'How strongly existing rules apply',
+    cats: [
+      { id: 'sector', label: 'Sector regulator rules apply', color: SEV.high, desc: 'A regulator with specific rules covers this use, for example the FCA for credit, the MHRA for medical devices, Ofcom for online platforms or the ICO for biometric data.' },
+      { id: 'adm', label: 'Automated-decision safeguards', color: SEV.mid, desc: 'Significant decisions made solely by automation: people must be told, can contest the decision and can get human review (UK GDPR as amended in 2025).' },
+      { id: 'principles', label: 'Principles and general law', color: SEV.neutral, desc: 'Only the five principles and general law (equality, consumer, contract) apply.' },
+    ],
+    keyTitle: 'The five principles and the main laws',
+    keyReqs: [
+      { t: 'Safety, security and robustness', d: 'AI should work reliably and securely throughout its life, with risks continually identified and managed.' },
+      { t: 'Transparency and explainability', d: 'People affected should be able to find out that AI is used and understand decisions to a suitable degree.' },
+      { t: 'Fairness', d: 'AI must not undermine legal rights, discriminate unlawfully or create unfair market outcomes.' },
+      { t: 'Accountability and governance', d: 'Clear lines of responsibility across the AI life cycle.' },
+      { t: 'Contestability and redress', d: 'People should be able to challenge harmful AI decisions.' },
+      { t: 'UK GDPR and the Data (Use and Access) Act 2025', d: 'Automated decisions are allowed more widely than before, but with safeguards: information, the right to make representations, to contest and to get human review. Stricter limits remain for special-category data.' },
+      { t: 'Equality Act 2010, Consumer Duty, Online Safety Act 2023', d: 'Discrimination law, the FCA’s duty to deliver good outcomes for retail customers, and Ofcom’s duties for platforms (including recommender systems and non-consensual deepfakes).' },
+    ],
+    timeline: [
+      { date: 'Mar 2023', text: 'AI regulation white paper sets out the five principles.' },
+      { date: 'Oct 2023', text: 'Online Safety Act becomes law.' },
+      { date: 'Nov 2023', text: 'AI Safety Summit at Bletchley Park; AI Safety Institute founded.' },
+      { date: 'May 2024', text: 'PRA model risk management principles (SS1/23) for banks apply.' },
+      { date: 'Feb 2025', text: 'AI Safety Institute renamed AI Security Institute.' },
+      { date: 'Jun 2025', text: 'Data (Use and Access) Act 2025 becomes law.' },
+    ],
+    penalties: 'Depends on the law. UK GDPR fines up to £17.5 million or 4% of worldwide turnover. Ofcom can fine up to £18 million or 10% of worldwide revenue under the Online Safety Act. The FCA and CMA have their own powers.',
+    sources: [
+      { label: 'UK AI regulation white paper', url: 'https://www.gov.uk/government/publications/ai-regulation-a-pro-innovation-approach' },
+      { label: 'ICO guidance on AI and data protection', url: 'https://ico.org.uk/for-organisations/uk-gdpr-guidance-and-resources/artificial-intelligence/' },
+    ],
+    region: 'Europe',
+  },
+];

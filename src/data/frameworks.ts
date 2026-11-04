@@ -1,4 +1,9 @@
-export type FwId = 'eu' | 'us' | 'nist' | 'iso' | 'owasp' | 'gdpr';
+export type FwId = 'eu' | 'us' | 'nist' | 'iso' | 'owasp' | 'gdpr' | 'cn' | 'kr' | 'sg' | 'uk';
+import { MORE } from './frameworksMore';
+import { EXTRAS } from './fwExtras';
+
+import { SEV } from './palette';
+export { SEV };
 export type Lens = 'all' | FwId;
 
 export interface FwCat { id: string; label: string; color: string; desc: string }
@@ -23,9 +28,16 @@ export interface Framework {
   timeline: { date: string; text: string }[];
   penalties: string;
   sources: { label: string; url: string }[];
+  /** compliance roadmap: ordered steps */
+  roadmap?: { t: string; d: string }[];
+  /** learning path through this site: [model id, what to look at] */
+  learn?: [string, string][];
+  /** framework-specific extra sections */
+  extras?: { title: string; intro?: string; items: { t: string; d: string }[] }[];
+  region?: string;
 }
 
-export const FRAMEWORKS: Framework[] = [
+const BASE: Framework[] = [
   {
     id: 'eu',
     name: 'EU AI Act',
@@ -41,12 +53,12 @@ export const FRAMEWORKS: Framework[] = [
       'Risk-based. You first work out which category your use falls into. The category, not the technology, decides what you must do. A logistic regression used to score loans is high-risk; a large language model used to write marketing copy is not.',
     catsTitle: 'The risk categories',
     cats: [
-      { id: 'prohibited', label: 'Banned', color: '#7d1d1d', desc: 'Not allowed since 2 February 2025. Examples: social scoring, emotion recognition at work or in schools, manipulative techniques that cause significant harm, untargeted scraping of faces to build databases.' },
-      { id: 'high', label: 'High-risk', color: '#c0392b', desc: 'Uses listed in Annex III (employment, credit, public benefits, education, biometrics, critical infrastructure, policing, migration, justice) and safety components of regulated products such as medical devices.' },
-      { id: 'gpai', label: 'General-purpose AI model', color: '#7e57a8', desc: 'Duties for the providers of models such as large language models: documentation, a copyright policy and a public summary of training data. The most capable models have extra safety duties.' },
-      { id: 'limited', label: 'Transparency duties', color: '#c98a1b', desc: 'People must be told when they are talking to an AI, and AI-generated or manipulated content must be marked or disclosed.' },
-      { id: 'minimal', label: 'Minimal risk', color: '#8a9099', desc: 'No specific duties beyond AI literacy for staff. Voluntary codes of conduct are encouraged. Other laws, such as GDPR and consumer law, still apply.' },
-      { id: 'depends', label: 'Depends on use', color: '#5f7387', desc: 'The category follows the task. The same agent can be minimal risk in one job and high-risk in another.' },
+      { id: 'prohibited', label: 'Banned', color: SEV.severe, desc: 'Not allowed since 2 February 2025. Examples: social scoring, emotion recognition at work or in schools, manipulative techniques that cause significant harm, untargeted scraping of faces to build databases.' },
+      { id: 'high', label: 'High-risk', color: SEV.high, desc: 'Uses listed in Annex III (employment, credit, public benefits, education, biometrics, critical infrastructure, policing, migration, justice) and safety components of regulated products such as medical devices.' },
+      { id: 'gpai', label: 'General-purpose AI model', color: SEV.info, desc: 'Duties for the providers of models such as large language models: documentation, a copyright policy and a public summary of training data. The most capable models have extra safety duties.' },
+      { id: 'limited', label: 'Transparency duties', color: SEV.mid, desc: 'People must be told when they are talking to an AI, and AI-generated or manipulated content must be marked or disclosed.' },
+      { id: 'minimal', label: 'Minimal risk', color: SEV.neutral, desc: 'No specific duties beyond AI literacy for staff. Voluntary codes of conduct are encouraged. Other laws, such as GDPR and consumer law, still apply.' },
+      { id: 'depends', label: 'Depends on use', color: SEV.soft, desc: 'The category follows the task. The same agent can be minimal risk in one job and high-risk in another.' },
     ],
     keyTitle: 'What high-risk systems need',
     keyReqs: [
@@ -90,9 +102,9 @@ export const FRAMEWORKS: Framework[] = [
       'Use-based and fragmented. Ask two questions: which existing law already governs this decision, and does a state or city have an AI-specific rule for it?',
     catsTitle: 'How we classify each use',
     cats: [
-      { id: 'specific', label: 'AI-specific law applies', color: '#1f4e8c', desc: 'A federal, state or city law written for AI or automated decisions covers this use, for example NYC Local Law 144, the Colorado AI Act, Illinois BIPA or California SB 53.' },
-      { id: 'sector', label: 'Existing sector or privacy law', color: '#6b8fc4', desc: 'No AI-specific law, but established rules for this area (credit, employment, health, competition, privacy) apply to decisions made with AI.' },
-      { id: 'general', label: 'General law only', color: '#9aa3ad', desc: 'Only general rules apply, mainly the FTC’s ban on unfair or deceptive practices, contract law and product liability.' },
+      { id: 'specific', label: 'AI-specific law applies', color: SEV.high, desc: 'A federal, state or city law written for AI or automated decisions covers this use, for example NYC Local Law 144, the Colorado AI Act, Illinois BIPA or California SB 53.' },
+      { id: 'sector', label: 'Existing sector or privacy law', color: SEV.mid, desc: 'No AI-specific law, but established rules for this area (credit, employment, health, competition, privacy) apply to decisions made with AI.' },
+      { id: 'general', label: 'General law only', color: SEV.neutral, desc: 'Only general rules apply, mainly the FTC’s ban on unfair or deceptive practices, contract law and product liability.' },
     ],
     keyTitle: 'The main laws to know',
     keyReqs: [
@@ -139,13 +151,13 @@ export const FRAMEWORKS: Framework[] = [
       'Process-based. Instead of asking "which category is this?", it asks "which qualities of a trustworthy system are most at stake here, and what are we doing in each of the four functions to protect them?"',
     catsTitle: 'The seven qualities of trustworthy AI (we show the one most at stake)',
     cats: [
-      { id: 'fair', label: 'Fair, with harmful bias managed', color: '#b4446c', desc: 'Outcomes do not systematically disadvantage groups of people.' },
-      { id: 'valid', label: 'Valid and reliable', color: '#2f6f9f', desc: 'The system does what it is meant to do, accurately, under expected conditions.' },
-      { id: 'safe', label: 'Safe', color: '#b03a3a', desc: 'It does not endanger human life, health, property or the environment.' },
-      { id: 'secure', label: 'Secure and resilient', color: '#b8612a', desc: 'It withstands attacks and recovers from unexpected events.' },
-      { id: 'accountable', label: 'Accountable and transparent', color: '#8a6d1f', desc: 'Information about the system is available, and someone answers for its outcomes.' },
-      { id: 'explainable', label: 'Explainable and interpretable', color: '#6d5bb0', desc: 'People can understand how it works and why it produced an output.' },
-      { id: 'privacy', label: 'Privacy-enhanced', color: '#2f7d5b', desc: 'It protects people’s autonomy, identity and data.' },
+      { id: 'fair', label: 'Fair, with harmful bias managed', color: SEV.high, desc: 'Outcomes do not systematically disadvantage groups of people.' },
+      { id: 'valid', label: 'Valid and reliable', color: SEV.info, desc: 'The system does what it is meant to do, accurately, under expected conditions.' },
+      { id: 'safe', label: 'Safe', color: SEV.severe, desc: 'It does not endanger human life, health, property or the environment.' },
+      { id: 'secure', label: 'Secure and resilient', color: SEV.mid, desc: 'It withstands attacks and recovers from unexpected events.' },
+      { id: 'accountable', label: 'Accountable and transparent', color: SEV.soft, desc: 'Information about the system is available, and someone answers for its outcomes.' },
+      { id: 'explainable', label: 'Explainable and interpretable', color: '#9c8fd0', desc: 'People can understand how it works and why it produced an output.' },
+      { id: 'privacy', label: 'Privacy-enhanced', color: SEV.low, desc: 'It protects people’s autonomy, identity and data.' },
     ],
     keyTitle: 'The four functions',
     keyReqs: [
@@ -181,9 +193,9 @@ export const FRAMEWORKS: Framework[] = [
       'Management-system based. You define your scope, assess AI risks and impacts, pick controls from Annex A (or justify leaving them out), run them, audit them and keep improving.',
     catsTitle: 'How much impact assessment each use needs',
     cats: [
-      { id: 'high', label: 'Full impact assessment', color: '#1f5e5b', desc: 'Significant effects on individuals or society. Needs a documented impact assessment (A.5) and strong controls on data, oversight and monitoring.' },
-      { id: 'medium', label: 'Standard controls', color: '#5fa39f', desc: 'Moderate effects. Standard life-cycle, data and monitoring controls, with a lighter impact assessment.' },
-      { id: 'low', label: 'Light touch', color: '#a9c9c6', desc: 'Little direct effect on people. Basic policy, ownership and monitoring are enough.' },
+      { id: 'high', label: 'Full impact assessment', color: SEV.high, desc: 'Significant effects on individuals or society. Needs a documented impact assessment (A.5) and strong controls on data, oversight and monitoring.' },
+      { id: 'medium', label: 'Standard controls', color: SEV.mid, desc: 'Moderate effects. Standard life-cycle, data and monitoring controls, with a lighter impact assessment.' },
+      { id: 'low', label: 'Light touch', color: SEV.neutral, desc: 'Little direct effect on people. Basic policy, ownership and monitoring are enough.' },
     ],
     keyTitle: 'Annex A control areas',
     keyReqs: [
@@ -219,9 +231,9 @@ export const FRAMEWORKS: Framework[] = [
     approach: 'Threat-based. It lists how attackers and failures actually break AI systems, with prevention advice for each.',
     catsTitle: 'Which list applies',
     cats: [
-      { id: 'ml', label: 'ML Security Top 10', color: '#3f6e8c', desc: 'Attacks on trained models and their data: input manipulation, data poisoning, model inversion, membership inference, model theft and more.' },
-      { id: 'llm', label: 'LLM Top 10 (2025)', color: '#c27c2c', desc: 'Weaknesses of applications built on large language models, from prompt injection to unbounded consumption.' },
-      { id: 'agentic', label: 'Agentic AI threats', color: '#a33c2a', desc: 'Threats that appear when models act with tools and autonomy: goal hijacking, tool misuse, privilege abuse, memory poisoning and cascading failures.' },
+      { id: 'ml', label: 'ML Security Top 10', color: SEV.info, desc: 'Attacks on trained models and their data: input manipulation, data poisoning, model inversion, membership inference, model theft and more.' },
+      { id: 'llm', label: 'LLM Top 10 (2025)', color: SEV.mid, desc: 'Weaknesses of applications built on large language models, from prompt injection to unbounded consumption.' },
+      { id: 'agentic', label: 'Agentic AI threats', color: SEV.high, desc: 'Threats that appear when models act with tools and autonomy: goal hijacking, tool misuse, privilege abuse, memory poisoning and cascading failures.' },
     ],
     keyTitle: 'The lists',
     keyReqs: [
@@ -254,10 +266,10 @@ export const FRAMEWORKS: Framework[] = [
       'Principle-based. Every use of personal data needs a lawful basis and must respect the core principles. Extra protection applies to sensitive data and to decisions made about people without human involvement.',
     catsTitle: 'How much GDPR matters for each use',
     cats: [
-      { id: 'art22', label: 'Automated decisions about people', color: '#2c5f8a', desc: 'The system makes or heavily shapes decisions with legal or similarly significant effects on people. Article 22 safeguards apply: human review, the right to contest and an explanation of the logic.' },
-      { id: 'special', label: 'Sensitive data', color: '#5b3f8c', desc: 'Uses special-category data such as health, biometrics for identification, or data revealing ethnicity or religion. Article 9 forbids this unless a specific exception applies.' },
-      { id: 'personal', label: 'Personal data, standard duties', color: '#7f9bb8', desc: 'Uses personal data, so the normal rules apply: lawful basis, transparency, minimisation, security and people’s rights.' },
-      { id: 'low', label: 'Little personal data', color: '#b7c2cc', desc: 'Mainly uses aggregated or non-personal data. GDPR plays a minor role.' },
+      { id: 'art22', label: 'Automated decisions about people', color: SEV.high, desc: 'The system makes or heavily shapes decisions with legal or similarly significant effects on people. Article 22 safeguards apply: human review, the right to contest and an explanation of the logic.' },
+      { id: 'special', label: 'Sensitive data', color: SEV.severe, desc: 'Uses special-category data such as health, biometrics for identification, or data revealing ethnicity or religion. Article 9 forbids this unless a specific exception applies.' },
+      { id: 'personal', label: 'Personal data, standard duties', color: SEV.mid, desc: 'Uses personal data, so the normal rules apply: lawful basis, transparency, minimisation, security and people’s rights.' },
+      { id: 'low', label: 'Little personal data', color: SEV.neutral, desc: 'Mainly uses aggregated or non-personal data. GDPR plays a minor role.' },
     ],
     keyTitle: 'The duties that matter most for AI',
     keyReqs: [
@@ -285,19 +297,21 @@ export const FRAMEWORKS: Framework[] = [
   },
 ];
 
+export const FRAMEWORKS: Framework[] = [...BASE, ...MORE].map((f) => ({ ...f, ...(EXTRAS[f.id] ?? {}) }));
+
 export const FW_BY_ID = Object.fromEntries(FRAMEWORKS.map((f) => [f.id, f])) as Record<FwId, Framework>;
 
 export const OTHER_FRAMEWORKS: { name: string; where: string; type: string; text: string }[] = [
-  { name: 'UK approach and Data (Use and Access) Act 2025', where: 'United Kingdom', type: 'Principles + data law', text: 'No AI law yet. Existing regulators apply five principles (safety, transparency, fairness, accountability, contestability). UK GDPR applies; the 2025 Act relaxed some rules on automated decisions while keeping safeguards.' },
   { name: 'Council of Europe Framework Convention on AI', where: 'International', type: 'Treaty', text: 'The first binding international treaty on AI, human rights, democracy and the rule of law. Opened for signature in September 2024.' },
-  { name: 'China: algorithm, deep synthesis and generative AI rules', where: 'China', type: 'Law', text: 'Rules on recommendation algorithms (2022), deep synthesis (2023) and generative AI services (2023), plus mandatory labelling of AI-generated content (from September 2025). Algorithm filing with regulators is required.' },
-  { name: 'South Korea AI Basic Act', where: 'South Korea', type: 'Law', text: 'In force from January 2026. Duties for "high-impact" AI and transparency for generative AI, including labelling.' },
   { name: 'Japan AI Promotion Act', where: 'Japan', type: 'Law (light-touch)', text: 'Passed in 2025. Focuses on promoting AI and government coordination, with few direct duties on companies.' },
+  { name: 'Australia', where: 'Australia', type: 'Voluntary standard', text: 'A Voluntary AI Safety Standard (2024) sets ten guardrails, from accountability to testing and transparency. Proposals for mandatory guardrails in high-risk settings were consulted on; the government has since leaned towards using existing laws.' },
   { name: 'Canada', where: 'Canada', type: 'Directive', text: 'The proposed Artificial Intelligence and Data Act lapsed in January 2025. Federal agencies follow the Directive on Automated Decision-Making, including an algorithmic impact assessment.' },
   { name: 'Brazil AI Bill (PL 2338/2023)', where: 'Brazil', type: 'Bill', text: 'Risk-based bill similar to the EU AI Act. Passed by the Senate in December 2024; under review in the Chamber of Deputies.' },
   { name: 'OECD AI Principles and G7 Hiroshima Code of Conduct', where: 'International', type: 'Principles', text: 'Widely adopted principles (2019, updated 2024) and a voluntary code for developers of advanced AI (2023). Many national rules build on them.' },
-  { name: 'Singapore Model AI Governance Framework and AI Verify', where: 'Singapore', type: 'Voluntary', text: 'Practical governance guidance, a generative AI version (2024) and an open-source testing toolkit.' },
   { name: 'UNESCO Recommendation on the Ethics of AI', where: 'International', type: 'Recommendation', text: 'Adopted by 193 countries in 2021. Covers human rights, fairness, environment and oversight.' },
   { name: 'US banking: SR 11-7 and UK PRA SS1/23', where: 'US / UK', type: 'Supervisory guidance', text: 'Model risk management rules for banks: model inventory, independent validation, ongoing monitoring and governance. They apply to AI models used by banks.' },
   { name: 'EU sector laws: DSA, MDR, DORA, NIS2, Product Liability Directive', where: 'European Union', type: 'Law', text: 'Rules for online platforms, medical devices, financial-sector resilience and cybersecurity apply alongside the AI Act. The revised Product Liability Directive (2024) covers software, including AI.' },
 ];
+
+/** natural-language name for use in sentences */
+export const fwName = (id: FwId) => ({ eu: 'the EU AI Act', us: 'US law', nist: 'the NIST AI RMF', iso: 'ISO/IEC 42001', owasp: 'the OWASP lists', gdpr: 'the GDPR', cn: 'China’s rules', kr: 'Korea’s AI Basic Act', sg: 'Singapore’s framework', uk: 'the UK approach' })[id];

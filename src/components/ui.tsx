@@ -39,9 +39,9 @@ export function Seg<T extends string | number | boolean>({ options, value, onCha
 export function Logo() {
   return (
     <svg width="26" height="26" viewBox="0 0 64 64" aria-hidden>
-      <rect width="64" height="64" rx="12" fill="#1c2b4a" />
-      <circle cx="32" cy="32" r="17" fill="none" stroke="#f6f5f1" strokeWidth="3" />
-      <circle cx="32" cy="32" r="6" fill="#f6f5f1" />
+      <rect width="64" height="64" rx="14" fill="#14171c" stroke="rgba(255,255,255,.15)" />
+      <circle cx="32" cy="32" r="17" fill="none" stroke="#6cc5b0" strokeWidth="3" strokeDasharray="6 4" />
+      <circle cx="32" cy="32" r="6" fill="#eceef1" />
       <circle cx="47" cy="22" r="4" fill="#d9a441" />
     </svg>
   );

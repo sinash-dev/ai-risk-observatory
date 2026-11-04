@@ -13,17 +13,17 @@ function Pipeline() {
   ];
   return (
     <svg viewBox="0 0 1000 170" className="viz-svg" role="img" aria-label="Data, training, model, prediction, decision">
-      <defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#8a8f9a" /></marker></defs>
+      <defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#6cc5b0" /></marker></defs>
       {steps.map((s, i) => {
         const x = 10 + i * 200;
         return (
           <g key={s.t}>
-            <rect x={x} y={10} width={170} height={150} rx={8} fill="#fff" stroke="#cfcbc0" />
-            <text x={x + 14} y={38} fontSize="17" fontWeight={600} fill="#1d2028" fontFamily="Source Serif 4, Georgia, serif">{i + 1}. {s.t}</text>
+            <rect x={x} y={10} width={170} height={150} rx={12} fill="#14171c" stroke="rgba(255,255,255,.12)" />
+            <text x={x + 14} y={38} fontSize="17" fontWeight={600} fill="#eceef1" fontFamily="Sora, sans-serif">{i + 1}. {s.t}</text>
             <foreignObject x={x + 12} y={50} width={148} height={105}>
-              <div style={{ fontSize: 13, color: '#5f6573', lineHeight: 1.4, fontFamily: 'IBM Plex Sans, sans-serif' }}>{s.d}</div>
+              <div style={{ fontSize: 13, color: '#9298a3', lineHeight: 1.4, fontFamily: 'Manrope, sans-serif' }}>{s.d}</div>
             </foreignObject>
-            {i < steps.length - 1 && <line x1={x + 172} y1={85} x2={x + 198} y2={85} stroke="#8a8f9a" strokeWidth="2" markerEnd="url(#arr)" />}
+            {i < steps.length - 1 && <line x1={x + 172} y1={85} x2={x + 198} y2={85} stroke="#6cc5b0" strokeWidth="2" strokeDasharray="4 4" markerEnd="url(#arr)" />}
           </g>
         );
       })}
@@ -68,6 +68,7 @@ export function Basics() {
             <li><a href="#/basics" onClick={(e) => { e.preventDefault(); document.getElementById('m4')?.scrollIntoView({ behavior: 'smooth' }); }}>Eight kinds of harm</a></li>
             <li><a href="#/basics" onClick={(e) => { e.preventDefault(); document.getElementById('m5')?.scrollIntoView({ behavior: 'smooth' }); }}>Laws, standards and security guides</a></li>
             <li><a href="#/basics" onClick={(e) => { e.preventDefault(); document.getElementById('m6')?.scrollIntoView({ behavior: 'smooth' }); }}>How to use this site</a></li>
+            <li><a href="#/basics" onClick={(e) => { e.preventDefault(); document.getElementById('m8')?.scrollIntoView({ behavior: 'smooth' }); }}>Running a 60-minute workshop</a></li>
             <li><a href="#/basics" onClick={(e) => { e.preventDefault(); document.getElementById('m7')?.scrollIntoView({ behavior: 'smooth' }); }}>Glossary</a></li>
           </ol>
         </div>
@@ -141,11 +142,11 @@ export function Basics() {
         <div className="narrow stack">
           <h2>5. Laws, standards and security guides</h2>
           <p><b>Laws</b> such as the EU AI Act and GDPR are binding where they apply and come with penalties. <b>Frameworks and standards</b> such as the NIST AI RMF and ISO/IEC 42001 are voluntary, but they describe recognised good practice, and ISO/IEC 42001 can be certified. <b>Security guides</b> such as the OWASP lists describe how attackers actually break AI systems.</p>
-          <p>They ask different questions. The EU AI Act asks <i>what is this used for?</i> GDPR asks <i>whose data is this?</i> NIST asks <i>which qualities of a trustworthy system are at stake?</i> ISO asks <i>is the organisation managing AI consistently?</i> OWASP asks <i>how could someone attack it?</i></p>
+          <p>They ask different questions. The EU AI Act and Korea’s AI Basic Act ask <i>what is this used for?</i> China’s rules ask <i>what kind of service is offered to the public?</i> Singapore asks <i>how much should a human be involved?</i> GDPR asks <i>whose data is this?</i> NIST asks <i>which qualities of a trustworthy system are at stake?</i> ISO asks <i>is the organisation managing AI consistently?</i> OWASP asks <i>how could someone attack it?</i></p>
         </div>
         <div className="grid3" style={{ marginTop: 20 }}>
           {FRAMEWORKS.map((f) => (
-            <a key={f.id} href={`#/rules/${f.id}`} className="card card-pad" style={{ color: 'inherit', display: 'block' }}>
+            <a key={f.id} href={`#/rules/${f.id}`} className="card card-pad lift" style={{ color: 'inherit', display: 'block' }}>
               <div className="label">{f.type}</div>
               <h3 style={{ marginTop: 4 }}>{f.short}</h3>
               <p className="muted small" style={{ marginTop: 6 }}>{f.approach.split('. ')[0]}.</p>
@@ -163,8 +164,32 @@ export function Basics() {
             <li><b>Switch on a problem</b> in the simulation and watch what changes. Problems are labelled as design choices, real-world changes or attacks.</li>
             <li><b>Switch on a safeguard</b> to see whether it fixes the problem. The summary below the simulation tells you what is still unhandled.</li>
             <li><b>Check how the rules apply.</b> Each framework’s requirements are listed, with the safeguards in the simulation that meet them.</li>
-            <li><b>Change the view.</b> Use “View through” at the top to see the whole site from one framework’s point of view.</li>
+            <li><b>Change the view.</b> Use “View through” at the top to see the whole site from one framework’s point of view, then follow that framework’s learning path in its guide.</li>
+            <li><b>Compare.</b> The Compare page shows how all ten frameworks answer the same question, such as transparency or human oversight.</li>
           </ol>
+        </div>
+      </section>
+
+      <section className="wrap section" id="m8">
+        <div className="narrow stack">
+          <h2>Running a 60-minute workshop</h2>
+          <p>A format that has worked well for mixed groups of managers, lawyers and engineers. You need a screen and, ideally, laptops in small groups.</p>
+        </div>
+        <div className="grid3" style={{ marginTop: 20 }}>
+          {[
+            ['0–10 min', 'Warm-up', 'Open the home page. Ask the group to place three AI systems they use at work on the rings. Read section 2 of this page together.'],
+            ['10–25 min', 'Break and fix', 'In groups, open Credit scoring. Switch on the postcode problem, watch approvals change, then find the safeguard. Each group reports one surprise.'],
+            ['25–40 min', 'One framework', 'Set “View through” to the framework that matters most to you. Follow the first four steps of its learning path.'],
+            ['40–50 min', 'Compare', 'Open Compare and pick Transparency. Ask: where would we be compliant in one country and not another?'],
+            ['50–55 min', 'The hard case', 'Open Emotion recognition. Discuss: what do you do when no safeguard works?'],
+            ['55–60 min', 'Take away', 'Each person names one system at work, its likely category, and one safeguard they would check on Monday.'],
+          ].map(([time, t, d]) => (
+            <div key={t} className="card card-pad">
+              <div className="mono accent small">{time}</div>
+              <h3 style={{ marginTop: 4 }}>{t}</h3>
+              <p className="muted small" style={{ marginTop: 6 }}>{d}</p>
+            </div>
+          ))}
         </div>
       </section>
 

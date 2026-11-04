@@ -296,7 +296,7 @@ export function FeedViz({ s, m }: VizProps) {
             for (let k = 0; k < 5; k++) { cum += cur.p[k]; if (u <= cum) { c = k; break; } }
             return <circle key={i} cx={130 + Math.cos(a) * rad} cy={130 + Math.sin(a) * rad} r="3.4" fill={TOPICS[c].c} />;
           })}
-          <text x="130" y="128" textAnchor="middle" fontSize="20" fill="#fff" fontFamily="IBM Plex Sans" fontWeight={600}>{Math.round(cur.div * 100)}%</text>
+          <text x="130" y="128" textAnchor="middle" fontSize="20" fill="#fff" fontFamily="Manrope" fontWeight={600}>{Math.round(cur.div * 100)}%</text>
           <text x="130" y="144" textAnchor="middle" fontSize="9" fill="#a3a9b8" fontFamily="IBM Plex Mono">DIVERSITY</text>
         </svg>
         <svg viewBox={`0 0 ${W} ${H}`} className="viz-svg">

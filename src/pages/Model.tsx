@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 import { Toggle } from '../components/ui';
-import { FRAMEWORKS, FW_BY_ID, type FwId } from '../data/frameworks';
+import { FRAMEWORKS, FW_BY_ID, fwName, type FwId } from '../data/frameworks';
 import { LABS, LAB_BY_ID, fwEntry } from '../data/labs';
 import { KIND_LABEL, RISKS, TIER_BY_ID, computeScores, isCountered, level } from '../data/risks';
 import type { LabDef } from '../data/types';
@@ -16,7 +16,7 @@ function FrameworkBlock({ lab, fw, m }: { lab: LabDef; fw: FwId; m: Set<string> 
   return (
     <div>
       <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap', marginBottom: 10 }}>
-        <span className="tag" style={{ background: cat.color, color: '#fff' }}>{cat.label}</span>
+        <span className="tag"><span className="swatch" style={{ background: cat.color }} />{cat.label}</span>
         <span className="muted small">{e.status}</span>
       </div>
       <p style={{ marginBottom: 16 }}>{e.summary}</p>
@@ -36,7 +36,7 @@ function FrameworkBlock({ lab, fw, m }: { lab: LabDef; fw: FwId; m: Set<string> 
           </div>
         ))}
       </div>
-      <p className="small" style={{ marginTop: 14 }}><a href={`#/rules/${fw}`}>About the {f.short} →</a></p>
+      <p className="small" style={{ marginTop: 14 }}><a href={`#/rules/${fw}`}>Read the full guide to {fwName(fw)} →</a></p>
     </div>
   );
 }
@@ -87,7 +87,7 @@ export function ModelPage({ id }: { id: string }) {
             </div>
           </div>
           <div className="card card-pad">
-            <div className="label" style={{ marginBottom: 10 }}>{lens === 'all' ? 'How each framework classifies this use' : `Under the ${FW_BY_ID[lens].short}`}</div>
+            <div className="label" style={{ marginBottom: 10 }}>{lens === 'all' ? 'How each framework classifies this use' : `Under ${fwName(lens)}`}</div>
             {shownFw.map((fw) => {
               const e = fwEntry(fw, lab.id);
               const cat = FW_BY_ID[fw].cats.find((c) => c.id === e.cat)!;
@@ -169,7 +169,7 @@ export function ModelPage({ id }: { id: string }) {
                   return (
                     <div key={r.key} style={{ display: 'grid', gridTemplateColumns: '170px minmax(0,1fr) 64px', gap: 10, alignItems: 'center', fontSize: 14 }}>
                       <span title={r.desc}>{r.label}</span>
-                      <div style={{ height: 8, borderRadius: 4, background: '#eceae4' }}>
+                      <div style={{ height: 8, borderRadius: 4, background: 'rgba(255,255,255,.08)' }}>
                         <motion.div animate={{ width: `${Math.max(4, v)}%`, backgroundColor: lv.color }} style={{ height: 8, borderRadius: 4 }} />
                       </div>
                       <span style={{ color: lv.color, fontWeight: 600, fontSize: 13 }}>{lv.label}</span>
@@ -193,7 +193,7 @@ export function ModelPage({ id }: { id: string }) {
             </div>
           </>
         ) : (
-          <p className="muted" style={{ marginTop: 8 }}>Showing the {FW_BY_ID[lens].short} only. <a href="#" onClick={(ev) => { ev.preventDefault(); setLens('all'); }}>Show all frameworks</a></p>
+          <p className="muted" style={{ marginTop: 8 }}>Showing {fwName(lens)} only. <a href="#" onClick={(ev) => { ev.preventDefault(); setLens('all'); }}>Show all frameworks</a></p>
         )}
         <div className="card card-pad" style={{ marginTop: lens === 'all' ? 0 : 18, borderTopLeftRadius: lens === 'all' ? 0 : 10, borderTopRightRadius: lens === 'all' ? 0 : 10 }}>
           <FrameworkBlock key={curTab} lab={lab} fw={curTab} m={m} />
@@ -215,7 +215,7 @@ export function ModelPage({ id }: { id: string }) {
           </div>
           <div>
             <h2>In short</h2>
-            <p style={{ marginTop: 14, fontFamily: 'var(--serif)', fontSize: 21, lineHeight: 1.45 }}>{lab.lesson}</p>
+            <p style={{ marginTop: 14, fontFamily: 'var(--serif)', fontSize: 20, lineHeight: 1.5, fontWeight: 500 }}>{lab.lesson}</p>
           </div>
         </div>
         <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12, marginTop: 40, flexWrap: 'wrap' }}>
