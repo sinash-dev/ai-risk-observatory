@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { Breadcrumbs, Toc } from '../components/Nav';
 import { HTimeline, Roadmap, TODAY, TODAY_LABEL, parseDate } from '../components/Timeline';
 import { FRAMEWORKS, FW_BY_ID, OTHER_FRAMEWORKS, fwName, type Framework, type FwId } from '../data/frameworks';
 import { LABS, LAB_BY_ID, fwEntry } from '../data/labs';
@@ -156,9 +157,22 @@ export function FrameworkPage({ id }: { id: string }) {
   if (!f) return <div className="wrap section"><h1>Not found</h1><p><a href={url('/rules')}>All frameworks</a></p></div>;
   const counts = f.cats.map((c) => LABS.filter((l) => fwEntry(f.id, l.id).cat === c.id).length);
   const total = LABS.length;
+  const toc = [
+    { id: 'overview', label: 'Overview' },
+    { id: 'categories', label: 'Categories' },
+    { id: 'requirements', label: 'Key requirements' },
+    { id: 'timeline', label: 'Timeline' },
+    ...(f.roadmap || f.learn ? [{ id: 'roadmap', label: 'Roadmap' }] : []),
+    ...(f.extras ?? []).map((x, i) => ({ id: `more-${i}`, label: x.title.length > 28 ? x.title.slice(0, 26).replace(/\s+\S*$/, '') + '…' : x.title })),
+    { id: 'enforcement', label: 'Enforcement' },
+    { id: 'examples', label: 'Examples' },
+  ];
   return (
+    <div className="with-rail">
+    <Toc items={toc} />
+    <div className="rail-main">
     <div className="wrap" style={{ padding: '30px 0 40px' }}>
-      <div className="crumbs"><a href={url('/rules')}>Rules and frameworks</a> / {f.short}</div>
+      <Breadcrumbs trail={[{ to: '/rules', label: 'Frameworks' }, { label: f.short }]} />
       <motion.div className="narrow stack" style={{ marginTop: 12 }} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}>
         <h1>{f.name}</h1>
         <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}><span className="tag">{f.type}</span><span className="tag">{f.where}</span><span className="tag">{f.binding}</span>{f.reviewed && <span className="tag">Last reviewed {fmtDate(f.reviewed)}</span>}</div>
@@ -171,14 +185,14 @@ export function FrameworkPage({ id }: { id: string }) {
         </div>
       </motion.div>
 
-      <section className="section">
+      <section className="section" id="overview">
         <div className="grid2">
           <div className="stack"><h2>Who it applies to</h2><p className="muted">{f.who}</p></div>
           <div className="stack"><h2>How it works</h2><p className="muted">{f.approach}</p></div>
         </div>
       </section>
 
-      <section className="section">
+      <section className="section" id="categories">
         <h2>{f.catsTitle}</h2>
         <p className="muted small" style={{ marginTop: 6 }}>How the {total} examples on this site are distributed:</p>
         <div style={{ display: 'flex', height: 14, borderRadius: 7, overflow: 'hidden', marginTop: 12, background: 'rgba(255,255,255,.05)' }}>
@@ -198,7 +212,7 @@ export function FrameworkPage({ id }: { id: string }) {
         </div>
       </section>
 
-      <section className="section">
+      <section className="section" id="requirements">
         <h2>{f.keyTitle}</h2>
         <div className="card" style={{ marginTop: 18 }}>
           {f.keyReqs.map((k, i) => (
@@ -210,13 +224,13 @@ export function FrameworkPage({ id }: { id: string }) {
         </div>
       </section>
 
-      <section className="section">
+      <section className="section" id="timeline">
         <h2>Timeline</h2>
         <div style={{ marginTop: 10 }}><HTimeline events={f.timeline} /></div>
       </section>
 
       {(f.roadmap || f.learn) && (
-        <section className="section">
+        <section className="section" id="roadmap">
           <div className="grid2" style={{ alignItems: 'start' }}>
             {f.roadmap && (
               <div>
@@ -243,8 +257,8 @@ export function FrameworkPage({ id }: { id: string }) {
         </section>
       )}
 
-      {f.extras?.map((x) => (
-        <section key={x.title} className="section">
+      {f.extras?.map((x, xi) => (
+        <section key={x.title} className="section" id={`more-${xi}`}>
           <h2>{x.title}</h2>
           {x.intro && <p className="muted" style={{ marginTop: 6 }}>{x.intro}</p>}
           <div className="grid3" style={{ marginTop: 18 }}>
@@ -258,7 +272,7 @@ export function FrameworkPage({ id }: { id: string }) {
         </section>
       ))}
 
-      <section className="section">
+      <section className="section" id="enforcement">
         <div className="grid2">
           <div className="stack"><h2>Penalties and enforcement</h2><p className="muted">{f.penalties}</p></div>
           <div className="stack">
@@ -268,7 +282,7 @@ export function FrameworkPage({ id }: { id: string }) {
         </div>
       </section>
 
-      <section className="section">
+      <section className="section" id="examples">
         <h2>How it treats each example</h2>
         <div className="card" style={{ marginTop: 18, overflowX: 'auto' }}>
           <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 14.5, minWidth: 760 }}>
@@ -290,6 +304,8 @@ export function FrameworkPage({ id }: { id: string }) {
         </div>
       </section>
       <style>{'@media (max-width: 760px){.other-row{grid-template-columns:minmax(0,1fr) !important; gap:4px !important}}'}</style>
+    </div>
+    </div>
     </div>
   );
 }

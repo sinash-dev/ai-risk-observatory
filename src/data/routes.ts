@@ -52,3 +52,22 @@ export function routeMeta(path: string): RouteMeta {
   const p = path === '' ? '/' : path;
   return allRoutes().find((r) => r.path === p) ?? NOT_FOUND;
 }
+
+/** Site navigation. Items appear in the header and footer once their page is in STATIC_PAGES. */
+export interface NavItem { path: string; label: string; desc: string; group: 'main' | 'learn' | 'tools' | 'about' }
+export const NAV: NavItem[] = [
+  { path: '/', label: 'Models', desc: 'All examples on one map', group: 'main' },
+  { path: '/rules', label: 'Frameworks', desc: 'Laws, standards and guides by region', group: 'main' },
+  { path: '/compare', label: 'Compare', desc: 'Frameworks side by side', group: 'main' },
+  { path: '/basics', label: 'Basics', desc: 'How models work and where risk comes from', group: 'learn' },
+  { path: '/tracks', label: 'Learning tracks', desc: 'Routes through the site by role', group: 'learn' },
+  { path: '/glossary', label: 'Glossary', desc: 'Plain definitions of the terms used here', group: 'learn' },
+  { path: '/quiz', label: 'Quizzes', desc: 'Check what you have learned', group: 'learn' },
+  { path: '/classify', label: 'Classify your system', desc: 'A short wizard across all frameworks', group: 'tools' },
+  { path: '/crosswalk', label: 'Controls crosswalk', desc: 'One control, ten frameworks', group: 'tools' },
+  { path: '/toolkit', label: 'Toolkit', desc: 'Templates you can download and adapt', group: 'tools' },
+  { path: '/cases', label: 'Case library', desc: 'Real incidents behind the examples', group: 'tools' },
+  { path: '/about', label: 'About', desc: 'Who made this and how it is kept accurate', group: 'about' },
+  { path: '/updates', label: 'Updates', desc: 'What changed and when', group: 'about' },
+];
+export const liveNav = (group?: NavItem['group']) => NAV.filter((n) => (!group || n.group === group) && STATIC_PAGES.some((p) => p.path === n.path));

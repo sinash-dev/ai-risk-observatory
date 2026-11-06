@@ -88,10 +88,10 @@ function Orbit() {
 }
 
 const PURPOSES = [
-  { t: 'Learn one framework properly', d: 'Pick it under “View through”. The map, every example and every requirement switch to that framework. Then follow its learning path.', href: '#/rules', cta: 'Choose a framework' },
-  { t: 'Compare frameworks on a topic', d: 'How do the frameworks treat transparency, human oversight or bias? See it side by side in a strength grid and radar chart.', href: '#/compare', cta: 'Open the comparison' },
-  { t: 'See how a model fails', d: 'Pick any example below, switch on a problem, then add a safeguard and see whether it helps.', href: '#/model/credit', cta: 'Start with credit scoring' },
-  { t: 'Run a training session', d: 'A ready-made 60-minute workshop plan, plus a primer on how models work and where risk comes from.', href: '#/basics', cta: 'Open the basics' },
+  { t: 'Learn one framework properly', d: 'Pick it under “View through”. The map, every example and every requirement switch to that framework. Then follow its learning path.', href: url('/rules'), cta: 'Choose a framework' },
+  { t: 'Compare frameworks on a topic', d: 'How do the frameworks treat transparency, human oversight or bias? See it side by side in a strength grid and radar chart.', href: url('/compare'), cta: 'Open the comparison' },
+  { t: 'See how a model fails', d: 'Pick any example below, switch on a problem, then add a safeguard and see whether it helps.', href: url('/model/credit'), cta: 'Start with credit scoring' },
+  { t: 'Run a training session', d: 'A ready-made 60-minute workshop plan, plus a primer on how models work and where risk comes from.', href: url('/basics'), cta: 'Open the basics' },
 ];
 
 function Icon({ i }: { i: number }) {
@@ -141,7 +141,7 @@ export function Home() {
             ? fw.cats.map((c) => { const n = LABS.filter((l) => fwEntry(fw.id, l.id).cat === c.id).length; return n ? <span key={c.id} className="small muted" style={{ display: 'inline-flex', gap: 7, alignItems: 'center' }}><span className="swatch" style={{ background: c.color }} />{c.label} ({n})</span> : null; })
             : TIERS.map((t, i) => <span key={t.id} className="small muted" style={{ display: 'inline-flex', gap: 7, alignItems: 'center' }}><span className="swatch" style={{ background: t.color }} />{['Inner ring', 'Second ring', 'Third ring', 'Outer ring'][i]}: {t.label}</span>)}
         </div>
-        <div className="scroll-x" tabIndex={0} role="region" aria-label="Model map, scrolls sideways"><div style={{ minWidth: 760 }}><Orbit /></div></div>
+        <div className="scroll-x" data-tour="orbit" tabIndex={0} role="region" aria-label="Model map, scrolls sideways"><div style={{ minWidth: 760 }}><Orbit /></div></div>
       </section>
 
       {!fw && (
@@ -165,7 +165,7 @@ export function Home() {
         <p className="muted" style={{ marginTop: 6, marginBottom: 20 }}>Every example opens a simulation and shows how the rules apply to it.</p>
         <div className="grid2" style={{ alignItems: 'start' }}>
           {groups.map((g, i) => (
-            <motion.div key={g.key} className="card" style={{ overflow: 'hidden' }} initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: (i % 2) * 0.08 }}>
+            <motion.div key={g.key} data-tour={i === 0 ? 'model-card' : undefined} className="card" style={{ overflow: 'hidden' }} initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: (i % 2) * 0.08 }}>
               <div style={{ padding: '18px 18px 14px', display: 'flex', gap: 12 }}>
                 <span className="swatch" style={{ background: g.color, width: 10, height: 10, marginTop: 7 }} />
                 <div>

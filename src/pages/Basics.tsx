@@ -1,3 +1,4 @@
+import { Breadcrumbs, Toc } from '../components/Nav';
 import { FRAMEWORKS } from '../data/frameworks';
 import { url } from '../lib/util';
 import { LABS } from '../data/labs';
@@ -55,23 +56,27 @@ const GLOSSARY: [string, string][] = [
   ['Agent', 'An AI system that plans and takes actions with tools, such as sending emails or making payments, with limited human input.'],
 ];
 
+const BASICS_TOC = [
+  { id: 'm1', label: 'What a model is' },
+  { id: 'm2', label: 'Four families' },
+  { id: 'm3', label: 'Where things go wrong' },
+  { id: 'm4', label: 'Kinds of harm' },
+  { id: 'm5', label: 'Laws and standards' },
+  { id: 'm6', label: 'Using this site' },
+  { id: 'm8', label: 'Workshop' },
+  { id: 'm7', label: 'Glossary' },
+];
+
 export function Basics() {
   return (
-    <div>
-      <section className="wrap" style={{ padding: '40px 0 10px' }}>
+    <div className="with-rail">
+      <Toc items={BASICS_TOC} />
+      <div className="rail-main">
+      <section className="wrap" style={{ padding: '30px 0 10px' }}>
         <div className="narrow stack">
+          <Breadcrumbs trail={[{ label: 'Learn' }, { label: 'The basics' }]} />
           <h1>The basics</h1>
           <p className="lead">A short guide to how AI models work, where their risks come from, and how rules and frameworks deal with them. It takes about ten minutes to read, and every section links to working examples.</p>
-          <ol className="muted" style={{ paddingLeft: 20, margin: 0 }}>
-            <li><a href="#m1" onClick={(e) => { e.preventDefault(); document.getElementById('m1')?.scrollIntoView({ behavior: 'smooth' }); }}>What a machine learning model is</a></li>
-            <li><a href="#m2" onClick={(e) => { e.preventDefault(); document.getElementById('m2')?.scrollIntoView({ behavior: 'smooth' }); }}>Four families of AI</a></li>
-            <li><a href="#m3" onClick={(e) => { e.preventDefault(); document.getElementById('m3')?.scrollIntoView({ behavior: 'smooth' }); }}>Where things go wrong</a></li>
-            <li><a href="#m4" onClick={(e) => { e.preventDefault(); document.getElementById('m4')?.scrollIntoView({ behavior: 'smooth' }); }}>Eight kinds of harm</a></li>
-            <li><a href="#m5" onClick={(e) => { e.preventDefault(); document.getElementById('m5')?.scrollIntoView({ behavior: 'smooth' }); }}>Laws, standards and security guides</a></li>
-            <li><a href="#m6" onClick={(e) => { e.preventDefault(); document.getElementById('m6')?.scrollIntoView({ behavior: 'smooth' }); }}>How to use this site</a></li>
-            <li><a href="#m8" onClick={(e) => { e.preventDefault(); document.getElementById('m8')?.scrollIntoView({ behavior: 'smooth' }); }}>Running a 60-minute workshop</a></li>
-            <li><a href="#m7" onClick={(e) => { e.preventDefault(); document.getElementById('m7')?.scrollIntoView({ behavior: 'smooth' }); }}>Glossary</a></li>
-          </ol>
         </div>
       </section>
 
@@ -202,6 +207,7 @@ export function Basics() {
           ))}
         </div>
       </section>
+      </div>
     </div>
   );
 }

@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion';
 import type { ReactNode } from 'react';
 import { useTween } from '../lib/util';
 
@@ -50,7 +51,10 @@ export function Logo() {
 export function Toggle({ on, kind, title, desc, note, onClick }: { on: boolean; kind: 'problem' | 'fix'; title: string; desc: string; note?: ReactNode; onClick: () => void }) {
   return (
     <button className={`toggle ${kind} ${on ? 'on' : ''}`} onClick={onClick} aria-pressed={on}>
-      <span className="sw" />
+      <span aria-hidden>
+        <span className="sw"><motion.span layout className="knob" transition={{ type: 'spring', stiffness: 600, damping: 32 }} /></span>
+        <span className="toggle-state">{on ? 'On' : 'Off'}</span>
+      </span>
       <span>
         <span className="toggle-t" style={{ display: 'block' }}>{title}</span>
         <span className="toggle-d" style={{ display: 'block' }}>{desc}</span>

@@ -72,6 +72,7 @@ export function useTween(target: number, speed = 0.12) {
   const [v, setV] = useState(target);
   const cur = useRef(target);
   useEffect(() => {
+    if (prefersReducedMotion()) { cur.current = target; setV(target); return; }
     let raf = 0;
     const tick = () => {
       cur.current += (target - cur.current) * speed;
@@ -89,6 +90,7 @@ export function useTweenArray(target: number[], speed = 0.12) {
   const cur = useRef(target.slice());
   const key = target.map((x) => x.toFixed(2)).join(',');
   useEffect(() => {
+    if (prefersReducedMotion()) { cur.current = target.slice(); setV(target.slice()); return; }
     let raf = 0;
     const tick = () => {
       let done = true;

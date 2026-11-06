@@ -1,6 +1,7 @@
 {
   "version": "0.0.1",
   "configurations": [
-    { "name": "observatory", "runtimeExecutable": "npx", "runtimeArgs": ["vite", "--port", "5179", "--strictPort"], "port": 5179 }
+    { "name": "observatory", "runtimeExecutable": "npx", "runtimeArgs": ["vite", "--port", "5179", "--strictPort"], "port": 5179, "url": "http://localhost:5179" },
+    { "name": "preview", "runtimeExecutable": "npx", "runtimeArgs": ["vite", "preview", "--port", "4174", "--strictPort"], "port": 4174 }
   ]
 }

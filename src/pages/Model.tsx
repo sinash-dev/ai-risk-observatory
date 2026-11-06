@@ -1,3 +1,4 @@
+import { Breadcrumbs } from '../components/Nav';
 import { motion } from 'framer-motion';
 import { url } from '../lib/util';
 import { Suspense, useState } from 'react';
@@ -68,7 +69,7 @@ export function ModelPage({ id, query }: { id: string; query?: URLSearchParams }
   return (
     <div>
       <section className="wrap" style={{ padding: '30px 0 8px' }}>
-        <div className="crumbs"><a href={url('/')}>All models</a> / {tier.label}</div>
+        <Breadcrumbs trail={[{ to: '/', label: 'Models' }, { label: tier.label }, { label: lab.short }]} />
         <h1 style={{ marginTop: 10 }}>{lab.model}</h1>
         <p className="lead" style={{ marginTop: 6 }}>Example: {lab.app.charAt(0).toLowerCase() + lab.app.slice(1)}</p>
       </section>
