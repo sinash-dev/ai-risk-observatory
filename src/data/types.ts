@@ -27,6 +27,10 @@ export interface Stressor {
   headline: string;
   outlet: string;
   quote?: { who: string; text: string };
+  /** no safeguard can make this acceptable (e.g. a banned practice) */
+  unmitigable?: boolean;
+  /** OWASP or other codes that apply, e.g. 'LLM01:2026', 'ASI03' */
+  codes?: string[];
 }
 
 export interface Mitigation {
@@ -43,6 +47,10 @@ export interface Incident {
   year: string;
   title: string;
   text: string;
+  /** verified source URL only; never guessed */
+  url?: string;
+  source?: string;
+  outcome?: string;
 }
 
 export interface VizProps {
