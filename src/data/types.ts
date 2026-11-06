@@ -1,5 +1,3 @@
-import type { FC } from 'react';
-
 export type RiskKey =
   | 'fairness'
   | 'robustness'
@@ -79,5 +77,4 @@ export interface LabDef {
   incidents: Incident[];
   checklist: string[];
   lesson: string;
-  Viz: FC<VizProps>;
 }

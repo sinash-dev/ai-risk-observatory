@@ -1,5 +1,4 @@
 import type { LabDef } from '../data/types';
-import { EmotionViz, FaceViz, FoundationViz, SpamViz } from './extraViz';
 
 export const spamLab: LabDef = {
   id: 'spam',
@@ -33,7 +32,6 @@ export const spamLab: LabDef = {
   ],
   checklist: [],
   lesson: 'Low-risk systems still fail. Most rules ask you to spend your effort where failures hurt people most, and a spam filter is near the bottom of that list.',
-  Viz: SpamViz,
 };
 
 export const faceLab: LabDef = {
@@ -69,7 +67,6 @@ export const faceLab: LabDef = {
   ],
   checklist: [],
   lesson: 'In face recognition the threshold is a policy decision about who gets wrongly stopped. It needs testing across groups and a human check before anyone is approached.',
-  Viz: FaceViz,
 };
 
 export const emotionLab: LabDef = {
@@ -103,7 +100,6 @@ export const emotionLab: LabDef = {
   ],
   checklist: [],
   lesson: 'Some risks cannot be managed, only avoided. When the science is weak and the stakes are people’s jobs, the right safeguard can be to not build the system.',
-  Viz: EmotionViz,
 };
 
 export const foundationLab: LabDef = {
@@ -138,5 +134,4 @@ export const foundationLab: LabDef = {
   ],
   checklist: [],
   lesson: 'Choices made once, during training, travel into every product built on the model. That is why the law puts separate duties on model developers.',
-  Viz: FoundationViz,
 };

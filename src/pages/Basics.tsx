@@ -1,4 +1,5 @@
 import { FRAMEWORKS } from '../data/frameworks';
+import { url } from '../lib/util';
 import { LABS } from '../data/labs';
 import { RISKS, TIERS } from '../data/risks';
 import { SHORT_NAME } from './Home';
@@ -19,9 +20,9 @@ function Pipeline() {
         return (
           <g key={s.t}>
             <rect x={x} y={10} width={170} height={150} rx={12} fill="#14171c" stroke="rgba(255,255,255,.12)" />
-            <text x={x + 14} y={38} fontSize="17" fontWeight={600} fill="#eceef1" fontFamily="Sora, sans-serif">{i + 1}. {s.t}</text>
+            <text x={x + 14} y={38} fontSize="17" fontWeight={600} fill="#eceef1" fontFamily="Sora Variable, Sora, sans-serif">{i + 1}. {s.t}</text>
             <foreignObject x={x + 12} y={50} width={148} height={105}>
-              <div style={{ fontSize: 13, color: '#9298a3', lineHeight: 1.4, fontFamily: 'Manrope, sans-serif' }}>{s.d}</div>
+              <div style={{ fontSize: 13, color: '#9298a3', lineHeight: 1.4, fontFamily: 'Manrope Variable, Manrope, sans-serif' }}>{s.d}</div>
             </foreignObject>
             {i < steps.length - 1 && <line x1={x + 172} y1={85} x2={x + 198} y2={85} stroke="#6cc5b0" strokeWidth="2" strokeDasharray="4 4" markerEnd="url(#arr)" />}
           </g>
@@ -62,14 +63,14 @@ export function Basics() {
           <h1>The basics</h1>
           <p className="lead">A short guide to how AI models work, where their risks come from, and how rules and frameworks deal with them. It takes about ten minutes to read, and every section links to working examples.</p>
           <ol className="muted" style={{ paddingLeft: 20, margin: 0 }}>
-            <li><a href="#/basics" onClick={(e) => { e.preventDefault(); document.getElementById('m1')?.scrollIntoView({ behavior: 'smooth' }); }}>What a machine learning model is</a></li>
-            <li><a href="#/basics" onClick={(e) => { e.preventDefault(); document.getElementById('m2')?.scrollIntoView({ behavior: 'smooth' }); }}>Four families of AI</a></li>
-            <li><a href="#/basics" onClick={(e) => { e.preventDefault(); document.getElementById('m3')?.scrollIntoView({ behavior: 'smooth' }); }}>Where things go wrong</a></li>
-            <li><a href="#/basics" onClick={(e) => { e.preventDefault(); document.getElementById('m4')?.scrollIntoView({ behavior: 'smooth' }); }}>Eight kinds of harm</a></li>
-            <li><a href="#/basics" onClick={(e) => { e.preventDefault(); document.getElementById('m5')?.scrollIntoView({ behavior: 'smooth' }); }}>Laws, standards and security guides</a></li>
-            <li><a href="#/basics" onClick={(e) => { e.preventDefault(); document.getElementById('m6')?.scrollIntoView({ behavior: 'smooth' }); }}>How to use this site</a></li>
-            <li><a href="#/basics" onClick={(e) => { e.preventDefault(); document.getElementById('m8')?.scrollIntoView({ behavior: 'smooth' }); }}>Running a 60-minute workshop</a></li>
-            <li><a href="#/basics" onClick={(e) => { e.preventDefault(); document.getElementById('m7')?.scrollIntoView({ behavior: 'smooth' }); }}>Glossary</a></li>
+            <li><a href="#m1" onClick={(e) => { e.preventDefault(); document.getElementById('m1')?.scrollIntoView({ behavior: 'smooth' }); }}>What a machine learning model is</a></li>
+            <li><a href="#m2" onClick={(e) => { e.preventDefault(); document.getElementById('m2')?.scrollIntoView({ behavior: 'smooth' }); }}>Four families of AI</a></li>
+            <li><a href="#m3" onClick={(e) => { e.preventDefault(); document.getElementById('m3')?.scrollIntoView({ behavior: 'smooth' }); }}>Where things go wrong</a></li>
+            <li><a href="#m4" onClick={(e) => { e.preventDefault(); document.getElementById('m4')?.scrollIntoView({ behavior: 'smooth' }); }}>Eight kinds of harm</a></li>
+            <li><a href="#m5" onClick={(e) => { e.preventDefault(); document.getElementById('m5')?.scrollIntoView({ behavior: 'smooth' }); }}>Laws, standards and security guides</a></li>
+            <li><a href="#m6" onClick={(e) => { e.preventDefault(); document.getElementById('m6')?.scrollIntoView({ behavior: 'smooth' }); }}>How to use this site</a></li>
+            <li><a href="#m8" onClick={(e) => { e.preventDefault(); document.getElementById('m8')?.scrollIntoView({ behavior: 'smooth' }); }}>Running a 60-minute workshop</a></li>
+            <li><a href="#m7" onClick={(e) => { e.preventDefault(); document.getElementById('m7')?.scrollIntoView({ behavior: 'smooth' }); }}>Glossary</a></li>
           </ol>
         </div>
       </section>
@@ -80,7 +81,7 @@ export function Basics() {
           <p>A traditional program follows rules a person wrote. A machine learning model writes its own rules by finding patterns in examples. Show it thousands of past loan applications and whether each loan was repaid, and it learns which combinations of income, debt and history tend to go with repayment. Given a new application, it produces a score.</p>
           <p>That is both the strength and the weakness. The model learns whatever patterns are in the data, including unfair ones and accidental ones, and it has no idea when the world has changed since it was trained.</p>
         </div>
-        <div className="scroll-x" style={{ marginTop: 24 }}><div style={{ minWidth: 760 }}><Pipeline /></div></div>
+        <div className="scroll-x" tabIndex={0} role="region" aria-label="Pipeline diagram, scrolls sideways" style={{ marginTop: 24 }}><div style={{ minWidth: 760 }}><Pipeline /></div></div>
       </section>
 
       <section className="wrap section" id="m2">
@@ -94,7 +95,7 @@ export function Basics() {
               <h3>{t.label}</h3>
               <p className="muted" style={{ marginTop: 6 }}>{t.tagline}</p>
               <p className="small" style={{ marginTop: 10 }}>
-                Examples: {LABS.filter((l) => l.tier === t.id).map((l, i) => <span key={l.id}>{i ? ', ' : ''}<a href={`#/model/${l.id}`}>{SHORT_NAME[l.id]}</a></span>)}
+                Examples: {LABS.filter((l) => l.tier === t.id).map((l, i) => <span key={l.id}>{i ? ', ' : ''}<a href={url(`/model/${l.id}`)}>{SHORT_NAME[l.id]}</a></span>)}
               </p>
             </div>
           ))}
@@ -106,7 +107,7 @@ export function Basics() {
           <h2>3. Where things go wrong</h2>
           <p>Risk can enter at every stage of a system’s life. Each safeguard in the simulations is tagged to one of these stages.</p>
         </div>
-        <div className="card" style={{ marginTop: 20, overflowX: 'auto' }}>
+        <div className="card" tabIndex={0} role="region" aria-label="Risk stages table, scrolls sideways" style={{ marginTop: 20, overflowX: 'auto' }}>
           <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 15, minWidth: 760 }}>
             <thead><tr style={{ textAlign: 'left' }}>{['Stage', 'What goes wrong', 'Example', 'Typical safeguard'].map((h) => <th key={h} className="label" style={{ padding: '12px 16px', borderBottom: '1px solid var(--line)' }}>{h}</th>)}</tr></thead>
             <tbody>
@@ -146,7 +147,7 @@ export function Basics() {
         </div>
         <div className="grid3" style={{ marginTop: 20 }}>
           {FRAMEWORKS.map((f) => (
-            <a key={f.id} href={`#/rules/${f.id}`} className="card card-pad lift" style={{ color: 'inherit', display: 'block' }}>
+            <a key={f.id} href={url(`/rules/${f.id}`)} className="card card-pad lift" style={{ color: 'inherit', display: 'block' }}>
               <div className="label">{f.type}</div>
               <h3 style={{ marginTop: 4 }}>{f.short}</h3>
               <p className="muted small" style={{ marginTop: 6 }}>{f.approach.split('. ')[0]}.</p>
@@ -159,7 +160,7 @@ export function Basics() {
         <div className="narrow stack">
           <h2>6. How to use this site</h2>
           <ol style={{ paddingLeft: 20, margin: 0 }} className="stack">
-            <li><b>Pick an example</b> from the <a href="#/">overview</a>. Each one pairs a model with a realistic use.</li>
+            <li><b>Pick an example</b> from the <a href={url('/')}>overview</a>. Each one pairs a model with a realistic use.</li>
             <li><b>Read the situation.</b> It explains what the organisation wants and who is affected.</li>
             <li><b>Switch on a problem</b> in the simulation and watch what changes. Problems are labelled as design choices, real-world changes or attacks.</li>
             <li><b>Switch on a safeguard</b> to see whether it fixes the problem. The summary below the simulation tells you what is still unhandled.</li>

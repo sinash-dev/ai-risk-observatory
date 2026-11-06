@@ -96,7 +96,7 @@ export function LesionViz({ s, m }: VizProps) {
                 <span style={{ color: predMal ? '#f39aa4' : '#8fdcf7', fontWeight: 600 }}>{predMal ? 'MALIG.' : 'BENIGN'} {(predMal ? p : 1 - p).toFixed(2)}</span>
                 <span style={{ color: correct ? C.good : C.bad }}>{correct ? '✓' : '✗'}</span>
               </div>
-              <div style={{ padding: '0 8px 7px', fontSize: 9.5, color: 'var(--dim)', fontFamily: 'var(--mono)' }}>
+              <div style={{ padding: '0 8px 7px', fontSize: 9.5, color: 'var(--muted)', fontFamily: 'var(--mono)' }}>
                 type {['I', 'II', 'III', 'IV', 'V', 'VI'][t.tone]} · {isAdv ? <span style={{ color: C.bad }}>perturbed</span> : auto && !predMal ? <span style={{ color: C.warn }}>auto-discharged</span> : t.mal ? 'truth: malig.' : 'truth: benign'}
               </div>
             </motion.div>
@@ -296,7 +296,7 @@ export function FeedViz({ s, m }: VizProps) {
             for (let k = 0; k < 5; k++) { cum += cur.p[k]; if (u <= cum) { c = k; break; } }
             return <circle key={i} cx={130 + Math.cos(a) * rad} cy={130 + Math.sin(a) * rad} r="3.4" fill={TOPICS[c].c} />;
           })}
-          <text x="130" y="128" textAnchor="middle" fontSize="20" fill="#fff" fontFamily="Manrope" fontWeight={600}>{Math.round(cur.div * 100)}%</text>
+          <text x="130" y="128" textAnchor="middle" fontSize="20" fill="#fff" fontFamily="Manrope Variable, Manrope, sans-serif" fontWeight={600}>{Math.round(cur.div * 100)}%</text>
           <text x="130" y="144" textAnchor="middle" fontSize="9" fill="#a3a9b8" fontFamily="IBM Plex Mono">DIVERSITY</text>
         </svg>
         <svg viewBox={`0 0 ${W} ${H}`} className="viz-svg">

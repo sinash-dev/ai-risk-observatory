@@ -1,5 +1,7 @@
 import { motion } from 'framer-motion';
-import { useState } from 'react';
+import { url } from '../lib/util';
+import { Suspense, useState } from 'react';
+import { VIZ } from '../labs/viz';
 import { Toggle } from '../components/ui';
 import { FRAMEWORKS, FW_BY_ID, fwName, type FwId } from '../data/frameworks';
 import { LABS, LAB_BY_ID, fwEntry } from '../data/labs';
@@ -36,23 +38,24 @@ function FrameworkBlock({ lab, fw, m }: { lab: LabDef; fw: FwId; m: Set<string> 
           </div>
         ))}
       </div>
-      <p className="small" style={{ marginTop: 14 }}><a href={`#/rules/${fw}`}>Read the full guide to {fwName(fw)} →</a></p>
+      <p className="small" style={{ marginTop: 14 }}><a href={url(`/rules/${fw}`)}>Read the full guide to {fwName(fw)} →</a></p>
     </div>
   );
 }
 
-export function ModelPage({ id }: { id: string }) {
+export function ModelPage({ id, query }: { id: string; query?: URLSearchParams }) {
+  void query;
   const lab = LAB_BY_ID[id];
   const lens = useLens();
   const [s, setS] = useState<Set<string>>(new Set());
   const [m, setM] = useState<Set<string>>(new Set());
   const [tab, setTab] = useState<FwId>('eu');
-  if (!lab) return <div className="wrap section"><h1>Not found</h1><p><a href="#/">Back to all models</a></p></div>;
+  if (!lab) return <div className="wrap section"><h1>Not found</h1><p><a href={url('/')}>Back to all models</a></p></div>;
   const tier = TIER_BY_ID[lab.tier];
   const idx = LABS.indexOf(lab);
   const prev = LABS[idx - 1], next = LABS[idx + 1];
   const flip = (setter: typeof setS, k: string) => setter((p) => { const n = new Set(p); n.has(k) ? n.delete(k) : n.add(k); return n; });
-  const Viz = lab.Viz;
+  const Viz = VIZ[lab.id];
   const live = (sid: string) => s.has(sid) && !isCountered(lab, sid, m);
   const scores = computeScores(lab, s, m).risk;
   const base = computeScores(lab, new Set(), new Set()).risk;
@@ -65,7 +68,7 @@ export function ModelPage({ id }: { id: string }) {
   return (
     <div>
       <section className="wrap" style={{ padding: '30px 0 8px' }}>
-        <div className="crumbs"><a href="#/">All models</a> / {tier.label}</div>
+        <div className="crumbs"><a href={url('/')}>All models</a> / {tier.label}</div>
         <h1 style={{ marginTop: 10 }}>{lab.model}</h1>
         <p className="lead" style={{ marginTop: 6 }}>Example: {lab.app.charAt(0).toLowerCase() + lab.app.slice(1)}</p>
       </section>
@@ -109,7 +112,7 @@ export function ModelPage({ id }: { id: string }) {
           The dark panel is a small working simulation of this system. <b>Step 1:</b> switch on a problem from the list on the right and watch the results change. <b>Step 2:</b> switch on a safeguard and see whether it fixes the problem. You can combine as many as you like; nothing is saved.
         </p>
         <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1.65fr) minmax(280px, 1fr)', gap: 22, marginTop: 22, alignItems: 'start' }} className="try-grid">
-          <div className="figure sticky-fig"><Viz s={s} m={m} live={live} /></div>
+          <div className="figure sticky-fig"><Suspense fallback={<div className="viz-skeleton" aria-label="Loading simulation" />}><Viz s={s} m={m} live={live} /></Suspense></div>
           <div className="stack">
             <div>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
@@ -219,8 +222,8 @@ export function ModelPage({ id }: { id: string }) {
           </div>
         </div>
         <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12, marginTop: 40, flexWrap: 'wrap' }}>
-          {prev ? <a className="btn" href={`#/model/${prev.id}`}>← {SHORT_NAME[prev.id]}</a> : <span />}
-          {next && <a className="btn" href={`#/model/${next.id}`}>{SHORT_NAME[next.id]} →</a>}
+          {prev ? <a className="btn" href={url(`/model/${prev.id}`)}>← {SHORT_NAME[prev.id]}</a> : <span />}
+          {next && <a className="btn" href={url(`/model/${next.id}`)}>{SHORT_NAME[next.id]} →</a>}
         </div>
       </section>
       <style>{'@media (min-width: 1001px){.sticky-fig{position:sticky;top:80px}} @media (max-width: 1000px){.try-grid{grid-template-columns:minmax(0,1fr) !important}}'}</style>

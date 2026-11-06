@@ -1,5 +1,4 @@
 import type { LabDef } from '../data/types';
-import { DevopsAgentViz, SwarmViz, TravelAgentViz } from './agenticViz';
 
 export const agenticLabs: LabDef[] = [
   {
@@ -33,7 +32,6 @@ export const agenticLabs: LabDef[] = [
     ],
     checklist: ['Each tool scoped to minimum permissions and spend?', 'Irreversible actions need human approval?', 'Web and email content treated as untrusted data?', 'Full action log and instant kill switch?', 'Ambiguous goals resolved by asking, not guessing?'],
     lesson: 'Agents turn model errors into actions. Constrain what they can do — not just what they say.',
-    Viz: TravelAgentViz,
   },
   {
     id: 'devops-agent',
@@ -67,7 +65,6 @@ export const agenticLabs: LabDef[] = [
     ],
     checklist: ['No standing production credentials for agents?', 'Destructive commands require explicit approval?', 'Results verified by CI, not the agent’s summary?', 'Backups and restores tested?', 'Staged rollout with automatic rollback?'],
     lesson: 'Never let the same agent do the work, grade the work and ship the work.',
-    Viz: DevopsAgentViz,
   },
   {
     id: 'swarm',
@@ -101,6 +98,5 @@ export const agenticLabs: LabDef[] = [
     ],
     checklist: ['Claims verified against primary sources before hand-off?', 'Every inter-agent channel logged and monitored?', 'Rate, budget and depth limits enforced?', 'A named human owns the system and approves commitments?', 'Kill switch stops the whole network?'],
     lesson: 'In multi-agent systems, risk lives in the connections. Govern the network, not just the nodes.',
-    Viz: SwarmViz,
   },
 ];

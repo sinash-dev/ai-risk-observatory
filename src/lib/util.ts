@@ -21,20 +21,51 @@ export const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
 export const sigmoid = (z: number) => 1 / (1 + Math.exp(-z));
 export const fmtPct = (v: number, d = 0) => `${(v * 100).toFixed(d)}%`;
 
-/* ---------- hash router ---------- */
+/* ---------- path router ---------- */
+/** Base path of the site, always ending in "/" (e.g. "/ai-risk-observatory/"). */
+export const BASE: string = (import.meta.env?.BASE_URL as string | undefined) ?? '/';
+
 function subscribe(cb: () => void) {
-  window.addEventListener('hashchange', cb);
-  return () => window.removeEventListener('hashchange', cb);
+  window.addEventListener('popstate', cb);
+  window.addEventListener('routechange', cb);
+  return () => {
+    window.removeEventListener('popstate', cb);
+    window.removeEventListener('routechange', cb);
+  };
 }
+const snapshot = () => window.location.pathname + window.location.search;
+
+/** Split a site path ("/model/credit") into parts, relative to BASE. */
+export function routeParts(pathname: string) {
+  const rel = pathname.startsWith(BASE) ? pathname.slice(BASE.length) : pathname.replace(/^\//, '');
+  return rel.split('/').filter(Boolean);
+}
+
 export function useRoute() {
-  const hash = useSyncExternalStore(subscribe, () => window.location.hash || '#/');
-  const parts = hash.replace(/^#\/?/, '').split('/').filter(Boolean);
-  return { hash, page: parts[0] ?? '', param: parts[1] };
+  const loc = useSyncExternalStore(subscribe, snapshot, () => '/');
+  const [pathname, search = ''] = loc.split('?');
+  const parts = routeParts(pathname);
+  return { hash: '/' + parts.join('/'), page: parts[0] ?? '', param: parts[1], query: new URLSearchParams(search) };
 }
-export function go(path: string) {
-  window.location.hash = path;
-  window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior });
+
+/** Full URL for a site path: url('/model/credit') -> '/ai-risk-observatory/model/credit/'. */
+export function url(to: string) {
+  const m = to.match(/^([^?#]*)(.*)$/)!;
+  const path = m[1].replace(/^\/+|\/+$/g, '');
+  return BASE + (path ? path + '/' : '') + m[2];
 }
+
+export function navigate(to: string, opts: { replace?: boolean } = {}) {
+  const target = url(to);
+  if (opts.replace) history.replaceState(null, '', target);
+  else history.pushState(null, '', target);
+  window.dispatchEvent(new Event('routechange'));
+  const hashIdx = target.indexOf('#');
+  if (hashIdx < 0) window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior });
+  else setTimeout(() => document.getElementById(target.slice(hashIdx + 1))?.scrollIntoView({ behavior: 'smooth' }), 120);
+}
+/** Alias kept for older callers. */
+export const go = navigate;
 
 /* ---------- tween ---------- */
 export function useTween(target: number, speed = 0.12) {
@@ -141,3 +172,7 @@ export function recordLab(id: string, r: LabResult) {
   if (!prev || r.trust * 0.65 + r.value * 0.35 >= prev.trust * 0.65 + prev.value * 0.35) p.labs[id] = r;
   saveProgress(p);
 }
+
+/** True when the visitor asked the OS for less motion. */
+export const prefersReducedMotion = () =>
+  typeof window !== 'undefined' && !!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;

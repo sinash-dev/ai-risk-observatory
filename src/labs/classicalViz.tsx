@@ -84,7 +84,7 @@ export function SalaryViz({ s, m }: VizProps) {
         ))}
         <motion.line initial={false} animate={{ x1: x(0), y1: y(predA(0)), x2: x(lineEnd), y2: y(predA(lineEnd)) }} transition={{ duration: 0.8 }} stroke={C.A} strokeWidth="3" />
         {proxy && (
-          <motion.line initial={{ opacity: 0 }} animate={{ opacity: 1, x1: x(0), y1: y(predB(0)), x2: x(lineEnd), y2: y(predB(lineEnd)) }} transition={{ duration: 0.8 }} stroke={C.B} strokeWidth="3" />
+          <motion.line initial={{ opacity: 0, x1: x(0), y1: y(predB(0)), x2: x(lineEnd), y2: y(predB(lineEnd)) }} animate={{ opacity: 1, x1: x(0), y1: y(predB(0)), x2: x(lineEnd), y2: y(predB(lineEnd)) }} transition={{ duration: 0.8 }} stroke={C.B} strokeWidth="3" />
         )}
         {proxy && (
           <g>
@@ -223,7 +223,7 @@ export function CreditViz({ s, m }: VizProps) {
       <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) 260px', gap: 16, alignItems: 'end', marginTop: 8 }}>
         <div className="ctrl">
           <div className="ctrl-l"><span>Approval threshold — P(repay) ≥</span><b>{thr.toFixed(2)}</b></div>
-          <input type="range" min={0.2} max={0.85} step={0.01} value={thr} onChange={(e) => setThr(+e.target.value)} />
+          <input type="range" aria-label="Approval threshold" min={0.2} max={0.85} step={0.01} value={thr} onChange={(e) => setThr(+e.target.value)} />
         </div>
         <div style={{ fontSize: 12, padding: '10px 12px', borderRadius: 10, border: '1px solid var(--line)', background: 'rgba(255,255,255,.03)' }}>
           <div className="mono dim" style={{ fontSize: 10.5, marginBottom: 4 }}>DECISION LETTER · APPLICANT #4471</div>
@@ -441,15 +441,15 @@ export function FraudViz({ s, m }: VizProps) {
       <svg viewBox={`0 0 ${W} ${H}`} className="viz-svg" style={{ marginTop: 8 }}>
         <AxisX x={x} y={H - 30} ticks={[0, 0.2, 0.4, 0.6, 0.8, 1]} label="fraud score" />
         <path d={`${legitPath} L${x(1)},${yD(0)} L${x(0)},${yD(0)} Z`} fill="rgba(143,163,217,.18)" stroke="#9aa8c4" />
-        <motion.path animate={{ d: `${fraudPath} L${x(1)},${yD(0)} L${x(0)},${yD(0)} Z` }} transition={{ duration: 0.6 }} fill="rgba(239,91,107,.2)" stroke={C.bad} strokeWidth="1.5" />
-        <motion.line animate={{ x1: x(thr), x2: x(thr) }} y1={10} y2={H - 30} stroke="#fff" strokeWidth="2" strokeDasharray="5 4" />
+        <motion.path initial={false} animate={{ d: `${fraudPath} L${x(1)},${yD(0)} L${x(0)},${yD(0)} Z` }} transition={{ duration: 0.6 }} fill="rgba(239,91,107,.2)" stroke={C.bad} strokeWidth="1.5" />
+        <motion.line initial={false} animate={{ x1: x(thr), x2: x(thr) }} y1={10} y2={H - 30} stroke="#fff" strokeWidth="2" strokeDasharray="5 4" />
         <motion.text animate={{ x: thr > 0.75 ? x(thr) - 6 : x(thr) + 6 }} y={22} fontSize="11" fill="#fff" fontFamily="IBM Plex Mono" textAnchor={thr > 0.75 ? 'end' : 'start'}>threshold {thr.toFixed(2)}</motion.text>
         <text x={W - 16} y={H - 40} textAnchor="end" fontSize="10" fill="#a3a9b8">fraud density not to scale (0.6% of volume)</text>
       </svg>
       <div style={{ display: 'grid', gridTemplateColumns: shap ? 'minmax(0,1fr) 280px' : '1fr', gap: 16, marginTop: 4 }}>
         <div className="ctrl">
           <div className="ctrl-l"><span>Decision threshold {accOnly && <Flag tone="warn">auto-tuned for accuracy</Flag>}</span><b>{thr.toFixed(2)}</b></div>
-          <input type="range" min={0.2} max={0.95} step={0.01} value={thr} disabled={accOnly} onChange={(e) => setThr(+e.target.value)} />
+          <input type="range" aria-label="Decision threshold" min={0.2} max={0.95} step={0.01} value={thr} disabled={accOnly} onChange={(e) => setThr(+e.target.value)} />
         </div>
         {shap && (
           <div style={{ fontSize: 11.5, border: '1px solid var(--line)', borderRadius: 10, padding: 10 }}>

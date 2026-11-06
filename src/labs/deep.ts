@@ -1,5 +1,4 @@
 import type { LabDef } from '../data/types';
-import { CvViz, FeedViz, LesionViz, PricingViz } from './deepViz';
 
 export const deepLabs: LabDef[] = [
   {
@@ -34,7 +33,6 @@ export const deepLabs: LabDef[] = [
     ],
     checklist: ['Performance reported per skin type, age and sex?', 'Saliency maps reviewed for shortcuts?', 'Robustness tested against perturbations and new cameras?', 'Clinician reviews every negative before discharge?', 'Post-market surveillance of missed cancers?'],
     lesson: 'High benchmark accuracy can hide a model that learned the wrong thing. Ask what it looks at — and for whom it fails.',
-    Viz: LesionViz,
   },
   {
     id: 'cv',
@@ -66,7 +64,6 @@ export const deepLabs: LabDef[] = [
     ],
     checklist: ['Impact ratio ≥ 0.8 for sex, ethnicity, age, disability?', 'Counterfactual swap tests pass?', 'Proxy features reviewed and removed?', 'Candidates informed and able to request human review?', 'Independent bias audit published?'],
     lesson: 'A model trained on who you hired learns who you used to prefer. Test it by changing only what should not matter.',
-    Viz: CvViz,
   },
   {
     id: 'feed',
@@ -98,7 +95,6 @@ export const deepLabs: LabDef[] = [
     ],
     checklist: ['Objective includes wellbeing, diversity and quality?', 'Feedback loops measured with randomised holdouts?', 'Users can choose a non-profiled feed?', 'Systemic-risk assessment covers minors and elections?', 'Vetted researchers have data access?'],
     lesson: 'Optimise one number hard enough and the system will reshape people to hit it.',
-    Viz: FeedViz,
   },
   {
     id: 'pricing',
@@ -131,6 +127,5 @@ export const deepLabs: LabDef[] = [
     ],
     checklist: ['Reward includes harm and fairness constraints?', 'Hard guardrails in emergencies?', 'Simulated for reward hacking before go-live?', 'Price parallelism with competitors monitored?', 'Named owner can freeze the agent?'],
     lesson: 'An RL agent optimises exactly what you reward — not what you meant.',
-    Viz: PricingViz,
   },
 ];

@@ -5,7 +5,7 @@ import { LABS, fwEntry } from '../data/labs';
 import { TIERS, TIER_BY_ID } from '../data/risks';
 import type { LabDef } from '../data/types';
 import { useLens } from '../lib/lens';
-import { go, useClock } from '../lib/util';
+import { go, useClock, url } from '../lib/util';
 
 export { SHORT_NAME } from '../data/shortNames';
 import { SHORT_NAME } from '../data/shortNames';
@@ -68,7 +68,7 @@ function Orbit() {
               <circle cx={p.x} cy={p.y} r={r} fill="#14171c" stroke={c} strokeWidth={on ? 2.6 : 1.8} />
               <circle cx={p.x} cy={p.y} r={r} fill={c} opacity={lens === 'all' ? 0.08 : 0.28} />
               <circle cx={p.x - r * 0.3} cy={p.y - r * 0.35} r={r * 0.35} fill="#fff" opacity=".06" />
-              <text x={p.x} y={p.y + 4 * s} textAnchor="middle" fontSize={11.5 * s} fontWeight={700} fill={c} fontFamily="Sora" style={{ pointerEvents: 'none' }}>{l.glyph}</text>
+              <text x={p.x} y={p.y + 4 * s} textAnchor="middle" fontSize={11.5 * s} fontWeight={700} fill={c} fontFamily="Sora Variable, Sora, sans-serif" style={{ pointerEvents: 'none' }}>{l.glyph}</text>
               {showLabel && <text x={p.x} y={p.y + r + 16} textAnchor="middle" fontSize={12 * s} fill="#c8ccd3" stroke="#0c0e11" strokeWidth="4" style={{ paintOrder: 'stroke', pointerEvents: 'none' }}>{SHORT_NAME[l.id]}</text>}
             </g>
           );
@@ -108,7 +108,7 @@ function Row({ lab, lens }: { lab: LabDef; lens: FwId | 'all' }) {
   const e = lens === 'all' ? null : fwEntry(lens, lab.id);
   const cat = e ? FW_BY_ID[lens as FwId].cats.find((c) => c.id === e.cat) : null;
   return (
-    <a href={`#/model/${lab.id}`} style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) auto', gap: 16, padding: '12px 18px', borderTop: '1px solid var(--line)', color: 'inherit' }} className="row-link">
+    <a href={url(`/model/${lab.id}`)} style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) auto', gap: 16, padding: '12px 18px', borderTop: '1px solid var(--line)', color: 'inherit' }} className="row-link">
       <span><span style={{ fontWeight: 700 }}>{lab.model}</span><span className="muted"> · {lab.app}</span></span>
       {cat ? <span className="tag"><span className="swatch" style={{ background: cat.color }} />{cat.label}</span> : <span className="dim small">→</span>}
     </a>
@@ -128,7 +128,7 @@ export function Home() {
           <div className="label accent">{fw ? `Viewing through: ${fw.short}` : 'AI Risk Explorer'}</div>
           <h1>{fw ? `${LABS.length} AI systems, seen through ${fwName(fw.id)}` : 'Every AI system fails in its own way. Here is how, and what the rules expect you to do about it.'}</h1>
           {fw ? (
-            <p className="lead">{fw.intro.split('. ').slice(0, 2).join('. ')}. Each model is coloured by how {fwName(fw.id)} treats it. <a href={`#/rules/${fw.id}`}>Open the full guide</a>, including a learning path through these examples.</p>
+            <p className="lead">{fw.intro.split('. ').slice(0, 2).join('. ')}. Each model is coloured by how {fwName(fw.id)} treats it. <a href={url(`/rules/${fw.id}`)}>Open the full guide</a>, including a learning path through these examples.</p>
           ) : (
             <p className="lead">{LABS.length} real uses of AI, from a spam filter to a team of buying agents. Each one runs as a small simulation you can break and repair. {FRAMEWORKS.length} governance frameworks, from the EU AI Act to China’s and Korea’s rules, are mapped onto every one of them.</p>
           )}
@@ -141,7 +141,7 @@ export function Home() {
             ? fw.cats.map((c) => { const n = LABS.filter((l) => fwEntry(fw.id, l.id).cat === c.id).length; return n ? <span key={c.id} className="small muted" style={{ display: 'inline-flex', gap: 7, alignItems: 'center' }}><span className="swatch" style={{ background: c.color }} />{c.label} ({n})</span> : null; })
             : TIERS.map((t, i) => <span key={t.id} className="small muted" style={{ display: 'inline-flex', gap: 7, alignItems: 'center' }}><span className="swatch" style={{ background: t.color }} />{['Inner ring', 'Second ring', 'Third ring', 'Outer ring'][i]}: {t.label}</span>)}
         </div>
-        <div className="scroll-x"><div style={{ minWidth: 760 }}><Orbit /></div></div>
+        <div className="scroll-x" tabIndex={0} role="region" aria-label="Model map, scrolls sideways"><div style={{ minWidth: 760 }}><Orbit /></div></div>
       </section>
 
       {!fw && (

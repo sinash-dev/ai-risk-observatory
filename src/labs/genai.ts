@@ -1,5 +1,4 @@
 import type { LabDef } from '../data/types';
-import { ChatViz, CodeViz, ImageGenViz, RagViz } from './genaiViz';
 
 export const genaiLabs: LabDef[] = [
   {
@@ -34,7 +33,6 @@ export const genaiLabs: LabDef[] = [
     ],
     checklist: ['Answers grounded in approved sources with citations?', 'Red-teamed against jailbreaks and prompt injection?', 'Tool and data access scoped to the verified user?', 'Users told it is AI, with a route to a human?', 'Conversations monitored for harmful or false outputs?'],
     lesson: 'Your organisation owns every word the bot says. Fluency is not accuracy — and instructions can come from anyone.',
-    Viz: ChatViz,
   },
   {
     id: 'rag',
@@ -68,7 +66,6 @@ export const genaiLabs: LabDef[] = [
     ],
     checklist: ['Every indexed source has an owner and expiry date?', 'Retrieval enforces the user’s permissions?', 'Untrusted content sanitised and treated as data?', 'Answers show citations users can open?', 'Logs monitored for exfiltration patterns?'],
     lesson: 'RAG moves the risk from the model to your data estate: stale, poisoned or over-shared documents become answers.',
-    Viz: RagViz,
   },
   {
     id: 'imagegen',
@@ -103,7 +100,6 @@ export const genaiLabs: LabDef[] = [
     ],
     checklist: ['Outputs evaluated for demographic skew?', 'Filters for public figures, minors and protected IP?', 'All synthetic media marked (C2PA) and labelled?', 'Legal review of commercial use and licences?', 'Incident process for misuse of generated content?'],
     lesson: 'Generative models are mirrors with a zoom lens: they reflect — and magnify — what they were trained on.',
-    Viz: ImageGenViz,
   },
   {
     id: 'code',
@@ -136,6 +132,5 @@ export const genaiLabs: LabDef[] = [
     ],
     checklist: ['AI code passes the same review and SAST gates?', 'Dependencies verified against an allow-list?', 'Secrets excluded from context and scanned?', 'Licences of suggested code checked?', 'Metrics track defects, not just velocity?'],
     lesson: 'An assistant that writes code 50% faster writes vulnerabilities 50% faster — unless your controls keep pace.',
-    Viz: CodeViz,
   },
 ];

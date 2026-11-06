@@ -1,5 +1,4 @@
 import type { LabDef } from '../data/types';
-import { CreditViz, FraudViz, SalaryViz, SegmentViz, StaffingViz, TreeViz } from './classicalViz';
 
 export const classicalLabs: LabDef[] = [
   {
@@ -32,7 +31,6 @@ export const classicalLabs: LabDef[] = [
     ],
     checklist: ['Are training labels fair (pay history ≠ fair pay)?', 'Proxy features for protected attributes tested and removed?', 'Model only used inside the range of its training data?', 'Can every offer be explained to the candidate?', 'Annual pay-gap audit of model outputs scheduled?'],
     lesson: 'Simple ≠ safe. A transparent model trained on biased history automates that bias — consistently and at scale.',
-    Viz: SalaryViz,
   },
   {
     id: 'credit',
@@ -66,7 +64,6 @@ export const classicalLabs: LabDef[] = [
     ],
     checklist: ['Disparate-impact ratio ≥ 0.8 across groups?', 'Proxy test run on every feature?', 'Historic labels audited for human bias?', 'Population-stability monitoring live?', 'Specific decline reasons and appeal route for every applicant?'],
     lesson: 'Dropping the protected attribute is not enough — proxies, biased labels and threshold choices decide who is excluded.',
-    Viz: CreditViz,
   },
   {
     id: 'benefits',
@@ -100,7 +97,6 @@ export const classicalLabs: LabDef[] = [
     ],
     checklist: ['Train vs. test accuracy gap < 5 points?', 'No protected attributes or close proxies in any split?', 'Training sample representative of regions and groups?', 'No automated sanction without human review?', 'Fundamental-rights impact assessment completed?'],
     lesson: 'Interpretable models make discrimination visible — but only if someone reads the tree. Governance has to look.',
-    Viz: TreeViz,
   },
   {
     id: 'fraud',
@@ -134,7 +130,6 @@ export const classicalLabs: LabDef[] = [
     ],
     checklist: ['Measured on precision, recall and cost — not accuracy?', 'Drift alerts on scores and fraud patterns?', 'Every block explainable to analyst and customer?', 'Red-teamed against evasion and probing?', 'False-positive rates compared across customer groups?'],
     lesson: 'On rare events, accuracy lies. Measure the harm you care about — and expect adversaries to adapt.',
-    Viz: FraudViz,
   },
   {
     id: 'segments',
@@ -166,7 +161,6 @@ export const classicalLabs: LabDef[] = [
     ],
     checklist: ['Do segments map onto protected groups?', 'Who is excluded from offers, services or prices?', 'Special-category data excluded or lawfully based?', 'DPIA completed for profiling?', 'Choice of k and features justified and documented?'],
     lesson: 'Unsupervised does not mean neutral. Clusters inherit whatever social structure sits in the features.',
-    Viz: SegmentViz,
   },
   {
     id: 'staffing',
@@ -198,6 +192,5 @@ export const classicalLabs: LabDef[] = [
     ],
     checklist: ['Backtested on full seasonal cycles and past shocks?', 'Plans use intervals, not point forecasts?', 'Automatic alerts when actuals leave the band?', 'Humans can override the rota at any time?', 'Minimum safe staffing enforced outside the model?'],
     lesson: 'A forecast assumes the world stays the same. Plan for the interval and watch for the break.',
-    Viz: StaffingViz,
   },
 ];

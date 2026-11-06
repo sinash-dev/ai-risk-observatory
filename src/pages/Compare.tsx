@@ -2,7 +2,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { useState } from 'react';
 import { COMPARE, TOPICS } from '../data/compare';
 import { FRAMEWORKS, FW_BY_ID, type FwId } from '../data/frameworks';
-import { useInView, useTweenArray } from '../lib/util';
+import { useInView, useTweenArray, url } from '../lib/util';
 
 const LEVEL = ['Not addressed', 'Guidance only', 'Required in some cases', 'Detailed binding rule'];
 const SERIES = ['#6cc5b0', '#e0b25c', '#a99be0', '#e0896b'];
@@ -33,7 +33,7 @@ function Grid({ topic, setTopic, fwHi }: { topic: string; setTopic: (t: string) 
           {FRAMEWORKS.map((f) => {
             const on = f.id === fwHi || hover?.f === f.id;
             return (
-              <a key={f.id} href={`#/rules/${f.id}`} style={{ textAlign: 'center', fontSize: 12.5, fontWeight: 700, padding: '6px 2px 10px', color: on ? 'var(--accent)' : 'var(--ink2)', lineHeight: 1.25 }}>{f.short}</a>
+              <a key={f.id} href={url(`/rules/${f.id}`)} style={{ textAlign: 'center', fontSize: 12.5, fontWeight: 700, padding: '6px 2px 10px', color: on ? 'var(--accent)' : 'var(--ink2)', lineHeight: 1.25 }}>{f.short}</a>
             );
           })}
           {TOPICS.map((t, r) => {
@@ -161,7 +161,7 @@ export function Compare({ fw }: { fw?: string }) {
         <div style={{ display: 'flex', gap: 20, flexWrap: 'wrap', marginBottom: 14 }}>
           {LEVEL.map((l, i) => <span key={l} className="small muted" style={{ display: 'inline-flex', gap: 8, alignItems: 'center' }}><Bars lv={i} />{l}</span>)}
         </div>
-        <div className="scroll-x"><Grid topic={topic} setTopic={pick} fwHi={fwHi} /></div>
+        <div className="scroll-x" tabIndex={0} role="region" aria-label="Strength grid, scrolls sideways"><Grid topic={topic} setTopic={pick} fwHi={fwHi} /></div>
       </div>
 
       <section className="section">
@@ -179,7 +179,7 @@ export function Compare({ fw }: { fw?: string }) {
         <div className="grid2" style={{ marginTop: 20 }}>
           <AnimatePresence mode="popLayout">
             {rows.map(({ f, cell }, i) => (
-              <motion.a layout key={topic + f.id} href={`#/rules/${f.id}`} className="card card-pad lift" style={{ color: 'inherit', borderColor: f.id === fwHi ? 'rgba(108,197,176,.5)' : undefined }} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ delay: i * 0.03 }}>
+              <motion.a layout key={topic + f.id} href={url(`/rules/${f.id}`)} className="card card-pad lift" style={{ color: 'inherit', borderColor: f.id === fwHi ? 'rgba(108,197,176,.5)' : undefined }} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ delay: i * 0.03 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10 }}>
                   <h3>{f.short}</h3>
                   <span style={{ display: 'flex', gap: 10, alignItems: 'center' }}><span className="dim small">{LEVEL[cell[0]]}</span><Bars lv={cell[0]} /></span>

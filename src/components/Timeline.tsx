@@ -24,7 +24,7 @@ export function HTimeline({ events }: { events: { date: string; text: string }[]
   const past = ev.filter((e) => e.y <= TODAY).length;
   const todayX = (past / n) * 100;
   return (
-    <div ref={ref} className="scroll-x">
+    <div ref={ref} className="scroll-x" tabIndex={0} role="region" aria-label="Timeline, scrolls sideways">
       <div style={{ minWidth: Math.max(640, n * 128 + 152), position: 'relative', padding: '8px 0 0' }}>
         <div style={{ position: 'relative', height: 2, background: 'rgba(255,255,255,.1)', margin: '120px 76px 0' }}>
           <motion.div initial={{ width: 0 }} animate={seen ? { width: `${todayX}%` } : {}} transition={{ duration: 1.4, ease: 'easeOut' }} style={{ position: 'absolute', left: 0, top: 0, height: 2, background: 'var(--accent)' }} />

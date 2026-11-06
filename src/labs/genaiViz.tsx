@@ -2,7 +2,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import { Seg, Stat } from '../components/ui';
 import type { VizProps } from '../data/types';
-import { useClock } from '../lib/util';
+import { prefersReducedMotion, useClock } from '../lib/util';
 import { C, Flag, VizHead } from '../viz/kit';
 
 /* ---------- typewriter ---------- */
@@ -355,6 +355,7 @@ export function CodeViz({ s, m }: VizProps) {
   const sig = `${sqlBad}${pkg}${pkgFix}${secret}${secretFix}`;
   const [shown, setShown] = useState(0);
   useEffect(() => {
+    if (prefersReducedMotion()) { setShown(lines.length); return; }
     setShown(0);
     const iv = setInterval(() => setShown((v) => (v < lines.length ? v + 1 : v)), 110);
     return () => clearInterval(iv);
@@ -377,10 +378,10 @@ export function CodeViz({ s, m }: VizProps) {
             {['#ff5f57', '#febc2e', '#28c840'].map((c) => <span key={c} className="dot" style={{ background: c }} />)}
             <span className="mono dim" style={{ fontSize: 11, marginLeft: 8 }}>users_api.py — AI suggestion</span>
           </div>
-          <div className="mono scroll-x" style={{ fontSize: 12, lineHeight: 1.85, padding: '10px 0' }}>
+          <div className="mono scroll-x" tabIndex={0} role="region" aria-label="AI-suggested code" style={{ fontSize: 12, lineHeight: 1.85, padding: '10px 0' }}>
             {lines.slice(0, shown).map((ln, i) => (
               <motion.div key={sig + i} initial={{ opacity: 0, x: -6 }} animate={{ opacity: 1, x: 0 }} style={{ display: 'grid', gridTemplateColumns: '34px 1fr', background: ln.tone === 'bad' ? 'rgba(239,91,107,.13)' : ln.tone === 'good' ? 'rgba(60,198,173,.09)' : undefined, borderLeft: `3px solid ${ln.tone === 'bad' ? C.bad : ln.tone === 'good' ? C.good : 'transparent'}` }}>
-                <span style={{ color: '#3d4a78', textAlign: 'right', paddingRight: 10 }}>{i + 1}</span>
+                <span aria-hidden="true" style={{ color: 'var(--muted)', textAlign: 'right', paddingRight: 10 }}>{i + 1}</span>
                 <span style={{ whiteSpace: 'pre', paddingRight: 12 }}>{hl(ln.code)}{ln.note && <span style={{ color: ln.tone === 'bad' ? '#f39aa4' : C.good, marginLeft: 14, fontSize: 10.5 }}>← {ln.note}</span>}</span>
               </motion.div>
             ))}

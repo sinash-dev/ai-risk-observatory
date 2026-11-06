@@ -3,7 +3,7 @@ import { HTimeline, Roadmap, TODAY, TODAY_LABEL, parseDate } from '../components
 import { FRAMEWORKS, FW_BY_ID, OTHER_FRAMEWORKS, fwName, type Framework, type FwId } from '../data/frameworks';
 import { LABS, LAB_BY_ID, fwEntry } from '../data/labs';
 import { setLens, useLens } from '../lib/lens';
-import { go } from '../lib/util';
+import { go, url } from '../lib/util';
 import { SHORT_NAME } from './Home';
 import { fmtDate } from '../data/site';
 
@@ -31,7 +31,7 @@ function TiltCard({ f, i }: { f: Framework; i: number }) {
       <h3>{f.short}</h3>
       <p className="muted small" style={{ flex: 1 }}>{f.intro.split('. ')[0]}.</p>
       <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-        <a className="btn btn-primary" href={`#/rules/${f.id}`}>Open guide</a>
+        <a className="btn btn-primary" href={url(`/rules/${f.id}`)}>Open guide</a>
         <button className="btn" onClick={() => { setLens(f.id); go('/'); }}>View site through it</button>
       </div>
     </motion.div>
@@ -101,7 +101,7 @@ export function Frameworks() {
             <tbody>
               {FRAMEWORKS.map((f) => (
                 <tr key={f.id} className="row-link" onClick={() => go(`/rules/${f.id}`)} style={{ cursor: 'pointer' }}>
-                  <td style={{ padding: '13px 16px', borderTop: '1px solid var(--line)', fontWeight: 700 }}><a href={`#/rules/${f.id}`}>{f.short}</a></td>
+                  <td style={{ padding: '13px 16px', borderTop: '1px solid var(--line)', fontWeight: 700 }}><a href={url(`/rules/${f.id}`)}>{f.short}</a></td>
                   <td style={{ padding: '13px 16px', borderTop: '1px solid var(--line)' }}>{f.type}</td>
                   <td style={{ padding: '13px 16px', borderTop: '1px solid var(--line)' }}>{f.where}</td>
                   <td style={{ padding: '13px 16px', borderTop: '1px solid var(--line)' }}>{f.binding}</td>
@@ -111,7 +111,7 @@ export function Frameworks() {
             </tbody>
           </table>
         </div>
-        <p className="small" style={{ marginTop: 14 }}>Want to see them side by side on a single topic, such as transparency? <a href="#/compare">Open the comparison →</a></p>
+        <p className="small" style={{ marginTop: 14 }}>Want to see them side by side on a single topic, such as transparency? <a href={url('/compare')}>Open the comparison →</a></p>
       </section>
 
       <section className="section">
@@ -153,12 +153,12 @@ export function Frameworks() {
 export function FrameworkPage({ id }: { id: string }) {
   const f = FW_BY_ID[id as FwId];
   const lens = useLens();
-  if (!f) return <div className="wrap section"><h1>Not found</h1><p><a href="#/rules">All frameworks</a></p></div>;
+  if (!f) return <div className="wrap section"><h1>Not found</h1><p><a href={url('/rules')}>All frameworks</a></p></div>;
   const counts = f.cats.map((c) => LABS.filter((l) => fwEntry(f.id, l.id).cat === c.id).length);
   const total = LABS.length;
   return (
     <div className="wrap" style={{ padding: '30px 0 40px' }}>
-      <div className="crumbs"><a href="#/rules">Rules and frameworks</a> / {f.short}</div>
+      <div className="crumbs"><a href={url('/rules')}>Rules and frameworks</a> / {f.short}</div>
       <motion.div className="narrow stack" style={{ marginTop: 12 }} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}>
         <h1>{f.name}</h1>
         <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}><span className="tag">{f.type}</span><span className="tag">{f.where}</span><span className="tag">{f.binding}</span>{f.reviewed && <span className="tag">Last reviewed {fmtDate(f.reviewed)}</span>}</div>
@@ -167,7 +167,7 @@ export function FrameworkPage({ id }: { id: string }) {
           {lens === f.id
             ? <span className="muted small">You are viewing the site through {fwName(f.id)}. <a href="#" onClick={(e) => { e.preventDefault(); setLens('all'); }}>Switch back to all frameworks</a></span>
             : <button className="btn btn-primary" onClick={() => { setLens(f.id); go('/'); }}>View the whole site through {fwName(f.id)}</button>}
-          <a className="btn" href={`#/compare/${f.id}`}>Compare with the others</a>
+          <a className="btn" href={url(`/compare/${f.id}`)}>Compare with the others</a>
         </div>
       </motion.div>
 
@@ -191,7 +191,7 @@ export function FrameworkPage({ id }: { id: string }) {
               <motion.div key={c.id} className="card card-pad stack" initial={{ opacity: 0, y: 14 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.06 }}>
                 <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}><span className="swatch" style={{ background: c.color, width: 11, height: 11 }} /><h3>{c.label}</h3><span className="dim small" style={{ marginLeft: 'auto' }}>{labs.length}</span></div>
                 <p className="muted small">{c.desc}</p>
-                {labs.length > 0 && <div className="small">{labs.map((l, k) => <span key={l.id}>{k ? ' · ' : ''}<a href={`#/model/${l.id}`}>{l.app}</a></span>)}</div>}
+                {labs.length > 0 && <div className="small">{labs.map((l, k) => <span key={l.id}>{k ? ' · ' : ''}<a href={url(`/model/${l.id}`)}>{l.app}</a></span>)}</div>}
               </motion.div>
             );
           })}
@@ -231,7 +231,7 @@ export function FrameworkPage({ id }: { id: string }) {
                 <p className="muted small" style={{ margin: '6px 0 20px' }}>Open these examples in order, with the view set to {fwName(f.id)}. Together they cover the framework’s main ideas.</p>
                 <div className="stack">
                   {f.learn.map(([mid, note], i) => (
-                    <motion.a key={mid} href={`#/model/${mid}`} onClick={() => setLens(f.id)} className="card lift" style={{ display: 'grid', gridTemplateColumns: '34px minmax(0,1fr)', gap: 12, padding: '12px 14px', color: 'inherit' }} initial={{ opacity: 0, x: 12 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.06 }}>
+                    <motion.a key={mid} href={url(`/model/${mid}`)} onClick={() => setLens(f.id)} className="card lift" style={{ display: 'grid', gridTemplateColumns: '34px minmax(0,1fr)', gap: 12, padding: '12px 14px', color: 'inherit' }} initial={{ opacity: 0, x: 12 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.06 }}>
                       <span className="mono accent" style={{ fontWeight: 600 }}>{String(i + 1).padStart(2, '0')}</span>
                       <span><b>{SHORT_NAME[mid]}</b> <span className="muted small">· {LAB_BY_ID[mid]?.app}</span><span className="muted small" style={{ display: 'block', marginTop: 2 }}>{note}</span></span>
                     </motion.a>
@@ -279,7 +279,7 @@ export function FrameworkPage({ id }: { id: string }) {
                 const c = f.cats.find((x) => x.id === e.cat)!;
                 return (
                   <tr key={l.id}>
-                    <td style={{ padding: '11px 14px', borderTop: '1px solid var(--line)', verticalAlign: 'top' }}><a href={`#/model/${l.id}`}>{l.app}</a><div className="dim small">{l.model}</div></td>
+                    <td style={{ padding: '11px 14px', borderTop: '1px solid var(--line)', verticalAlign: 'top' }}><a href={url(`/model/${l.id}`)}>{l.app}</a><div className="dim small">{l.model}</div></td>
                     <td style={{ padding: '11px 14px', borderTop: '1px solid var(--line)', whiteSpace: 'nowrap', verticalAlign: 'top' }}><span className="tag"><span className="swatch" style={{ background: c.color }} />{c.label}</span></td>
                     <td style={{ padding: '11px 14px', borderTop: '1px solid var(--line)', verticalAlign: 'top' }} className="muted small">{e.summary.split('. ')[0]}.</td>
                   </tr>
