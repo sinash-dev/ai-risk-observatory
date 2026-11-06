@@ -40,7 +40,7 @@ test('old hash links redirect to real paths', async ({ page }) => {
 
 test('client-side navigation and back/forward', async ({ page }) => {
   await page.goto(BASE);
-  await page.waitForLoadState('networkidle');
+  await page.locator('.search-btn').waitFor();
   await page.locator(`a[href="${BASE}rules/"]:visible`).first().click();
   await expect(page).toHaveURL(new RegExp(BASE + 'rules/$'));
   await page.goBack();

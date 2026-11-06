@@ -500,3 +500,22 @@ section[id], [id^="m"] { scroll-margin-top: 120px; }
 .th-btn { background: none; border: none; padding: 4px 0; font-size: 11.5px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); display: inline-flex; gap: 6px; align-items: center; min-height: 32px; }
 .th-btn:hover { color: var(--ink); }
 .cta-card { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; justify-content: space-between; background: linear-gradient(120deg, rgba(108,197,176,.10), rgba(255,255,255,.02)); border-color: rgba(108,197,176,.35); }
+
+/* ---------- compare ---------- */
+.grid-head { text-align: center; font-size: 12.5px; font-weight: 700; padding: 6px 2px 10px; line-height: 1.25; }
+.row-label { position: relative; text-align: left; background: none; border: none; padding: 0 10px; font-weight: 700; font-size: 14px; border-radius: 10px; min-height: 44px; }
+.row-bg { position: absolute; inset: 2px 0; border-radius: 10px; background: var(--accent-soft); box-shadow: inset 2px 0 0 var(--accent); }
+.cell { height: 50px; border-radius: 10px; border: 1px solid var(--line); display: grid; place-items: center; transition: border-color .2s; }
+.cell:hover, .cell:focus-visible { transform: translateY(-2px); }
+.grid-readout { min-height: 76px; margin-top: 14px; padding: 12px 14px; border-radius: 12px; border: 1px solid var(--line); background: rgba(255,255,255,.02); }
+.grid-tools { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; }
+.rubric { margin-top: 22px; border: 1px solid var(--line); border-radius: 12px; padding: 12px 16px; background: var(--paper); }
+.rubric summary { cursor: pointer; font-weight: 700; min-height: 32px; display: flex; align-items: center; }
+.rubric ol { list-style: none; padding: 0; margin: 10px 0; display: grid; gap: 6px; font-size: 14px; color: var(--ink2); }
+@media (min-width: 961px) { .radar-grid { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr) !important; } }
+.gap-pick { display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: center; }
+.gap-pick label { display: inline-flex; gap: 8px; align-items: center; font-size: 14.5px; color: var(--ink2); }
+.gap-pick select { min-height: 40px; padding: 6px 10px; border-radius: 10px; border: 1px solid var(--line2); background: var(--paper2); color: var(--ink); font-weight: 600; }
+.gap-list { list-style: none; padding: 0; margin: 16px 0 0; display: grid; gap: 12px; }
+.gap-list li { border-left: 3px solid #e0b25c; padding: 6px 0 6px 14px; display: grid; gap: 4px; }
+.gap-h { display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: baseline; justify-content: space-between; }

@@ -4,7 +4,7 @@ import { expect, test } from '@playwright/test';
 const BASE = process.env.E2E_BASE ?? '/ai-risk-observatory/';
 const go = async (page: import('@playwright/test').Page, path = '') => {
   await page.goto(BASE + path);
-  await page.waitForLoadState('networkidle');
+  await page.locator('.search-btn').waitFor();
   await page.locator('h1').first().waitFor();
 };
 const serious = async (page: import('@playwright/test').Page) => {

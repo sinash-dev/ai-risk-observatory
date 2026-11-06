@@ -76,7 +76,7 @@ export default function App() {
   else if (page === 'rules' && param) view = <FrameworkPage id={param} />;
   else if (page === 'rules') view = <Frameworks />;
   else if (page === 'basics') view = <Basics />;
-  else if (page === 'compare') view = <Compare key={param ?? 'all'} fw={param} />;
+  else if (page === 'compare') view = <Compare key={param ?? 'all'} fw={param} query={query} />;
   else view = <NotFound />;
 
   return (

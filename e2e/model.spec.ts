@@ -58,3 +58,23 @@ test('guide: myth cards flip with the keyboard and the table sorts and filters',
   await page.locator('#examples .chip-btn').nth(1).click();
   expect(await page.locator('.ex-table tbody tr').count()).toBeLessThan(all);
 });
+
+test('compare: CSV downloads, PNG downloads, gap finder reacts', async ({ page }) => {
+  await page.goto(BASE + 'compare/');
+  const [csv] = await Promise.all([page.waitForEvent('download'), page.getByRole('button', { name: 'Download CSV' }).click()]);
+  expect(csv.suggestedFilename()).toBe('ai-risk-explorer-compare.csv');
+  const [png] = await Promise.all([page.waitForEvent('download'), page.getByRole('button', { name: 'Download PNG' }).click()]);
+  expect(png.suggestedFilename()).toBe('ai-risk-explorer-compare.png');
+  const gap = page.locator('.gap');
+  await gap.locator('select').first().selectOption('gdpr');
+  await gap.locator('select').nth(1).selectOption('gdpr');
+  await expect(gap).toContainText('No topic where');
+  await gap.locator('select').nth(1).selectOption('eu');
+  await gap.locator('select').first().selectOption('owasp');
+  await expect(gap.locator('.gap-list li').first()).toBeVisible();
+});
+
+test('compare: ?topic= opens that topic', async ({ page }) => {
+  await page.goto(BASE + 'compare/?topic=redress');
+  await expect(page.locator('#topic h2')).toHaveText('Individual rights and redress');
+});
