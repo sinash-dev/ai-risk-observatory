@@ -1,6 +1,9 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { useCallback, useMemo, useState } from 'react';
 import { WorldTimeline } from '../components/WorldTimeline';
+import { BindMeter, ExamplesTable, MythCard } from '../components/GuideParts';
+import { FW_GUIDE } from '../data/fwGuide';
+import { allRoutes } from '../data/routes';
 import { COMPARE, TOPICS } from '../data/compare';
 import { KIND_COLOR, fwColor, fwKind, type FwKind } from '../data/fwKind';
 import { SceneShell } from '../three/SceneShell';
@@ -217,14 +220,18 @@ export function FrameworkPage({ id }: { id: string }) {
   const total = LABS.length;
   const toc = [
     { id: 'overview', label: 'Overview' },
+    { id: 'definitions', label: 'Definitions' },
     { id: 'categories', label: 'Categories' },
     { id: 'requirements', label: 'Key requirements' },
     { id: 'timeline', label: 'Timeline' },
     ...(f.roadmap || f.learn ? [{ id: 'roadmap', label: 'Roadmap' }] : []),
     ...(f.extras ?? []).map((x, i) => ({ id: `more-${i}`, label: x.title.length > 28 ? x.title.slice(0, 26).replace(/\s+\S*$/, '') + '…' : x.title })),
-    { id: 'enforcement', label: 'Enforcement' },
+    { id: 'enforcement', label: 'Who enforces it' },
+    { id: 'myths', label: 'Myths' },
     { id: 'examples', label: 'Examples' },
   ];
+  const g = FW_GUIDE[f.id];
+  const hasQuiz = allRoutes().some((r) => r.path === `/quiz/${f.id}`);
   return (
     <div className="with-rail">
     <Toc items={toc} />
@@ -234,6 +241,11 @@ export function FrameworkPage({ id }: { id: string }) {
       <motion.div className="narrow stack" style={{ marginTop: 12 }} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}>
         <h1>{f.name}</h1>
         <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}><span className="tag">{f.type}</span><span className="tag">{f.where}</span><span className="tag">{f.binding}</span>{f.reviewed && <span className="tag">Last reviewed {fmtDate(f.reviewed)}</span>}</div>
+        <div className="asks">
+          <span className="label">Asks</span>
+          <span className="asks-q">{g.ask}</span>
+          <BindMeter n={g.bind} binding={f.binding} />
+        </div>
         <p className="lead">{f.intro}</p>
         <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
           {lens === f.id
@@ -248,6 +260,19 @@ export function FrameworkPage({ id }: { id: string }) {
           <div className="stack"><h2>Who it applies to</h2><p className="muted">{f.who}</p></div>
           <div className="stack"><h2>How it works</h2><p className="muted">{f.approach}</p></div>
         </div>
+      </section>
+
+      <section className="section" id="definitions">
+        <h2>Key definitions</h2>
+        <p className="muted small" style={{ marginTop: 6 }}>In plain words. Check the official text for the exact wording.</p>
+        <dl className="defs">
+          {g.definitions.map((d, i) => (
+            <motion.div key={d.t} className="card card-pad" initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.05 }}>
+              <dt>{d.t}</dt>
+              <dd className="muted small">{d.d}</dd>
+            </motion.div>
+          ))}
+        </dl>
       </section>
 
       <section className="section" id="categories">
@@ -331,34 +356,45 @@ export function FrameworkPage({ id }: { id: string }) {
       ))}
 
       <section className="section" id="enforcement">
-        <div className="grid2">
-          <div className="stack"><h2>Penalties and enforcement</h2><p className="muted">{f.penalties}</p></div>
+        <h2>Who enforces it</h2>
+        <div className="grid3" style={{ marginTop: 16 }}>
+          {g.enforcement.map((x) => (
+            <div key={x.t} className="card card-pad enf">
+              <div style={{ fontWeight: 700 }}>{x.t}</div>
+              <p className="muted small" style={{ marginTop: 4 }}>{x.d}</p>
+            </div>
+          ))}
+        </div>
+        <div className="grid2" style={{ marginTop: 28 }}>
+          <div className="stack"><h3>Penalties</h3><p className="muted">{f.penalties}</p></div>
           <div className="stack">
-            <h2>Official sources</h2>
+            <h3>Official sources</h3>
             {f.sources.map((s) => <div key={s.url}><a href={s.url} target="_blank" rel="noreferrer">{s.label} ↗</a></div>)}
           </div>
         </div>
       </section>
 
+      <section className="section" id="myths">
+        <h2>Common misconceptions</h2>
+        <p className="muted small" style={{ marginTop: 6 }}>Select a card to see the facts.</p>
+        <div className="grid3" style={{ marginTop: 16 }}>
+          {g.myths.map((x) => <MythCard key={x.myth} myth={x.myth} fact={x.fact} />)}
+        </div>
+      </section>
+
       <section className="section" id="examples">
         <h2>How it treats each example</h2>
-        <div className="card" style={{ marginTop: 18, overflowX: 'auto' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 14.5, minWidth: 760 }}>
-            <thead><tr style={{ textAlign: 'left' }}>{['Example', 'Classification', 'In short'].map((h) => <th key={h} className="label" style={{ padding: '12px 14px', borderBottom: '1px solid var(--line)' }}>{h}</th>)}</tr></thead>
-            <tbody>
-              {LABS.map((l) => {
-                const e = fwEntry(f.id, l.id);
-                const c = f.cats.find((x) => x.id === e.cat)!;
-                return (
-                  <tr key={l.id}>
-                    <td style={{ padding: '11px 14px', borderTop: '1px solid var(--line)', verticalAlign: 'top' }}><a href={url(`/model/${l.id}`)}>{l.app}</a><div className="dim small">{l.model}</div></td>
-                    <td style={{ padding: '11px 14px', borderTop: '1px solid var(--line)', whiteSpace: 'nowrap', verticalAlign: 'top' }}><span className="tag"><span className="swatch" style={{ background: c.color }} />{c.label}</span></td>
-                    <td style={{ padding: '11px 14px', borderTop: '1px solid var(--line)', verticalAlign: 'top' }} className="muted small">{e.summary.split('. ')[0]}.</td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+        <div style={{ marginTop: 16 }}><ExamplesTable f={f} /></div>
+      </section>
+
+      <section className="section quiz-cta">
+        <div className="card card-pad cta-card">
+          <div>
+            <div className="eyebrow">Test yourself</div>
+            <h2 style={{ fontSize: 22, marginTop: 4 }}>Five questions on {fwName(f.id)}</h2>
+            <p className="muted small" style={{ marginTop: 4 }}>Check what you have learned, with an explanation for every answer.</p>
+          </div>
+          {hasQuiz ? <a className="btn btn-primary" href={url(`/quiz/${f.id}`)}>Start the quiz</a> : <a className="btn" href={url(`/compare/${f.id}`)}>Compare it with the others</a>}
         </div>
       </section>
       <style>{'@media (max-width: 760px){.other-row{grid-template-columns:minmax(0,1fr) !important; gap:4px !important}}'}</style>

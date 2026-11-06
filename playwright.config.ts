@@ -2,6 +2,7 @@ import { defineConfig, devices } from '@playwright/test';
 
 export default defineConfig({
   testDir: 'e2e',
+  testIgnore: process.env.SHOTS ? [] : ['**/_shot.spec.ts'],
   retries: 1,
   timeout: 45_000,
   reporter: [['list']],

@@ -41,3 +41,20 @@ test('requirement status pills follow the safeguards', async ({ page }) => {
   await page.locator('#rules').scrollIntoViewIfNeeded();
   await expect(page.locator('#rules .pill.met').first()).toBeVisible();
 });
+
+test('guide: myth cards flip with the keyboard and the table sorts and filters', async ({ page }) => {
+  await page.goto(BASE + 'rules/gdpr/');
+  const card = page.locator('.flip-inner').first();
+  await card.focus();
+  await page.keyboard.press('Enter');
+  await expect(card).toHaveAttribute('aria-expanded', 'true');
+  await expect(page.locator('.flip').first()).toHaveClass(/on/);
+  const firstRow = () => page.locator('.ex-table tbody tr').first().locator('td').first().innerText();
+  await page.locator('.th-btn', { hasText: 'Example' }).click();
+  const a = await firstRow();
+  await page.locator('.th-btn', { hasText: 'Example' }).click();
+  expect(await firstRow()).not.toBe(a);
+  const all = await page.locator('.ex-table tbody tr').count();
+  await page.locator('#examples .chip-btn').nth(1).click();
+  expect(await page.locator('.ex-table tbody tr').count()).toBeLessThan(all);
+});

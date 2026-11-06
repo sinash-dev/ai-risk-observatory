@@ -84,4 +84,16 @@ describe('data integrity', () => {
   it('problem codes are valid OWASP 2026 codes', () => {
     for (const l of LABS) for (const st of l.stressors) for (const c of st.codes ?? []) expect(c, `${l.id}/${st.id}`).toMatch(/^(LLM(0[1-9]|10):2026|ASI(0[1-9]|10))$/);
   });
+
+  it('every framework guide has a question, definitions, enforcement and three myths', async () => {
+    const { FW_GUIDE } = await import('../fwGuide');
+    for (const f of FRAMEWORKS) {
+      const g = FW_GUIDE[f.id];
+      expect(g, f.id).toBeTruthy();
+      expect(g.ask.length, f.id).toBeGreaterThan(5);
+      expect(g.definitions.length, f.id).toBeGreaterThanOrEqual(3);
+      expect(g.enforcement.length, f.id).toBeGreaterThanOrEqual(2);
+      expect(g.myths.length, f.id).toBe(3);
+    }
+  });
 });
