@@ -1,0 +1,4 @@
+id,name,owner,business unit,purpose,model type,vendor,personal data (y/n),affected people,EU category,role,other frameworks,risk level,status,last review,next review
+AI-001,[Credit scorecard],[Name],[Retail lending],[Score loan applications],[Logistic regression],[In-house],y,[Applicants],High-risk (Annex III 5(b)),Provider and deployer,[GDPR; ISO/IEC 42001],High,[In production],[2026-10-01],[2027-01-01]
+AI-002,[Customer-service chatbot],[Name],[Customer experience],[Answer customer questions],[Large language model],[Vendor name],y,[Customers],Transparency duties (Art. 50),Deployer,[GDPR; OWASP LLM Top 10],Medium,[Pilot],[2026-09-15],[2026-12-15]
+AI-003,[Spam filter],[Name],[IT],[Filter incoming email],[Naive Bayes],[In-house],y,[Staff],Minimal risk,Provider and deployer,[GDPR],Low,[In production],[2026-06-01],[2027-06-01]

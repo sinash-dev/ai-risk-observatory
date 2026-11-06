@@ -6,6 +6,7 @@ import { PageSkeleton } from './components/PageSkeleton';
 import { ToastHost } from './components/Toast';
 import { Tour } from './components/Tour';
 import { routeMeta } from './data/routes';
+import { REGISTRY } from './pages/registry';
 import { useDocumentMeta } from './lib/meta';
 import { installSearchShortcut, useSearchOpen } from './lib/searchStore';
 import { useTilt } from './lib/tilt';
@@ -77,6 +78,7 @@ export default function App() {
   else if (page === 'rules') view = <Frameworks />;
   else if (page === 'basics') view = <Basics />;
   else if (page === 'compare') view = <Compare key={param ?? 'all'} fw={param} query={query} />;
+  else if (REGISTRY[page]) { const P = REGISTRY[page]; view = <P key={page + (param ?? '')} param={param} query={query} />; }
   else view = <NotFound />;
 
   return (

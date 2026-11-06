@@ -5,6 +5,8 @@ import { STAGES } from '../data/risks'; // eslint-disable-line
 import type { LabDef, Stage } from '../data/types';
 import { prefersReducedMotion, url } from '../lib/util';
 import { Breadcrumbs, Toc } from '../components/Nav';
+import { Term } from '../components/Term';
+import { GLOSSARY } from '../data/glossary';
 import { FRAMEWORKS } from '../data/frameworks';
 import { RISKS, TIERS } from '../data/risks';
 import { SHORT_NAME } from '../data/shortNames';
@@ -119,20 +121,7 @@ const STAGE_ROWS = [
   { s: 'Monitoring', what: 'The world changes, or attackers adapt, and nobody notices.', ex: 'A recession, a new scam, a pandemic, poisoned documents.', fix: 'Watch performance, set alerts, keep a way to stop or roll back the system.' },
 ];
 
-const GLOSSARY: [string, string][] = [
-  ['Provider and deployer', 'In the EU AI Act, the provider builds an AI system and puts it on the market; the deployer is the organisation that uses it. They have different duties.'],
-  ['High-risk', 'In the EU AI Act, a use listed in the law (such as hiring or credit) that must meet strict requirements. It describes the use, not the technology.'],
-  ['Human oversight', 'Arrangements that let trained people understand an AI system’s output, overrule it and stop it.'],
-  ['Proxy', 'A feature that stands in for a protected trait, such as a postcode that closely tracks ethnicity.'],
-  ['Drift', 'When the data a model sees in use starts to differ from the data it was trained on, so its performance quietly drops.'],
-  ['Threshold', 'The cut-off that turns a score into a decision, such as "approve if the probability of repayment is above 0.5". Moving it changes who is affected.'],
-  ['Hallucination (confabulation)', 'When a generative model produces fluent, confident content that is false.'],
-  ['Prompt injection', 'Hiding instructions in text a model reads (a message, web page or document) so it does something its owner did not intend.'],
-  ['Red-teaming', 'Deliberately trying to make a system fail or misbehave before attackers or users do.'],
-  ['Impact assessment', 'A structured look at how a system could affect people and society before it is used. GDPR calls one a DPIA; the EU AI Act requires a fundamental-rights impact assessment in some cases.'],
-  ['General-purpose AI model', 'A model, such as a large language model, that can be used for many different tasks. The EU AI Act sets duties for the companies that develop them.'],
-  ['Agent', 'An AI system that plans and takes actions with tools, such as sending emails or making payments, with limited human input.'],
-];
+const BASIC_TERMS = ['provider', 'deployer', 'high-risk', 'human-oversight', 'proxy', 'drift', 'threshold', 'hallucination', 'prompt-injection', 'red-teaming', 'impact-assessment', 'agent'];
 
 const BASICS_TOC = [
   { id: 'm1', label: 'What a model is' },
@@ -162,7 +151,7 @@ export function Basics() {
         <div className="narrow stack">
           <h2>1. What a machine learning model is</h2>
           <p>A traditional program follows rules a person wrote. A machine learning model writes its own rules by finding patterns in examples. Show it thousands of past loan applications and whether each loan was repaid, and it learns which combinations of income, debt and history tend to go with repayment. Given a new application, it produces a score.</p>
-          <p>That is both the strength and the weakness. The model learns whatever patterns are in the data, including unfair ones and accidental ones, and it has no idea when the world has changed since it was trained.</p>
+          <p>That is both the strength and the weakness. The model learns whatever patterns are in the data, including unfair ones and accidental ones, and it has no idea when the world has changed since it was trained: the problem known as <Term id="drift">drift</Term>.</p>
         </div>
         <Pipeline />
       </section>
@@ -225,7 +214,7 @@ export function Basics() {
       <section className="wrap section" id="m5">
         <div className="narrow stack">
           <h2>5. Laws, standards and security guides</h2>
-          <p><b>Laws</b> such as the EU AI Act and GDPR are binding where they apply and come with penalties. <b>Frameworks and standards</b> such as the NIST AI RMF and ISO/IEC 42001 are voluntary, but they describe recognised good practice, and ISO/IEC 42001 can be certified. <b>Security guides</b> such as the OWASP lists describe how attackers actually break AI systems.</p>
+          <p><b>Laws</b> such as the EU AI Act and GDPR are binding where they apply and come with penalties. The EU AI Act sorts uses into categories such as <Term id="high-risk">high-risk</Term>. <b>Frameworks and standards</b> such as the NIST AI RMF and ISO/IEC 42001 are voluntary, but they describe recognised good practice, and ISO/IEC 42001 can be certified. <b>Security guides</b> such as the OWASP lists describe how attackers actually break AI systems.</p>
           <p>They ask different questions. The EU AI Act and Korea’s AI Basic Act ask <i>what is this used for?</i> China’s rules ask <i>what kind of service is offered to the public?</i> Singapore asks <i>how much should a human be involved?</i> GDPR asks <i>whose data is this?</i> NIST asks <i>which qualities of a trustworthy system are at stake?</i> ISO asks <i>is the organisation managing AI consistently?</i> OWASP asks <i>how could someone attack it?</i></p>
         </div>
         <div className="grid3" style={{ marginTop: 20 }}>
@@ -280,9 +269,10 @@ export function Basics() {
 
       <section className="wrap section" id="m7">
         <h2>7. Glossary</h2>
+        <p className="muted" style={{ marginTop: 6 }}>A few of the terms used most. The full <a href={url('/glossary')}>glossary</a> has {GLOSSARY.length}.</p>
         <div className="grid2" style={{ marginTop: 18 }}>
-          {GLOSSARY.map(([t, d]) => (
-            <div key={t}><b>{t}</b><p className="muted small" style={{ marginTop: 2 }}>{d}</p></div>
+          {GLOSSARY.filter((g) => BASIC_TERMS.includes(g.id)).map((g) => (
+            <div key={g.id}><b><a href={url(`/glossary#${g.id}`)} style={{ color: 'inherit' }}>{g.term}</a></b><p className="muted small" style={{ marginTop: 2 }}>{g.def}</p></div>
           ))}
         </div>
       </section>

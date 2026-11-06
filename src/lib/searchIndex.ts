@@ -2,6 +2,8 @@
 import { TOPICS } from '../data/compare';
 import { FRAMEWORKS } from '../data/frameworks';
 import { FW_DATA, LABS } from '../data/labs';
+import { CASES } from '../data/cases';
+import { GLOSSARY } from '../data/glossary';
 import { liveNav } from '../data/routes';
 
 export type HitType = 'Page' | 'Model' | 'Framework' | 'Requirement' | 'Topic' | 'Term' | 'Case';
@@ -34,6 +36,8 @@ export function buildIndex(): SearchItem[] {
     for (const [ref, text] of seen) items.push({ type: 'Requirement', title: `${f.short} ${ref}`, snippet: clip(text), to: `/rules/${f.id}`, keys: ref });
   }
   for (const t of TOPICS) items.push({ type: 'Topic', title: `Compare: ${t.label}`, snippet: clip(t.q), to: `/compare?topic=${t.id}`, keys: '' });
+  for (const g of GLOSSARY) items.push({ type: 'Term', title: g.term, snippet: clip(g.def), to: `/glossary#${g.id}`, keys: '' });
+  for (const c of CASES) items.push({ type: 'Case', title: c.title, snippet: clip(c.text), to: `/model/${c.lab.id}#cases`, keys: `${c.year} ${c.jur}` });
   for (const f of extra) items.push(...f());
   return items;
 }

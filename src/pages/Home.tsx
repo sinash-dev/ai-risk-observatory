@@ -1,6 +1,8 @@
 import { motion } from 'framer-motion';
 import { useCallback, useMemo, useRef, useState } from 'react';
 import { Num } from '../components/ui';
+import { UPDATES } from '../data/updates';
+import { fmtDate } from '../data/site';
 import { Ring } from '../components/model/Panels';
 import { TODAY, parseDate } from '../components/Timeline';
 import { STATIC_PAGES } from '../data/routes';
@@ -197,6 +199,18 @@ export function Home() {
             </div>
           </div>
         )}
+      </section>
+
+      <section className="wrap news-strip" aria-label="What’s new">
+        <div className="news-strip-h"><span className="eyebrow">What’s new</span><a className="small" href={url('/updates')}>All updates →</a></div>
+        <div className="grid3">
+          {UPDATES.slice(0, 3).map((u) => (
+            <a key={u.title} className="card card-pad lift" href={url(u.links?.[0]?.to ?? '/updates')} style={{ color: 'inherit' }}>
+              <span className="mono small accent">{fmtDate(u.date)}</span>
+              <b style={{ display: 'block', marginTop: 4 }}>{u.title}</b>
+            </a>
+          ))}
+        </div>
       </section>
 
       {!fw && (
