@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Logo } from './components/ui';
 import { FRAMEWORKS, fwName, type Lens } from './data/frameworks';
 import { setLens, useLens } from './lib/lens';
@@ -9,6 +9,27 @@ import { Compare } from './pages/Compare';
 import { FrameworkPage, Frameworks } from './pages/Frameworks';
 import { Home } from './pages/Home';
 import { ModelPage } from './pages/Model';
+
+const GC = 'https://ai-risk-explorer.goatcounter.com';
+
+/** Send one page view to GoatCounter. The site uses #/ routes, so each route is counted as its own path. */
+function countView(hash: string, tries = 0) {
+  const gc = (window as unknown as { goatcounter?: { count?: (o: object) => void } }).goatcounter;
+  if (gc?.count) {
+    gc.count({ path: (hash.replace(/^#/, '') || '/'), title: document.title });
+  } else if (tries < 20) {
+    setTimeout(() => countView(hash, tries + 1), 500);
+  }
+}
+
+/** Public total from GoatCounter (only works once "Allow adding visitor counts" is switched on in its settings). */
+function VisitCount() {
+  const [n, setN] = useState<string | null>(null);
+  useEffect(() => {
+    fetch(`${GC}/counter/TOTAL.json`).then((r) => (r.ok ? r.json() : null)).then((d) => d?.count && setN(String(d.count).trim())).catch(() => {});
+  }, []);
+  return n ? <span className="mono">{n} visits so far</span> : null;
+}
 
 function Header({ page }: { page: string }) {
   const lens = useLens();
@@ -51,6 +72,7 @@ function Header({ page }: { page: string }) {
 export default function App() {
   const { page, param, hash } = useRoute();
   useEffect(() => { window.scrollTo(0, 0); }, [hash]);
+  useEffect(() => { countView(hash); }, [hash]);
   let view;
   if ((page === 'model' || page === 'lab') && param) view = <ModelPage key={param} id={param} />;
   else if (page === 'rules' && param) view = <FrameworkPage id={param} />;
@@ -66,6 +88,7 @@ export default function App() {
         <div className="wrap" style={{ display: 'grid', gap: 6 }}>
           <span><b>AI Risk Explorer</b> is a training resource. The organisation “Meridian” and the people and headlines in the simulations are fictional; the real cases are summarised from public reporting.</span>
           <span>Legal summaries cover ten frameworks, are simplified and are dated November 2026. They are not legal advice; check official sources before relying on them.</span>
+          <VisitCount />
         </div>
       </footer>
     </>
