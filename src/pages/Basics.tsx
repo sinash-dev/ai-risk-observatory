@@ -1,35 +1,113 @@
+import { AnimatePresence, motion } from 'framer-motion';
+import { useEffect, useState } from 'react';
+import { LABS } from '../data/labs';
+import { STAGES } from '../data/risks'; // eslint-disable-line
+import type { LabDef, Stage } from '../data/types';
+import { prefersReducedMotion, url } from '../lib/util';
 import { Breadcrumbs, Toc } from '../components/Nav';
 import { FRAMEWORKS } from '../data/frameworks';
-import { url } from '../lib/util';
-import { LABS } from '../data/labs';
 import { RISKS, TIERS } from '../data/risks';
-import { SHORT_NAME } from './Home';
+import { SHORT_NAME } from '../data/shortNames';
+
+const PIPE = [
+  { t: 'Data', d: 'Past examples, e.g. 10 years of loan applications and whether each was repaid' },
+  { t: 'Training', d: 'The algorithm searches for patterns that link inputs to outcomes' },
+  { t: 'Model', d: 'The learned patterns, stored as numbers (weights, rules, trees)' },
+  { t: 'Prediction', d: 'For a new case, the model produces a score, label or text' },
+  { t: 'Decision', d: 'A person or system acts on it: approve, reject, send, book' },
+];
+/** where each lifecycle stage's risk enters the pipeline */
+const STAGE_NODE: Record<Stage, number> = { data: 0, design: 1, validate: 2, monitor: 3, deploy: 4 };
+
+/** three safeguards for a stage, each from a different example */
+function safeguardsFor(stage: Stage) {
+  const seen = new Set<string>();
+  const out: { lab: LabDef; label: string; desc: string }[] = [];
+  for (const tier of ['classical', 'deep', 'genai', 'agentic']) {
+    for (const l of LABS.filter((x) => x.tier === tier)) {
+      const m = l.mitigations.find((x) => x.stage === stage);
+      if (m && !seen.has(l.id)) { out.push({ lab: l, label: m.label, desc: m.desc }); seen.add(l.id); break; }
+    }
+  }
+  return out.slice(0, 3);
+}
 
 function Pipeline() {
-  const steps = [
-    { t: 'Data', d: 'Past examples, e.g. 10 years of loan applications and whether each was repaid' },
-    { t: 'Training', d: 'The algorithm searches for patterns that link inputs to outcomes' },
-    { t: 'Model', d: 'The learned patterns, stored as numbers (weights, rules, trees)' },
-    { t: 'Prediction', d: 'For a new case, the model produces a score, label or text' },
-    { t: 'Decision', d: 'A person or system acts on it: approve, reject, send, book' },
-  ];
+  const [stage, setStage] = useState<Stage | null>(null);
+  const [still, setStill] = useState(true);
+  useEffect(() => { setStill(prefersReducedMotion()); }, []);
+  const hot = stage ? STAGE_NODE[stage] : -1;
+  const row = stage ? STAGE_ROWS[STAGES.findIndex((x) => x.id === stage)] : null;
+  const path = 'M95,85 L295,85 L495,85 L695,85 L895,85';
   return (
-    <svg viewBox="0 0 1000 170" className="viz-svg" role="img" aria-label="Data, training, model, prediction, decision">
-      <defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#6cc5b0" /></marker></defs>
-      {steps.map((s, i) => {
-        const x = 10 + i * 200;
-        return (
-          <g key={s.t}>
-            <rect x={x} y={10} width={170} height={150} rx={12} fill="#14171c" stroke="rgba(255,255,255,.12)" />
-            <text x={x + 14} y={38} fontSize="17" fontWeight={600} fill="#eceef1" fontFamily="Sora Variable, Sora, sans-serif">{i + 1}. {s.t}</text>
-            <foreignObject x={x + 12} y={50} width={148} height={105}>
-              <div style={{ fontSize: 13, color: '#9298a3', lineHeight: 1.4, fontFamily: 'Manrope Variable, Manrope, sans-serif' }}>{s.d}</div>
-            </foreignObject>
-            {i < steps.length - 1 && <line x1={x + 172} y1={85} x2={x + 198} y2={85} stroke="#6cc5b0" strokeWidth="2" strokeDasharray="4 4" markerEnd="url(#arr)" />}
-          </g>
-        );
-      })}
-    </svg>
+    <div>
+      <div className="scroll-x" tabIndex={0} role="region" aria-label="Pipeline diagram, scrolls sideways" style={{ marginTop: 24 }}>
+        <div style={{ minWidth: 760 }}>
+          <svg viewBox="0 0 1000 170" className="viz-svg" role="img" aria-label={`Data, training, model, prediction, decision${stage ? `. Risk from the ${row?.s.toLowerCase()} stage enters at ${PIPE[hot].t.toLowerCase()}.` : ''}`}>
+            <defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#6cc5b0" /></marker></defs>
+            {PIPE.map((p, i) => {
+              const x = 10 + i * 200;
+              const on = i === hot;
+              return (
+                <g key={p.t}>
+                  <rect x={x} y={10} width={170} height={150} rx={12} fill={on ? 'rgba(224,113,107,.1)' : '#14171c'} stroke={on ? '#e0716b' : 'rgba(255,255,255,.12)'} strokeWidth={on ? 2 : 1} style={{ transition: 'all .3s' }} />
+                  {on && !still && (
+                    <rect x={x} y={10} width={170} height={150} rx={12} fill="none" stroke="#e0716b" strokeWidth="2">
+                      <animate attributeName="opacity" values="0.9;0;0.9" dur="1.6s" repeatCount="indefinite" />
+                      <animate attributeName="stroke-width" values="2;10;2" dur="1.6s" repeatCount="indefinite" />
+                    </rect>
+                  )}
+                  <text x={x + 14} y={38} fontSize="17" fontWeight={600} fill="#eceef1" fontFamily="Sora Variable, Sora, sans-serif">{i + 1}. {p.t}</text>
+                  <foreignObject x={x + 12} y={50} width={148} height={105}>
+                    <div style={{ fontSize: 13, color: '#9298a3', lineHeight: 1.4, fontFamily: 'Manrope Variable, Manrope, sans-serif' }}>{p.d}</div>
+                  </foreignObject>
+                  {i < PIPE.length - 1 && <line x1={x + 172} y1={85} x2={x + 198} y2={85} stroke="#6cc5b0" strokeWidth="2" strokeDasharray="4 4" markerEnd="url(#arr)" />}
+                </g>
+              );
+            })}
+            {/* particles travelling through the pipeline */}
+            {[0, 1, 2, 3, 4, 5].map((k) => (
+              still
+                ? <circle key={k} cx={182 + (k % 4) * 200} cy={85} r={3} fill="#6cc5b0" opacity={0.7} />
+                : (
+                  <circle key={k} r={3.2} fill={hot >= 0 ? '#e0716b' : '#6cc5b0'}>
+                    <animateMotion dur="4.2s" begin={`${k * 0.7}s`} repeatCount="indefinite" path={path} keyPoints="0;1" keyTimes="0;1" calcMode="linear" />
+                    <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;.1;.9;1" dur="4.2s" begin={`${k * 0.7}s`} repeatCount="indefinite" />
+                  </circle>
+                )
+            ))}
+          </svg>
+        </div>
+      </div>
+      <div className="stage-btns" role="group" aria-label="Show where risk enters">
+        <span className="small muted">Where does risk enter?</span>
+        {STAGES.map((st) => (
+          <button key={st.id} className={`chip-btn ${stage === st.id ? 'on bad' : ''}`} aria-pressed={stage === st.id} onClick={() => setStage(stage === st.id ? null : st.id)}>{st.label}</button>
+        ))}
+      </div>
+      <AnimatePresence mode="wait">
+        {stage && row && (
+          <motion.div key={stage} className="card card-pad stage-card" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.22 }} aria-live="polite">
+            <div className="grid2" style={{ gap: 20 }}>
+              <div className="stack">
+                <div className="label" style={{ color: '#e0716b' }}>{row.s} stage · enters at “{PIPE[hot].t}”</div>
+                <p>{row.what}</p>
+                <p className="muted small"><b>Example:</b> {row.ex}</p>
+                <p className="small"><b>Typical safeguard:</b> {row.fix}</p>
+              </div>
+              <div>
+                <div className="label">Safeguards you can try at this stage</div>
+                <ul className="stage-sg">
+                  {safeguardsFor(stage).map((g) => (
+                    <li key={g.lab.id}><a href={url(`/model/${g.lab.id}`)}><b>{g.label}</b></a><span className="muted small"> · {g.lab.app}</span></li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
   );
 }
 
@@ -86,7 +164,7 @@ export function Basics() {
           <p>A traditional program follows rules a person wrote. A machine learning model writes its own rules by finding patterns in examples. Show it thousands of past loan applications and whether each loan was repaid, and it learns which combinations of income, debt and history tend to go with repayment. Given a new application, it produces a score.</p>
           <p>That is both the strength and the weakness. The model learns whatever patterns are in the data, including unfair ones and accidental ones, and it has no idea when the world has changed since it was trained.</p>
         </div>
-        <div className="scroll-x" tabIndex={0} role="region" aria-label="Pipeline diagram, scrolls sideways" style={{ marginTop: 24 }}><div style={{ minWidth: 760 }}><Pipeline /></div></div>
+        <Pipeline />
       </section>
 
       <section className="wrap section" id="m2">

@@ -9,7 +9,7 @@ import { LABS, LAB_BY_ID, fwEntry } from '../data/labs';
 import { KIND_LABEL, RISKS, TIER_BY_ID, computeScores, isCountered, level } from '../data/risks';
 import type { LabDef } from '../data/types';
 import { setLens, useLens } from '../lib/lens';
-import { SHORT_NAME } from './Home';
+import { SHORT_NAME } from '../data/shortNames';
 
 function FrameworkBlock({ lab, fw, m }: { lab: LabDef; fw: FwId; m: Set<string> }) {
   const f = FW_BY_ID[fw];

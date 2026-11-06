@@ -1,5 +1,11 @@
 import { motion } from 'framer-motion';
-import { useRef, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
+import { Num } from '../components/ui';
+import { TODAY, parseDate } from '../components/Timeline';
+import { STATIC_PAGES } from '../data/routes';
+import { SceneShell, useOnScreen } from '../three/SceneShell';
+import type { UniverseNode } from '../three/Universe';
+import { prefersReducedMotion, useProgress } from '../lib/util';
 import { FRAMEWORKS, FW_BY_ID, fwName, type FwId } from '../data/frameworks';
 import { LABS, fwEntry } from '../data/labs';
 import { TIERS, TIER_BY_ID } from '../data/risks';
@@ -26,7 +32,8 @@ function Orbit() {
   const lens = useLens();
   const [hover, setHover] = useState<string | null>(null);
   const [tilt, setTilt] = useState(0.5);
-  const t = useClock();
+  const [box, onScreen] = useOnScreen<HTMLDivElement>();
+  const t = useClock(onScreen && !prefersReducedMotion());
   const frozen = useRef({ at: 0, off: 0 });
   if (hover && !frozen.current.at) frozen.current.at = t || 0.0001;
   if (!hover && frozen.current.at) { frozen.current.off += t - frozen.current.at; frozen.current.at = 0; }
@@ -45,7 +52,7 @@ function Orbit() {
   const hl = hover ? nodes.find((n) => n.l.id === hover) : null;
 
   return (
-    <div className="map-wrap" onMouseMove={(e) => { const r = e.currentTarget.getBoundingClientRect(); setTilt(Math.min(1, Math.max(0, (e.clientY - r.top) / r.height))); }}>
+    <div ref={box} className="map-wrap" onMouseMove={(e) => { const r = e.currentTarget.getBoundingClientRect(); setTilt(Math.min(1, Math.max(0, (e.clientY - r.top) / r.height))); }}>
       <svg viewBox={`0 0 ${W} ${H}`} className="viz-svg" role="img" aria-label="All models orbiting from classical machine learning in the centre to AI agents at the edge">
         <defs>
           <radialGradient id="core"><stop offset="0" stopColor="#ffffff" stopOpacity=".55" /><stop offset=".35" stopColor="#6cc5b0" stopOpacity=".18" /><stop offset="1" stopColor="#6cc5b0" stopOpacity="0" /></radialGradient>
@@ -121,27 +128,69 @@ export function Home() {
   const groups = fw
     ? fw.cats.map((c) => ({ key: c.id, title: c.label, color: c.color, desc: c.desc, labs: LABS.filter((l) => fwEntry(fw.id, l.id).cat === c.id) })).filter((g) => g.labs.length)
     : TIERS.map((t) => ({ key: t.id, title: t.label, color: t.color, desc: t.tagline, labs: LABS.filter((l) => l.tier === t.id) }));
+  const progress = useProgress();
+  const nodes: UniverseNode[] = useMemo(() => LABS.map((l) => {
+    const c = colourFor(l, lens);
+    return { id: l.id, ring: TIER_BY_ID[l.tier].ring - 1, glyph: l.glyph, title: l.model, app: l.app, short: SHORT_NAME[l.id], color: c.c, status: c.status, tierColor: TIER_BY_ID[l.tier].color, explored: !!progress.labs?.[l.id] };
+  }), [lens, progress]);
+  const pick = useCallback((id: string) => go(`/model/${id}`), []);
+  const sceneProps = useMemo(() => ({ nodes, rings: TIERS.map((t) => (lens === 'all' ? t.color : '#8a919c')), onPick: pick }), [nodes, lens, pick]);
+  const cases = LABS.reduce((n, l) => n + l.incidents.length, 0);
+  const upcoming = FRAMEWORKS.flatMap((f) => f.timeline.map((e) => ({ f, e, y: parseDate(e.date) }))).filter((x) => x.y > TODAY).sort((a, b) => a.y - b.y);
+  const hasClassify = STATIC_PAGES.some((p) => p.path === '/classify');
   return (
     <div>
-      <section className="wrap" style={{ padding: '48px 0 0' }}>
-        <motion.div className="narrow stack" initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
-          <div className="label accent">{fw ? `Viewing through: ${fw.short}` : 'AI Risk Explorer'}</div>
-          <h1>{fw ? `${LABS.length} AI systems, seen through ${fwName(fw.id)}` : 'Every AI system fails in its own way. Here is how, and what the rules expect you to do about it.'}</h1>
-          {fw ? (
-            <p className="lead">{fw.intro.split('. ').slice(0, 2).join('. ')}. Each model is coloured by how {fwName(fw.id)} treats it. <a href={url(`/rules/${fw.id}`)}>Open the full guide</a>, including a learning path through these examples.</p>
-          ) : (
-            <p className="lead">{LABS.length} real uses of AI, from a spam filter to a team of buying agents. Each one runs as a small simulation you can break and repair. {FRAMEWORKS.length} governance frameworks, from the EU AI Act to China’s and Korea’s rules, are mapped onto every one of them.</p>
-          )}
-        </motion.div>
-      </section>
-
-      <section className="wrap" style={{ marginTop: 10 }}>
-        <div style={{ display: 'flex', gap: 18, flexWrap: 'wrap', justifyContent: 'center', marginTop: 18 }}>
-          {fw
-            ? fw.cats.map((c) => { const n = LABS.filter((l) => fwEntry(fw.id, l.id).cat === c.id).length; return n ? <span key={c.id} className="small muted" style={{ display: 'inline-flex', gap: 7, alignItems: 'center' }}><span className="swatch" style={{ background: c.color }} />{c.label} ({n})</span> : null; })
-            : TIERS.map((t, i) => <span key={t.id} className="small muted" style={{ display: 'inline-flex', gap: 7, alignItems: 'center' }}><span className="swatch" style={{ background: t.color }} />{['Inner ring', 'Second ring', 'Third ring', 'Outer ring'][i]}: {t.label}</span>)}
+      <section className="hero">
+        <div className="wrap hero-grid">
+          <motion.div className="hero-text stack" initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
+            <div className="eyebrow">{fw ? `Viewing through: ${fw.short}` : 'AI Risk Explorer'}</div>
+            <h1>{fw ? `${LABS.length} AI systems, seen through ${fwName(fw.id)}` : 'Every AI system fails in its own way. Here is how, and what the rules expect you to do about it.'}</h1>
+            {fw ? (
+              <p className="lead">{fw.intro.split('. ').slice(0, 2).join('. ')}. Each model is coloured by how {fwName(fw.id)} treats it. <a href={url(`/rules/${fw.id}`)}>Open the full guide</a>, including a learning path through these examples.</p>
+            ) : (
+              <p className="lead">{LABS.length} real uses of AI, from a spam filter to a team of buying agents. Each one runs as a small simulation you can break and repair. {FRAMEWORKS.length} governance frameworks, from the EU AI Act to China’s and Korea’s rules, are mapped onto every one of them.</p>
+            )}
+            <div className="hero-ctas">
+              <a className="btn btn-primary" href={url('/model/credit')}>Start with credit scoring</a>
+              {hasClassify ? <a className="btn" href={url('/classify')}>Classify your system</a> : <a className="btn" href={url('/compare')}>Compare frameworks</a>}
+            </div>
+            <dl className="hero-stats">
+              <div><dt>examples</dt><dd><Num v={LABS.length} /></dd></div>
+              <div><dt>frameworks</dt><dd><Num v={FRAMEWORKS.length} /></dd></div>
+              <div><dt>real cases</dt><dd><Num v={cases} /></dd></div>
+              <div><dt>upcoming deadlines</dt><dd><Num v={upcoming.length} /></dd></div>
+            </dl>
+          </motion.div>
+          <div className="hero-map" data-tour="orbit">
+            <a className="sr-only skip-map" href="#all-examples">Skip the 3D map</a>
+            <div className="hero-legend" aria-hidden>
+              {fw
+                ? fw.cats.map((c) => { const n = LABS.filter((l) => fwEntry(fw.id, l.id).cat === c.id).length; return n ? <span key={c.id}><span className="swatch" style={{ background: c.color }} />{c.label} ({n})</span> : null; })
+                : TIERS.map((t, i) => <span key={t.id}><span className="swatch" style={{ background: t.color }} />{['Inner', 'Second', 'Third', 'Outer'][i]} ring: {t.label}</span>)}
+            </div>
+            <SceneShell
+              className="universe"
+              height="clamp(380px, 44vw, 560px)"
+              load={() => import('../three/Universe')}
+              props={sceneProps}
+              fallback={<div className="scroll-x" tabIndex={0} role="region" aria-label="Model map, scrolls sideways"><div style={{ minWidth: 760 }}><Orbit /></div></div>}
+            />
+          </div>
         </div>
-        <div className="scroll-x" data-tour="orbit" tabIndex={0} role="region" aria-label="Model map, scrolls sideways"><div style={{ minWidth: 760 }}><Orbit /></div></div>
+        {upcoming.length > 0 && (
+          <div className="wrap">
+            <div className="ticker" role="region" aria-label="Upcoming deadlines">
+              <span className="ticker-l">Coming up</span>
+              <ul>
+                {upcoming.slice(0, 4).map(({ f, e }) => (
+                  <li key={f.id + e.date + e.text}>
+                    <a href={url(`/rules/${f.id}`)}><span className="mono ticker-d">{e.date}</span> <b>{f.short}</b> <span className="muted">{e.text}</span></a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        )}
       </section>
 
       {!fw && (
@@ -160,7 +209,7 @@ export function Home() {
         </section>
       )}
 
-      <section className="wrap section">
+      <section className="wrap section" id="all-examples" tabIndex={-1}>
         <h2>{fw ? `Grouped by category under ${fwName(fw.id)}` : `All ${LABS.length} examples, by type of model`}</h2>
         <p className="muted" style={{ marginTop: 6, marginBottom: 20 }}>Every example opens a simulation and shows how the rules apply to it.</p>
         <div className="grid2" style={{ alignItems: 'start' }}>

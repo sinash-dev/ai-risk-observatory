@@ -1,11 +1,18 @@
-import { motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
+import { useCallback, useMemo, useState } from 'react';
+import { WorldTimeline } from '../components/WorldTimeline';
+import { COMPARE, TOPICS } from '../data/compare';
+import { KIND_COLOR, fwColor, fwKind, type FwKind } from '../data/fwKind';
+import { SceneShell } from '../three/SceneShell';
+import { useWebGL } from '../three/useWebGL';
+import type { GlobeMarker, GlobeOther } from '../three/Globe';
 import { Breadcrumbs, Toc } from '../components/Nav';
 import { HTimeline, Roadmap, TODAY, TODAY_LABEL, parseDate } from '../components/Timeline';
 import { FRAMEWORKS, FW_BY_ID, OTHER_FRAMEWORKS, fwName, type Framework, type FwId } from '../data/frameworks';
 import { LABS, LAB_BY_ID, fwEntry } from '../data/labs';
 import { setLens, useLens } from '../lib/lens';
 import { go, url } from '../lib/util';
-import { SHORT_NAME } from './Home';
+import { SHORT_NAME } from '../data/shortNames';
 import { fmtDate } from '../data/site';
 
 const SORTS: Record<FwId, string> = {
@@ -39,40 +46,89 @@ function TiltCard({ f, i }: { f: Framework; i: number }) {
   );
 }
 
-function WorldTimeline() {
-  const all = FRAMEWORKS.flatMap((f) => f.timeline.map((t) => ({ ...t, f: f.short, y: parseDate(t.date) }))).sort((a, b) => a.y - b.y);
-  const years = Array.from(new Set(all.map((e) => Math.floor(e.y))));
-  let todayShown = false;
+
+/** Where each framework sits on the globe. ISO and OWASP are international, so they orbit as satellites. */
+const PLACE: Record<FwId, { lat?: number; lon?: number; satellite?: number }> = {
+  eu: { lat: 50.85, lon: 3.35 }, gdpr: { lat: 50.85, lon: 5.35 }, uk: { lat: 51.51, lon: -0.13 },
+  us: { lat: 38.91, lon: -78.04 }, nist: { lat: 38.91, lon: -76.04 },
+  cn: { lat: 39.9, lon: 116.4 }, kr: { lat: 37.57, lon: 126.98 }, sg: { lat: 1.35, lon: 103.82 },
+  iso: { satellite: 0 }, owasp: { satellite: 1 },
+};
+/** "Other frameworks" list entries that have a clear home city */
+const OTHER_PLACES: { match: RegExp; label: string; lat: number; lon: number }[] = [
+  { match: /Council of Europe/, label: 'Council of Europe (Strasbourg)', lat: 48.58, lon: 7.75 },
+  { match: /^Japan/, label: 'Japan (Tokyo)', lat: 35.68, lon: 139.69 },
+  { match: /^Brazil/, label: 'Brazil (Brasília)', lat: -15.79, lon: -47.88 },
+  { match: /^Canada/, label: 'Canada (Ottawa)', lat: 45.42, lon: -75.7 },
+  { match: /^Australia/, label: 'Australia (Canberra)', lat: -35.28, lon: 149.13 },
+  { match: /^OECD/, label: 'OECD (Paris)', lat: 48.86, lon: 2.35 },
+];
+/** frameworks that set firm rules (strength 2 or more) on at least half of the same topics */
+function firmArcs() {
+  const ids = FRAMEWORKS.map((f) => f.id);
+  const out: Record<string, string[]> = {};
+  for (const a of ids) {
+    out[a] = ids.filter((b) => b !== a && TOPICS.filter((t) => COMPARE[t.id][a][0] >= 2 && COMPARE[t.id][b][0] >= 2).length >= TOPICS.length / 2);
+  }
+  return out;
+}
+
+function GlobeSection() {
+  const [sel, setSel] = useState<FwId | null>(null);
+  const markers: GlobeMarker[] = useMemo(() => FRAMEWORKS.map((f) => ({ id: f.id, label: f.short, type: f.type, binding: f.binding, color: fwColor(f), ...PLACE[f.id] })), []);
+  const others: GlobeOther[] = useMemo(() => OTHER_FRAMEWORKS.flatMap((o, idx) => {
+    const p = OTHER_PLACES.find((x) => x.match.test(o.name));
+    return p ? [{ idx, label: p.label, lat: p.lat, lon: p.lon }] : [];
+  }), []);
+  const arcs = useMemo(firmArcs, []);
+  const onSelect = useCallback((id: string) => setSel(id as FwId), []);
+  const onOther = useCallback((idx: number) => {
+    const el = document.getElementById(`other-${idx}`);
+    el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    el?.classList.add('flash');
+    setTimeout(() => el?.classList.remove('flash'), 1600);
+  }, []);
+  const props = useMemo(() => ({ markers, others, arcs, selected: sel, onSelect, onOther }), [markers, others, arcs, sel, onSelect, onOther]);
+  const f = sel ? FW_BY_ID[sel] : null;
+  const next = f?.timeline.map((e) => ({ ...e, y: parseDate(e.date) })).filter((e) => e.y > TODAY).sort((a, b) => a.y - b.y)[0];
+  const kinds = Object.keys(KIND_COLOR) as FwKind[];
+  const allowed = useWebGL();
+  if (!allowed) return null; // the region cards below are the 2D version
   return (
-    <div style={{ position: 'relative', paddingLeft: 90 }}>
-      <div style={{ position: 'absolute', left: 70, top: 6, bottom: 6, width: 2, background: 'linear-gradient(rgba(108,197,176,.6), rgba(214,192,106,.6))' }} />
-      {years.map((yr) => {
-        const items = all.filter((e) => Math.floor(e.y) === yr);
-        return (
-          <div key={yr} style={{ position: 'relative', marginBottom: 18 }}>
-            <div style={{ position: 'absolute', left: -90, top: 0, width: 60, textAlign: 'right', fontFamily: 'var(--serif)', fontWeight: 700, fontSize: 20 }}>{yr}</div>
-            {items.map((e, i) => {
-              const future = e.y > TODAY;
-              const marker = future && !todayShown;
-              if (marker) todayShown = true;
-              return (
-                <div key={e.f + e.date + e.text}>
-                  {marker && <div className="mono small" style={{ margin: '6px 0 10px -26px', color: '#fff', opacity: 0.8 }}>── today ({TODAY_LABEL}) ──</div>}
-                  <motion.div initial={{ opacity: 0, x: 16 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true, margin: '-40px' }} transition={{ delay: i * 0.04 }}
-                    style={{ position: 'relative', display: 'grid', gridTemplateColumns: '78px 150px minmax(0,1fr)', gap: 12, padding: '7px 0', alignItems: 'baseline' }} className="wt-row">
-                    <span style={{ position: 'absolute', left: -25, top: 13, width: 10, height: 10, borderRadius: '50%', background: future ? '#0c0e11' : 'var(--accent)', border: `2px solid ${future ? '#d6c06a' : 'var(--accent)'}` }} />
-                    <span className="mono small" style={{ color: future ? '#d6c06a' : 'var(--muted)' }}>{e.date}</span>
-                    <span className="tag" style={{ justifySelf: 'start' }}>{e.f}</span>
-                    <span>{e.text}</span>
-                  </motion.div>
-                </div>
-              );
-            })}
+    <section className="section globe-section" aria-label="Rules around the world">
+      <div className="globe-grid">
+        <div className="globe-stage">
+          <SceneShell className="globe-wrap" height="clamp(420px, 46vw, 560px)" load={() => import('../three/Globe')} props={props} fallback={null} />
+          <div className="globe-legend" aria-hidden>
+            {kinds.map((k) => <span key={k}><span className="swatch" style={{ background: KIND_COLOR[k] }} />{k}</span>)}
+            <span><span className="swatch" style={{ background: '#7c838e' }} />Other frameworks</span>
           </div>
-        );
-      })}
-      <style>{'@media (max-width: 760px){.wt-row{grid-template-columns:minmax(0,1fr) !important; gap:2px !important}}'}</style>
-    </div>
+        </div>
+        <AnimatePresence mode="wait">
+          {f ? (
+            <motion.aside key={f.id} className="globe-panel card card-pad stack" initial={{ opacity: 0, x: 24 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 24 }} transition={{ duration: 0.3 }} aria-live="polite">
+              <div className="label" style={{ color: fwColor(f) }}>{fwKind(f)}</div>
+              <h2 style={{ fontSize: 24 }}>{f.name}</h2>
+              <p className="muted">{f.intro.split('. ').slice(0, 2).join('. ')}.</p>
+              {next && <p className="small"><span className="mono" style={{ color: '#d6c06a' }}>Next: {next.date}</span> · {next.text}</p>}
+              <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                <a className="btn btn-primary" href={url(`/rules/${f.id}`)}>Open guide</a>
+                <button className="btn" onClick={() => { setLens(f.id); go('/'); }}>View site through it</button>
+              </div>
+              {(arcs[f.id] ?? []).length > 0 && <p className="dim small">Arcs show frameworks that set firm rules on the same topics: {arcs[f.id].map((id) => FW_BY_ID[id as FwId].short).join(', ')}.</p>}
+              <button className="tour-skip" style={{ alignSelf: 'flex-start' }} onClick={() => setSel(null)}>Clear selection</button>
+            </motion.aside>
+          ) : (
+            <motion.aside key="intro" className="globe-panel stack" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+              <div className="eyebrow">Rules around the world</div>
+              <h2 style={{ fontSize: 24 }}>Where each framework comes from</h2>
+              <p className="muted">Drag the globe to turn it. Pick a marker to read about that framework; the colour shows how binding it is. ISO/IEC 42001 and the OWASP lists are international, so they circle the globe.</p>
+              <p className="muted small">Every framework is also listed by region below.</p>
+            </motion.aside>
+          )}
+        </AnimatePresence>
+      </div>
+    </section>
   );
 }
 
@@ -84,6 +140,8 @@ export function Frameworks() {
         <h1>{FRAMEWORKS.length} ways of governing AI</h1>
         <p className="lead">Some are laws with fines, some are standards you can be certified against, some are practical guides. Most organisations need several at once. Pick one to read its guide, or view the whole site through it.</p>
       </div>
+
+      <GlobeSection />
 
       {REGIONS.map((reg) => (
         <section key={reg} className="section" style={{ paddingBottom: 10 }}>
@@ -138,7 +196,7 @@ export function Frameworks() {
         <h2>Other frameworks worth knowing</h2>
         <div className="card" style={{ marginTop: 18 }}>
           {OTHER_FRAMEWORKS.map((o, i) => (
-            <div key={o.name} style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1.1fr) minmax(0,2fr)', gap: 20, padding: '14px 18px', borderTop: i ? '1px solid var(--line)' : 'none' }} className="other-row">
+            <div key={o.name} id={`other-${i}`} style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1.1fr) minmax(0,2fr)', gap: 20, padding: '14px 18px', borderTop: i ? '1px solid var(--line)' : 'none' }} className="other-row">
               <div><div style={{ fontWeight: 700 }}>{o.name}</div><div className="dim small">{o.where} · {o.type}</div></div>
               <p className="muted small">{o.text}</p>
             </div>
