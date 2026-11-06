@@ -3,6 +3,7 @@ import { Suspense, lazy, useEffect, useState } from 'react';
 import { Footer } from './components/Footer';
 import { Header } from './components/Header';
 import { PageSkeleton } from './components/PageSkeleton';
+import { ToastHost } from './components/Toast';
 import { Tour } from './components/Tour';
 import { routeMeta } from './data/routes';
 import { useDocumentMeta } from './lib/meta';
@@ -89,6 +90,7 @@ export default function App() {
       <Footer />
       {page === '' && <Tour />}
       <SearchHost />
+      <ToastHost />
     </MotionConfig>
   );
 }

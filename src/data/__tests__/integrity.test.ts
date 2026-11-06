@@ -72,4 +72,16 @@ describe('data integrity', () => {
     }
     expect(bad).toEqual([]);
   });
+
+  it('every example has a residual-risk line, at least two workshop prompts and a checklist', () => {
+    for (const l of LABS) {
+      expect(l.residual, l.id).toBeTruthy();
+      expect((l.discuss ?? []).length, l.id).toBeGreaterThanOrEqual(2);
+      expect(l.checklist.length, l.id).toBeGreaterThanOrEqual(3);
+    }
+  });
+
+  it('problem codes are valid OWASP 2026 codes', () => {
+    for (const l of LABS) for (const st of l.stressors) for (const c of st.codes ?? []) expect(c, `${l.id}/${st.id}`).toMatch(/^(LLM(0[1-9]|10):2026|ASI(0[1-9]|10))$/);
+  });
 });

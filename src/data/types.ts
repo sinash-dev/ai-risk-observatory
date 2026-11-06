@@ -77,4 +77,8 @@ export interface LabDef {
   incidents: Incident[];
   checklist: string[];
   lesson: string;
+  /** what remains even with every safeguard on, and who must accept it */
+  residual?: string;
+  /** facilitator questions for workshops */
+  discuss?: string[];
 }

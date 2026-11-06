@@ -11,10 +11,24 @@ import { NIST } from './fw/nist';
 import { OWASP } from './fw/owasp';
 import { US } from './fw/us';
 import { CN, KR, SG, UK } from './fw/more';
+import { LAB_EXTRAS } from './labExtras';
 import type { LabDef } from './types';
 
 const deep = [deepLabs[0], faceLab, emotionLab, ...deepLabs.slice(1)];
-export const LABS: LabDef[] = [spamLab, ...classicalLabs, ...deep, foundationLab, ...genaiLabs, ...agenticLabs];
+/** merge the case-study additions (residual risk, prompts, codes, missing memo fields) into a lab */
+function withExtras(l: LabDef): LabDef {
+  const x = LAB_EXTRAS[l.id];
+  if (!x) return l;
+  return {
+    ...l,
+    residual: x.residual,
+    discuss: x.discuss,
+    brief: { ...l.brief, role: l.brief.role || x.role || '', kpi: l.brief.kpi || x.kpi || '' },
+    checklist: l.checklist.length ? l.checklist : x.checklist ?? [],
+    stressors: l.stressors.map((st) => ({ ...st, codes: st.codes ?? x.codes?.[st.id], unmitigable: st.unmitigable || x.unmitigable?.includes(st.id) || undefined })),
+  };
+}
+export const LABS: LabDef[] = [spamLab, ...classicalLabs, ...deep, foundationLab, ...genaiLabs, ...agenticLabs].map(withExtras);
 export const LAB_BY_ID = Object.fromEntries(LABS.map((l) => [l.id, l])) as Record<string, LabDef>;
 
 export const FW_DATA: Record<FwId, Record<string, FwEntry>> = { eu: EU, us: US, nist: NIST, iso: ISO, owasp: OWASP, gdpr: GDPR, cn: CN, kr: KR, sg: SG, uk: UK };

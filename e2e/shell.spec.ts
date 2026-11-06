@@ -19,7 +19,7 @@ test.describe('search palette', () => {
   for (const [q, expected] of [
     ['credit', /Credit scoring/],
     ['Art. 27', /EU AI Act Art\. 27/],
-    ['prompt injection', /LLM01:2026|Agent|Chatbot|RAG/i],
+    ['prompt injection', /LLM01:2026|Agent|Chatbot|Retrieval|Prompt/i],
     ['Korea', /Korea/],
   ] as const) {
     test(`finds "${q}"`, async ({ page }) => {

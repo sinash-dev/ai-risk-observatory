@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { useCallback, useMemo, useRef, useState } from 'react';
 import { Num } from '../components/ui';
+import { Ring } from '../components/model/Panels';
 import { TODAY, parseDate } from '../components/Timeline';
 import { STATIC_PAGES } from '../data/routes';
 import { SceneShell, useOnScreen } from '../three/SceneShell';
@@ -111,12 +112,12 @@ function Icon({ i }: { i: number }) {
   return <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">{p}</svg>;
 }
 
-function Row({ lab, lens }: { lab: LabDef; lens: FwId | 'all' }) {
+function Row({ lab, lens, explored }: { lab: LabDef; lens: FwId | 'all'; explored?: boolean }) {
   const e = lens === 'all' ? null : fwEntry(lens, lab.id);
   const cat = e ? FW_BY_ID[lens as FwId].cats.find((c) => c.id === e.cat) : null;
   return (
     <a href={url(`/model/${lab.id}`)} style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) auto', gap: 16, padding: '12px 18px', borderTop: '1px solid var(--line)', color: 'inherit' }} className="row-link">
-      <span><span style={{ fontWeight: 700 }}>{lab.model}</span><span className="muted"> · {lab.app}</span></span>
+      <span><span style={{ fontWeight: 700 }}>{lab.model}</span><span className="muted"> · {lab.app}</span>{explored && <span className="done-badge" title="Explored" aria-label="Explored">✓</span>}</span>
       {cat ? <span className="tag"><span className="swatch" style={{ background: cat.color }} />{cat.label}</span> : <span className="dim small">→</span>}
     </a>
   );
@@ -135,6 +136,7 @@ export function Home() {
   }), [lens, progress]);
   const pick = useCallback((id: string) => go(`/model/${id}`), []);
   const sceneProps = useMemo(() => ({ nodes, rings: TIERS.map((t) => (lens === 'all' ? t.color : '#8a919c')), onPick: pick }), [nodes, lens, pick]);
+  const exploredN = LABS.filter((l) => progress.labs?.[l.id]).length;
   const cases = LABS.reduce((n, l) => n + l.incidents.length, 0);
   const upcoming = FRAMEWORKS.flatMap((f) => f.timeline.map((e) => ({ f, e, y: parseDate(e.date) }))).filter((x) => x.y > TODAY).sort((a, b) => a.y - b.y);
   const hasClassify = STATIC_PAGES.some((p) => p.path === '/classify');
@@ -160,6 +162,10 @@ export function Home() {
               <div><dt>real cases</dt><dd><Num v={cases} /></dd></div>
               <div><dt>upcoming deadlines</dt><dd><Num v={upcoming.length} /></dd></div>
             </dl>
+            <div className="explored-row">
+              <Ring n={exploredN} total={LABS.length} size={42} />
+              <span className="small muted">{exploredN ? `${exploredN} of ${LABS.length} explored. Switch on a problem and a safeguard in any example to count it.` : 'Your progress shows here: switch on a problem and a safeguard in any example.'}</span>
+            </div>
           </motion.div>
           <div className="hero-map" data-tour="orbit">
             <a className="sr-only skip-map" href="#all-examples">Skip the 3D map</a>
@@ -222,7 +228,7 @@ export function Home() {
                   <p className="muted small" style={{ marginTop: 4 }}>{g.desc}</p>
                 </div>
               </div>
-              {g.labs.map((l) => <Row key={l.id} lab={l} lens={lens} />)}
+              {g.labs.map((l) => <Row key={l.id} lab={l} lens={lens} explored={!!progress.labs?.[l.id]} />)}
             </motion.div>
           ))}
         </div>

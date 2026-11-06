@@ -260,18 +260,19 @@ export function Basics() {
           <p>A format that has worked well for mixed groups of managers, lawyers and engineers. You need a screen and, ideally, laptops in small groups.</p>
         </div>
         <div className="grid3" style={{ marginTop: 20 }}>
-          {[
-            ['0–10 min', 'Warm-up', 'Open the home page. Ask the group to place three AI systems they use at work on the rings. Read section 2 of this page together.'],
-            ['10–25 min', 'Break and fix', 'In groups, open Credit scoring. Switch on the postcode problem, watch approvals change, then find the safeguard. Each group reports one surprise.'],
-            ['25–40 min', 'One framework', 'Set “View through” to the framework that matters most to you. Follow the first four steps of its learning path.'],
-            ['40–50 min', 'Compare', 'Open Compare and pick Transparency. Ask: where would we be compliant in one country and not another?'],
-            ['50–55 min', 'The hard case', 'Open Emotion recognition. Discuss: what do you do when no safeguard works?'],
-            ['55–60 min', 'Take away', 'Each person names one system at work, its likely category, and one safeguard they would check on Monday.'],
-          ].map(([time, t, d]) => (
+          {([
+            ['0–10 min', 'Warm-up', 'Open the home page. Ask the group to place three AI systems they use at work on the rings. Read section 2 of this page together.', null],
+            ['10–25 min', 'Break and fix', 'In groups, open Credit scoring with the postcode problem already on. Watch approvals change, then find the safeguard. Each group reports one surprise.', { to: '/model/credit?p=zip', l: 'Open the credit scenario' }],
+            ['25–40 min', 'One framework', 'Set “View through” to the framework that matters most to you. Follow the first four steps of its learning path.', { to: '/rules', l: 'Choose a framework' }],
+            ['40–50 min', 'Compare', 'Open Compare and pick Transparency. Ask: where would we be compliant in one country and not another?', { to: '/compare', l: 'Open Compare' }],
+            ['50–55 min', 'The hard case', 'Open Emotion recognition with staff scoring switched on. Discuss: what do you do when no safeguard works?', { to: '/model/emotion?p=rank', l: 'Open the hard case' }],
+            ['55–60 min', 'Take away', 'Each person names one system at work, its likely category, and one safeguard they would check on Monday.', null],
+          ] as [string, string, string, { to: string; l: string } | null][]).map(([time, t, d, link]) => (
             <div key={t} className="card card-pad">
               <div className="mono accent small">{time}</div>
               <h3 style={{ marginTop: 4 }}>{t}</h3>
               <p className="muted small" style={{ marginTop: 6 }}>{d}</p>
+              {link && <p className="small" style={{ marginTop: 8 }}><a href={url(link.to)}>{link.l} →</a></p>}
             </div>
           ))}
         </div>
