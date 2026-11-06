@@ -9,14 +9,14 @@ export const EXTRAS: Partial<Record<FwId, Extra>> = {
       { t: 'Find your role', d: 'For each system, decide whether you are the provider, deployer, importer or distributor. A company can be both provider and deployer.' },
       { t: 'Classify the use', d: 'Check Article 5 (banned), Annex I and III (high-risk), Article 50 (transparency) and whether you develop a general-purpose model.' },
       { t: 'Stop anything banned', d: 'Banned practices have been illegal since February 2025. There is no compliance route for them.' },
-      { t: 'Close the gaps for high-risk systems', d: 'Risk management, data governance, documentation, logging, human oversight, accuracy and security. Deployers: oversight, logs, informing people, and a fundamental-rights assessment where required.' },
+      { t: 'Close the gaps for high-risk systems', d: 'Risk management, data governance, documentation, logging, human oversight, accuracy and security. Deployers: oversight, logs, informing people, and a fundamental-rights assessment where required. Annex III deadline: 2 December 2027; Annex I: 2 August 2028.' },
       { t: 'Assess conformity and register', d: 'Run the conformity assessment, sign the EU declaration, add the CE mark and register in the EU database.' },
       { t: 'Monitor and report', d: 'Monitor after launch, report serious incidents and repeat the assessment after substantial changes.' },
     ],
     learn: [
       ['emotion', 'A banned practice. Notice that the only safeguard that works is switching it off.'],
       ['credit', 'A high-risk use (Annex III). Read how Articles 9, 10, 14, 15 and 86 map to the safeguards.'],
-      ['lesion', 'High-risk through a product law (medical devices), with a later deadline (2027).'],
+      ['lesion', 'High-risk through a product law (medical devices), applying from 2 August 2028.'],
       ['face', 'High-risk biometrics, and the two-person rule in Article 14(5).'],
       ['chatbot', 'Transparency duties only: the user must know it is an AI.'],
       ['foundation', 'General-purpose model duties, and the 10²⁵ threshold for systemic risk.'],
@@ -24,6 +24,19 @@ export const EXTRAS: Partial<Record<FwId, Extra>> = {
       ['travel-agent', 'Agents are classified by the task, not the technology.'],
     ],
     extras: [
+      {
+        title: 'What the 2026 Omnibus changed, and what it did not',
+        intro: 'The Digital Omnibus on AI (Regulation (EU) 2026/1744) entered into force on 27 July 2026. It amends the AI Act; it does not replace it.',
+        items: [
+          { t: 'High-risk deadlines moved', d: 'Stand-alone high-risk systems (Annex III) from 2 December 2027; high-risk AI inside regulated products (Annex I) from 2 August 2028.' },
+          { t: 'Transparency was not delayed', d: 'Telling people they are talking to an AI and disclosing deepfakes apply from 2 August 2026. Marking AI-generated content applies from 2 December 2026 for systems already on the market before 2 August 2026.' },
+          { t: 'A new ban', d: 'AI practices that generate non-consensual intimate or sexual content or child sexual abuse material, from 2 December 2026.' },
+          { t: 'Systems already in use', d: 'High-risk systems already in service are covered only if their design changes significantly after the application date. Public-authority deployers have a separate transitional rule (Art. 111) and should check it.' },
+          { t: 'Machinery', d: 'AI-enabled machinery follows the Machinery Regulation route instead of the AI Act’s direct high-risk regime.' },
+          { t: 'AI literacy reworded', d: 'Providers and deployers must still take measures to support their staff’s AI literacy, but the law no longer requires a guaranteed level.' },
+          { t: 'Common misreading', d: '“The AI Act was delayed” is wrong. Only part of Chapter III moved, and preparing for high-risk compliance realistically takes 12–18 months.' },
+        ],
+      },
       {
         title: 'Who does what: roles',
         intro: 'Most duties follow your role in the supply chain, not the size of your company.',
@@ -52,11 +65,11 @@ export const EXTRAS: Partial<Record<FwId, Extra>> = {
       { t: 'Test for disparate impact', d: 'Measure outcomes across protected groups. Regulators and courts look at effects, not intentions.' },
       { t: 'Prepare explanations and notices', d: 'Adverse-action reasons for credit, candidate notices for hiring, bot disclosures for sales.' },
       { t: 'Check your marketing claims', d: 'Everything you say about your AI must be true and supported (FTC Act).' },
-      { t: 'Use a recognised framework', d: 'Following the NIST AI RMF or ISO/IEC 42001 helps show reasonable care under laws such as Colorado’s.' },
+      { t: 'Use a recognised framework', d: 'Following the NIST AI RMF or ISO/IEC 42001 helps show reasonable care; Texas TRAIGA recognises substantial compliance with the NIST AI RMF.' },
     ],
     learn: [
       ['credit', 'Old law, new technology: adverse-action reasons and fair lending.'],
-      ['cv', 'The most regulated area: NYC bias audits, Illinois, Colorado, Title VII.'],
+      ['cv', 'The most regulated area: NYC bias audits, Illinois, Colorado (from 2027), Title VII.'],
       ['face', 'Biometric privacy laws with private lawsuits (Illinois BIPA) and the FTC’s Rite Aid order.'],
       ['foundation', 'California’s frontier-model law (SB 53) and training-data disclosure (AB 2013).'],
       ['pricing', 'Algorithmic pricing: price gouging, antitrust and New York’s disclosure law.'],
@@ -66,7 +79,7 @@ export const EXTRAS: Partial<Record<FwId, Extra>> = {
       {
         title: 'State by state',
         items: [
-          { t: 'Colorado', d: 'AI Act for high-risk systems in consequential decisions (from 30 June 2026).' },
+          { t: 'Colorado', d: 'ADMT law SB 26-189 (from 1 January 2027): notice, explanation of adverse outcomes, data correction and human review for consequential decisions. It replaced the 2024 AI Act before that act took effect.' },
           { t: 'California', d: 'SB 53 (frontier models), AB 2013 (training data), SB 942 (AI content), privacy-agency rules on automated decisions, civil-rights rules for employment, the B.O.T. Act.' },
           { t: 'Illinois', d: 'BIPA (biometrics), AI Video Interview Act, HB 3773 (AI in employment, 2026).' },
           { t: 'New York', d: 'NYC Local Law 144 (hiring audits), SAFE for Kids Act (minors’ feeds), Algorithmic Pricing Disclosure Act.' },
@@ -139,9 +152,9 @@ export const EXTRAS: Partial<Record<FwId, Extra>> = {
     learn: [
       ['spam', 'ML01 and ML02: the oldest attacks on machine learning.'],
       ['lesion', 'Adversarial examples (ML01) on medical images.'],
-      ['chatbot', 'LLM01 prompt injection and LLM02 data leakage.'],
-      ['rag', 'Indirect prompt injection and LLM08 embedding weaknesses.'],
-      ['travel-agent', 'Excessive agency (LLM06) and goal hijacking.'],
+      ['chatbot', 'LLM01:2026 prompt injection and LLM02:2026 data leakage.'],
+      ['rag', 'Indirect prompt injection and LLM09:2026 embedding weaknesses.'],
+      ['travel-agent', 'Excessive agency (LLM03:2026) and goal hijacking.'],
     ],
   },
   gdpr: {
@@ -204,13 +217,17 @@ export const EXTRAS: Partial<Record<FwId, Extra>> = {
     ],
     extras: [
       {
-        title: 'High-impact areas named in the Act',
+        title: 'The ten high-impact areas',
+        intro: 'As listed by the Ministry of Science and ICT when the Act and its Enforcement Decree took effect on 22 January 2026.',
         items: [
-          { t: 'Energy, water and nuclear', d: 'Supply of energy and drinking water, nuclear safety.' },
-          { t: 'Health', d: 'Health care provision and medical devices.' },
-          { t: 'Biometrics', d: 'Analysis of biometric information for criminal investigation or arrest.' },
-          { t: 'Rights-affecting decisions', d: 'Judgements such as hiring and loan screening that significantly affect people’s rights and obligations.' },
-          { t: 'Transport', d: 'Major transport systems and vehicles.' },
+          { t: 'Energy', d: 'Supply of energy.' },
+          { t: 'Drinking water', d: 'Production and supply of drinking water.' },
+          { t: 'Healthcare', d: 'Health care provision, including medical devices.' },
+          { t: 'Nuclear', d: 'Safety of nuclear facilities.' },
+          { t: 'Crime investigation', d: 'Analysis of biometric information for criminal investigation or arrest.' },
+          { t: 'Recruitment', d: 'Hiring decisions and other judgements that affect people’s rights at work.' },
+          { t: 'Credit assessment', d: 'Loan screening and similar judgements about people’s finances.' },
+          { t: 'Transportation', d: 'Major transport systems and vehicles.' },
           { t: 'Public services', d: 'Decisions by public bodies that affect citizens.' },
           { t: 'Education', d: 'Evaluation of students.' },
         ],

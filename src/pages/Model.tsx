@@ -145,7 +145,7 @@ export function ModelPage({ id }: { id: string }) {
 
         <div className="card card-pad" style={{ marginTop: 22 }}>
           <div className="grid2" style={{ alignItems: 'start' }}>
-            <div>
+            <div data-testid="sim-summary">
               <h3>What this means</h3>
               {active.length === 0 ? (
                 <p className="muted" style={{ marginTop: 8 }}>No problems switched on yet. The system is running as designed. Switch on a problem to see its effect.</p>

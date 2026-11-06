@@ -1,10 +1,11 @@
 import { motion } from 'framer-motion';
-import { HTimeline, Roadmap, TODAY, parseDate } from '../components/Timeline';
+import { HTimeline, Roadmap, TODAY, TODAY_LABEL, parseDate } from '../components/Timeline';
 import { FRAMEWORKS, FW_BY_ID, OTHER_FRAMEWORKS, fwName, type Framework, type FwId } from '../data/frameworks';
 import { LABS, LAB_BY_ID, fwEntry } from '../data/labs';
 import { setLens, useLens } from '../lib/lens';
 import { go } from '../lib/util';
 import { SHORT_NAME } from './Home';
+import { fmtDate } from '../data/site';
 
 const SORTS: Record<FwId, string> = {
   eu: 'By risk of the use: banned, high-risk, transparency, minimal',
@@ -55,7 +56,7 @@ function WorldTimeline() {
               if (marker) todayShown = true;
               return (
                 <div key={e.f + e.date + e.text}>
-                  {marker && <div className="mono small" style={{ margin: '6px 0 10px -26px', color: '#fff', opacity: 0.8 }}>── today (November 2026) ──</div>}
+                  {marker && <div className="mono small" style={{ margin: '6px 0 10px -26px', color: '#fff', opacity: 0.8 }}>── today ({TODAY_LABEL}) ──</div>}
                   <motion.div initial={{ opacity: 0, x: 16 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true, margin: '-40px' }} transition={{ delay: i * 0.04 }}
                     style={{ position: 'relative', display: 'grid', gridTemplateColumns: '78px 150px minmax(0,1fr)', gap: 12, padding: '7px 0', alignItems: 'baseline' }} className="wt-row">
                     <span style={{ position: 'absolute', left: -25, top: 13, width: 10, height: 10, borderRadius: '50%', background: future ? '#0c0e11' : 'var(--accent)', border: `2px solid ${future ? '#d6c06a' : 'var(--accent)'}` }} />
@@ -79,7 +80,7 @@ export function Frameworks() {
     <div className="wrap" style={{ padding: '44px 0' }}>
       <div className="narrow stack">
         <div className="label accent">Rules and frameworks</div>
-        <h1>Ten ways of governing AI</h1>
+        <h1>{FRAMEWORKS.length} ways of governing AI</h1>
         <p className="lead">Some are laws with fines, some are standards you can be certified against, some are practical guides. Most organisations need several at once. Pick one to read its guide, or view the whole site through it.</p>
       </div>
 
@@ -110,7 +111,7 @@ export function Frameworks() {
             </tbody>
           </table>
         </div>
-        <p className="small" style={{ marginTop: 14 }}>Want to see them side by side on a single topic, such as transparency? <a href="#/compare">Open the 3D comparison →</a></p>
+        <p className="small" style={{ marginTop: 14 }}>Want to see them side by side on a single topic, such as transparency? <a href="#/compare">Open the comparison →</a></p>
       </section>
 
       <section className="section">
@@ -128,7 +129,7 @@ export function Frameworks() {
 
       <section className="section">
         <h2>Timeline of AI rules worldwide</h2>
-        <p className="muted" style={{ marginTop: 6, marginBottom: 24 }}>Every date from the ten frameworks, in order. Teal dates have passed; yellow ones are still to come.</p>
+        <p className="muted" style={{ marginTop: 6, marginBottom: 24 }}>Every date from the {FRAMEWORKS.length} frameworks, in order. Teal dates have passed; yellow ones are still to come.</p>
         <WorldTimeline />
       </section>
 
@@ -160,7 +161,7 @@ export function FrameworkPage({ id }: { id: string }) {
       <div className="crumbs"><a href="#/rules">Rules and frameworks</a> / {f.short}</div>
       <motion.div className="narrow stack" style={{ marginTop: 12 }} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}>
         <h1>{f.name}</h1>
-        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}><span className="tag">{f.type}</span><span className="tag">{f.where}</span><span className="tag">{f.binding}</span></div>
+        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}><span className="tag">{f.type}</span><span className="tag">{f.where}</span><span className="tag">{f.binding}</span>{f.reviewed && <span className="tag">Last reviewed {fmtDate(f.reviewed)}</span>}</div>
         <p className="lead">{f.intro}</p>
         <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
           {lens === f.id

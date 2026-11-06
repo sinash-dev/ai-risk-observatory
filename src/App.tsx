@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import { Logo } from './components/ui';
 import { FRAMEWORKS, fwName, type Lens } from './data/frameworks';
+import { SITE, fmtDate } from './data/site';
 import { setLens, useLens } from './lib/lens';
 import { useRoute } from './lib/util';
 import { Basics } from './pages/Basics';
@@ -87,7 +88,7 @@ export default function App() {
       <footer className="footer">
         <div className="wrap" style={{ display: 'grid', gap: 6 }}>
           <span><b>AI Risk Explorer</b> is a training resource. The organisation “Meridian” and the people and headlines in the simulations are fictional; the real cases are summarised from public reporting.</span>
-          <span>Legal summaries cover ten frameworks, are simplified and are dated November 2026. They are not legal advice; check official sources before relying on them.</span>
+          <span>Legal summaries cover {FRAMEWORKS.length} frameworks, are simplified, and were last reviewed on {fmtDate(SITE.reviewed)}. They are not legal advice; check official sources before relying on them.</span>
           <VisitCount />
         </div>
       </footer>

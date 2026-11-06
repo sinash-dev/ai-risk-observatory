@@ -9,7 +9,11 @@ export function parseDate(d: string) {
   const mi = m[1] ? MONTHS.indexOf(m[1]) : 6;
   return +m[2] + Math.max(0, mi) / 12;
 }
-export const TODAY = 2026 + 10 / 12; // November 2026
+const NOW = new Date();
+/** current date as a fractional year */
+export const TODAY = NOW.getFullYear() + NOW.getMonth() / 12;
+/** e.g. "November 2026" */
+export const TODAY_LABEL = new Intl.DateTimeFormat('en-GB', { month: 'long', year: 'numeric' }).format(NOW);
 
 /** Horizontal animated timeline with a "today" marker. */
 export function HTimeline({ events }: { events: { date: string; text: string }[] }) {

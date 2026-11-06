@@ -3,6 +3,7 @@ import { MORE } from './frameworksMore';
 import { EXTRAS } from './fwExtras';
 
 import { SEV } from './palette';
+import { SITE } from './site';
 export { SEV };
 export type Lens = 'all' | FwId;
 
@@ -35,6 +36,8 @@ export interface Framework {
   /** framework-specific extra sections */
   extras?: { title: string; intro?: string; items: { t: string; d: string }[] }[];
   region?: string;
+  /** ISO date of the last content review */
+  reviewed?: string;
 }
 
 const BASE: Framework[] = [
@@ -53,11 +56,11 @@ const BASE: Framework[] = [
       'Risk-based. You first work out which category your use falls into. The category, not the technology, decides what you must do. A logistic regression used to score loans is high-risk; a large language model used to write marketing copy is not.',
     catsTitle: 'The risk categories',
     cats: [
-      { id: 'prohibited', label: 'Banned', color: SEV.severe, desc: 'Not allowed since 2 February 2025. Examples: social scoring, emotion recognition at work or in schools, manipulative techniques that cause significant harm, untargeted scraping of faces to build databases.' },
-      { id: 'high', label: 'High-risk', color: SEV.high, desc: 'Uses listed in Annex III (employment, credit, public benefits, education, biometrics, critical infrastructure, policing, migration, justice) and safety components of regulated products such as medical devices.' },
+      { id: 'prohibited', label: 'Banned', color: SEV.severe, desc: 'Not allowed since 2 February 2025. Examples: social scoring, emotion recognition at work or in schools, manipulative techniques that cause significant harm, untargeted scraping of faces to build databases. Since the 2026 Omnibus, also AI practices that generate non-consensual intimate or sexual content or child sexual abuse material (from 2 December 2026).' },
+      { id: 'high', label: 'High-risk', color: SEV.high, desc: 'Uses listed in Annex III (employment, credit, public benefits, education, biometrics, critical infrastructure, policing, migration, justice) and safety components of regulated products such as medical devices. Annex III uses apply from 2 December 2027; products under Annex I from 2 August 2028.' },
       { id: 'gpai', label: 'General-purpose AI model', color: SEV.info, desc: 'Duties for the providers of models such as large language models: documentation, a copyright policy and a public summary of training data. The most capable models have extra safety duties.' },
       { id: 'limited', label: 'Transparency duties', color: SEV.mid, desc: 'People must be told when they are talking to an AI, and AI-generated or manipulated content must be marked or disclosed.' },
-      { id: 'minimal', label: 'Minimal risk', color: SEV.neutral, desc: 'No specific duties beyond AI literacy for staff. Voluntary codes of conduct are encouraged. Other laws, such as GDPR and consumer law, still apply.' },
+      { id: 'minimal', label: 'Minimal risk', color: SEV.neutral, desc: 'No specific duties beyond taking measures to support staff AI literacy. Voluntary codes of conduct are encouraged. Other laws, such as GDPR and consumer law, still apply.' },
       { id: 'depends', label: 'Depends on use', color: SEV.soft, desc: 'The category follows the task. The same agent can be minimal risk in one job and high-risk in another.' },
     ],
     keyTitle: 'What high-risk systems need',
@@ -71,20 +74,25 @@ const BASE: Framework[] = [
       { t: 'Quality management, conformity assessment and registration (Arts. 17, 43, 49)', d: 'A quality system, a conformity check before launch (CE marking) and registration in the EU database.' },
       { t: 'Monitoring and incident reporting (Arts. 72–73)', d: 'Watch performance after launch and report serious incidents to the authorities.' },
       { t: 'Deployer duties (Arts. 26–27)', d: 'Use it as instructed, assign trained people to oversee it, keep logs, inform workers and affected people. Public bodies and credit or insurance deployers must assess the impact on fundamental rights first.' },
-      { t: 'AI literacy for everyone (Art. 4)', d: 'All providers and deployers, whatever the risk level, must make sure their staff understand the AI they work with.' },
+      { t: 'AI literacy (Art. 4)', d: 'All providers and deployers, whatever the risk level, must take measures to support the AI literacy of their staff and others using AI on their behalf. Since the 2026 Omnibus the law no longer requires a guaranteed level, but deployers of high-risk systems must still train the people who oversee them.' },
     ],
     timeline: [
       { date: 'Aug 2024', text: 'Enters into force.' },
       { date: 'Feb 2025', text: 'Bans and AI-literacy duty apply.' },
       { date: 'Aug 2025', text: 'Rules for general-purpose AI models, governance and penalties apply.' },
-      { date: 'Aug 2026', text: 'Most remaining rules apply, including Annex III high-risk systems and transparency duties.' },
-      { date: 'Aug 2027', text: 'High-risk rules for AI inside regulated products (Annex I), such as medical devices.' },
+      { date: 'Jul 2026', text: 'Digital Omnibus on AI (Regulation (EU) 2026/1744) published; in force 27 July 2026.' },
+      { date: 'Aug 2026', text: 'General application: transparency duties (Art. 50) for chatbots and deepfakes, national enforcement, AI Office powers over general-purpose AI models.' },
+      { date: 'Dec 2026', text: 'New bans on non-consensual intimate content and child sexual abuse material apply; marking of AI-generated content applies to systems placed on the market before 2 August 2026.' },
+      { date: 'Dec 2027', text: 'High-risk rules for stand-alone systems (Annex III), such as hiring, credit and benefits.' },
+      { date: 'Aug 2028', text: 'High-risk rules for AI inside regulated products (Annex I), such as medical devices.' },
     ],
     penalties:
-      'Up to €35 million or 7% of worldwide annual turnover for banned practices. Up to €15 million or 3% for most other breaches. Up to €7.5 million or 1% for giving regulators incorrect information. Lower caps apply to small companies. Note: in November 2025 the European Commission proposed a "Digital Omnibus" package that would push back some high-risk deadlines. Check the current status before relying on the dates above.',
+      'Up to €35 million or 7% of worldwide annual turnover for banned practices. Up to €15 million or 3% for most other breaches. Up to €7.5 million or 1% for giving regulators incorrect information. Lower caps apply to small and mid-cap companies. The Digital Omnibus on AI (Regulation (EU) 2026/1744) moved the high-risk deadlines to 2 December 2027 (Annex III) and 2 August 2028 (Annex I). It did not delay the transparency duties.',
     sources: [
       { label: 'Regulation (EU) 2024/1689 on EUR-Lex', url: 'https://eur-lex.europa.eu/eli/reg/2024/1689/oj' },
       { label: 'European Commission: AI Act overview', url: 'https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai' },
+      { label: 'Digital Omnibus on AI: European Parliament Legislative Train', url: 'https://www.europarl.europa.eu/legislative-train/theme-internal-market-and-consumer-protection-imco/file-digital-omnibus-on-ai' },
+      { label: 'European Commission: AI Omnibus enters into force', url: 'https://digital-strategy.ec.europa.eu/en/news/ai-omnibus-enters-force' },
     ],
   },
   {
@@ -102,7 +110,7 @@ const BASE: Framework[] = [
       'Use-based and fragmented. Ask two questions: which existing law already governs this decision, and does a state or city have an AI-specific rule for it?',
     catsTitle: 'How we classify each use',
     cats: [
-      { id: 'specific', label: 'AI-specific law applies', color: SEV.high, desc: 'A federal, state or city law written for AI or automated decisions covers this use, for example NYC Local Law 144, the Colorado AI Act, Illinois BIPA or California SB 53.' },
+      { id: 'specific', label: 'AI-specific law applies', color: SEV.high, desc: 'A federal, state or city law written for AI or automated decisions covers this use, for example NYC Local Law 144, Colorado’s ADMT law (from 2027), Illinois BIPA or California SB 53.' },
       { id: 'sector', label: 'Existing sector or privacy law', color: SEV.mid, desc: 'No AI-specific law, but established rules for this area (credit, employment, health, competition, privacy) apply to decisions made with AI.' },
       { id: 'general', label: 'General law only', color: SEV.neutral, desc: 'Only general rules apply, mainly the FTC’s ban on unfair or deceptive practices, contract law and product liability.' },
     ],
@@ -113,7 +121,7 @@ const BASE: Framework[] = [
       { t: 'Civil rights in employment (Title VII, ADA, ADEA)', d: 'Employers are responsible for discriminatory effects of hiring and HR tools, including tools bought from vendors.' },
       { t: 'FDA medical device rules', d: 'AI that diagnoses or treats needs FDA clearance. A predetermined change control plan can pre-approve planned model updates.' },
       { t: 'NYC Local Law 144 (2023)', d: 'Automated hiring and promotion tools need a yearly independent bias audit, a published summary and notice to candidates.' },
-      { t: 'Colorado AI Act (SB 24-205)', d: 'Developers and deployers of high-risk AI used in consequential decisions must take reasonable care against algorithmic discrimination, run impact assessments and notify consumers. Effective 30 June 2026 after a delay.' },
+      { t: 'Colorado ADMT law (SB 26-189)', d: 'Signed 14 May 2026. It repealed and replaced the 2024 Colorado AI Act before that act took effect. From 1 January 2027 it covers automated decision-making technology that materially influences consequential decisions about people: tell them when it is used, explain adverse outcomes, let them correct inaccurate data and offer human review or reconsideration. The 2024 duty of care, risk-management programme and impact assessments were dropped. Enforced by the Attorney General, who must first issue rules.' },
       { t: 'California', d: 'SB 53 (2026): large frontier-model developers must publish safety frameworks and report critical safety incidents. AB 2013 (2026): training-data disclosure. SB 942: AI-content detection and disclosures. Privacy-agency rules on automated decision-making technology phase in from 2026–2027. Civil Rights Council rules on automated decisions in employment apply from October 2025.' },
       { t: 'Illinois', d: 'BIPA requires written consent before collecting biometric data such as face geometry, with private lawsuits allowed. HB 3773 (2026) bans discriminatory AI use in employment decisions.' },
       { t: 'Texas Responsible AI Governance Act (2026)', d: 'Bans certain intentionally harmful AI uses and sets disclosure duties for government agencies.' },
@@ -126,13 +134,15 @@ const BASE: Framework[] = [
       { date: 'Sep 2025', text: 'California SB 53 (frontier AI transparency) signed.' },
       { date: 'Dec 2025', text: 'Executive order targets state AI laws.' },
       { date: 'Jan 2026', text: 'California SB 53 and AB 2013, Texas TRAIGA and Illinois HB 3773 take effect.' },
-      { date: 'Jun 2026', text: 'Colorado AI Act takes effect.' },
+      { date: 'Apr 2026', text: 'Federal court stays enforcement of the Colorado AI Act (xAI v. Weiser), with the US Department of Justice intervening.' },
+      { date: 'May 2026', text: 'Colorado repeals and replaces its AI Act with SB 26-189.' },
+      { date: 'Jan 2027', text: 'Colorado SB 26-189 applies.' },
     ],
     penalties:
       'Varies by law. FTC orders can force companies to delete data and models. Credit and employment laws allow regulator action and lawsuits. Illinois BIPA allows $1,000–$5,000 per violation in private lawsuits. California SB 53 allows civil penalties of up to $1 million per violation. Colorado’s law is enforced by the state Attorney General.',
     sources: [
       { label: 'FTC: AI and your business', url: 'https://www.ftc.gov/business-guidance/artificial-intelligence' },
-      { label: 'Colorado SB 24-205', url: 'https://leg.colorado.gov/bills/sb24-205' },
+      { label: 'Colorado SB 26-189 (ADMT)', url: 'https://leg.colorado.gov/bills/sb26-189' },
       { label: 'NYC Local Law 144 (AEDT)', url: 'https://www.nyc.gov/site/dca/about/automated-employment-decision-tools.page' },
     ],
   },
@@ -146,7 +156,7 @@ const BASE: Framework[] = [
     intro:
       'The NIST AI Risk Management Framework (AI RMF 1.0, January 2023) is a voluntary guide from the US National Institute of Standards and Technology. It does not classify systems or create legal duties. Instead it gives organisations a shared way to find, measure and manage AI risks, organised in four functions. A Generative AI Profile (NIST AI 600-1, July 2024) adds twelve risks specific to generative models, such as confabulation and information integrity.',
     who:
-      'Any organisation in any country. It is a common reference for US agencies and companies, and some state laws (Colorado, Texas) treat following a recognised framework like this one as evidence of reasonable care.',
+      'Any organisation in any country. It is a common reference for US agencies and companies, and some state laws (such as Texas) treat following a recognised framework like this one as evidence of reasonable care.',
     approach:
       'Process-based. Instead of asking "which category is this?", it asks "which qualities of a trustworthy system are most at stake here, and what are we doing in each of the four functions to protect them?"',
     catsTitle: 'The seven qualities of trustworthy AI (we show the one most at stake)',
@@ -226,30 +236,33 @@ const BASE: Framework[] = [
     where: 'International',
     binding: 'Voluntary',
     intro:
-      'OWASP is a non-profit security community. Its Top 10 lists are practical summaries of the most important attacks and weaknesses, used by developers, security teams and auditors. Three lists matter for AI: the Machine Learning Security Top 10 (2023) for classical and deep learning models, the Top 10 for LLM Applications (2025) for generative AI, and the agentic AI threat guidance (2025) for agents.',
+      'OWASP is a non-profit security community. Its Top 10 lists are practical summaries of the most important attacks and weaknesses, used by developers, security teams and auditors. Three lists matter for AI: the Machine Learning Security Top 10 (2023) for classical and deep learning models, the Top 10 for LLM Applications (2026) for generative AI, and the Top 10 for Agentic Applications (2026) for agents.',
     who: 'Anyone building or securing AI systems. It is not law, but it is the reference most security reviews and penetration tests are based on.',
     approach: 'Threat-based. It lists how attackers and failures actually break AI systems, with prevention advice for each.',
     catsTitle: 'Which list applies',
     cats: [
       { id: 'ml', label: 'ML Security Top 10', color: SEV.info, desc: 'Attacks on trained models and their data: input manipulation, data poisoning, model inversion, membership inference, model theft and more.' },
-      { id: 'llm', label: 'LLM Top 10 (2025)', color: SEV.mid, desc: 'Weaknesses of applications built on large language models, from prompt injection to unbounded consumption.' },
-      { id: 'agentic', label: 'Agentic AI threats', color: SEV.high, desc: 'Threats that appear when models act with tools and autonomy: goal hijacking, tool misuse, privilege abuse, memory poisoning and cascading failures.' },
+      { id: 'llm', label: 'LLM Top 10 (2026)', color: SEV.mid, desc: 'Weaknesses of applications built on large language models, from prompt injection to unbounded consumption.' },
+      { id: 'agentic', label: 'Agentic Top 10 (2026)', color: SEV.high, desc: 'Threats that appear when models act with tools and autonomy: goal hijacking, tool misuse, privilege abuse, memory poisoning and cascading failures.' },
     ],
     keyTitle: 'The lists',
     keyReqs: [
       { t: 'ML Security Top 10 (2023)', d: 'ML01 Input manipulation · ML02 Data poisoning · ML03 Model inversion · ML04 Membership inference · ML05 Model theft · ML06 AI supply chain attacks · ML07 Transfer learning attack · ML08 Model skewing · ML09 Output integrity attack · ML10 Model poisoning.' },
-      { t: 'Top 10 for LLM Applications (2025)', d: 'LLM01 Prompt injection · LLM02 Sensitive information disclosure · LLM03 Supply chain · LLM04 Data and model poisoning · LLM05 Improper output handling · LLM06 Excessive agency · LLM07 System prompt leakage · LLM08 Vector and embedding weaknesses · LLM09 Misinformation · LLM10 Unbounded consumption.' },
-      { t: 'Agentic AI threats (2025)', d: 'Goal hijacking through injected instructions · tool misuse · identity and privilege abuse · memory and context poisoning · cascading failures · insecure communication between agents · rogue agents · exploiting human trust in the agent.' },
+      { t: 'Top 10 for LLM Applications (2026)', d: 'LLM01:2026 Prompt injection · LLM02:2026 Sensitive information disclosure · LLM03:2026 Excessive agency · LLM04:2026 Supply chain · LLM05:2026 Data and model poisoning · LLM06:2026 Unbounded consumption · LLM07:2026 Misinformation · LLM08:2026 Hidden context exposure · LLM09:2026 Vector and embedding weaknesses · LLM10:2026 Improper output handling.' },
+      { t: 'Top 10 for Agentic Applications (2026)', d: 'ASI01 Agent goal hijack · ASI02 Tool misuse and exploitation · ASI03 Identity and privilege abuse · ASI04 Agentic supply chain vulnerabilities · ASI05 Unexpected code execution · ASI06 Memory and context poisoning · ASI07 Insecure inter-agent communication · ASI08 Cascading failures · ASI09 Human-agent trust exploitation · ASI10 Rogue agents.' },
     ],
     timeline: [
       { date: '2023', text: 'Machine Learning Security Top 10 published.' },
       { date: 'Nov 2024', text: 'Top 10 for LLM Applications, 2025 edition.' },
-      { date: '2025', text: 'Agentic AI threats and mitigations guidance.' },
+      { date: 'Dec 2025', text: 'Top 10 for Agentic Applications 2026 published.' },
+      { date: 'Aug 2026', text: 'Top 10 for LLM Applications 2026 published.' },
     ],
     penalties: 'None. It is guidance. But a breach caused by a well-known weakness on these lists is hard to defend to regulators, customers or a court.',
     sources: [
       { label: 'OWASP ML Security Top 10', url: 'https://owasp.org/www-project-machine-learning-security-top-10/' },
       { label: 'OWASP GenAI Security Project', url: 'https://genai.owasp.org/' },
+      { label: 'OWASP Top 10 for Agentic Applications 2026', url: 'https://genai.owasp.org/resource/owasp-top-10-for-agentic-applications-for-2026/' },
+      { label: 'OWASP LLM Top 10 (GitHub)', url: 'https://github.com/GenAI-Security-Project/GenAI-LLM-Top10' },
     ],
   },
   {
@@ -297,7 +310,7 @@ const BASE: Framework[] = [
   },
 ];
 
-export const FRAMEWORKS: Framework[] = [...BASE, ...MORE].map((f) => ({ ...f, ...(EXTRAS[f.id] ?? {}) }));
+export const FRAMEWORKS: Framework[] = [...BASE, ...MORE].map((f) => ({ reviewed: SITE.reviewed, ...f, ...(EXTRAS[f.id] ?? {}) }));
 
 export const FW_BY_ID = Object.fromEntries(FRAMEWORKS.map((f) => [f.id, f])) as Record<FwId, Framework>;
 

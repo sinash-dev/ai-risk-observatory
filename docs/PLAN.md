@@ -21,7 +21,7 @@ Help people who are not specialists understand three things: how common AI syste
 Plain, direct sentences. Say what something is, who it affects and what to do. No marketing language. Legal references are given so readers can check the source.
 
 ## Design rules
-Light, calm page; serif headings; one accent colour; colour used only to carry meaning (model family or framework category). Simulations sit in dark panels so they read as instruments.
+Dark, restrained theme (`color-scheme: dark`) with one teal accent; Sora headings, Manrope body, IBM Plex Mono for codes, all self-hosted. Colour carries meaning only (model family or framework category) and is always paired with text. Motion is purposeful: a 3D orbit of the examples and a 3D globe of frameworks (lazy-loaded, paused off-screen, with 2D fallbacks), section fade-ups and animated simulations. Everything collapses to short opacity fades under `prefers-reduced-motion`.
 
 ## Next steps
 - Facilitator notes for workshops

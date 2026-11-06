@@ -1,7 +1,7 @@
 import type { FwEntry, Req } from '../frameworks';
 
 const ftc: Req = ['Do not make false or unsupported claims about what the AI does, and do not use it in unfair ways', 'FTC Act §5'];
-const colorado = (sg?: string[]): Req => ['Use reasonable care against algorithmic discrimination, run yearly impact assessments, notify people and let them appeal (from 30 June 2026)', 'Colorado AI Act (SB 24-205)', sg];
+const colorado = (sg?: string[]): Req => ['From 1 January 2027, give notice and the required disclosures when automated decision-making technology materially influences a consequential decision, and offer correction and human review', 'Colorado SB 26-189', sg];
 
 export const US: Record<string, FwEntry> = {
   spam: {
@@ -11,7 +11,7 @@ export const US: Record<string, FwEntry> = {
   },
   salary: {
     cat: 'specific', status: 'Employment law plus state AI rules',
-    summary: 'Pay discrimination is illegal whether a person or a model sets the number. Colorado’s AI Act treats employment decisions as consequential, and California’s civil-rights rules explicitly cover automated-decision systems in employment.',
+    summary: 'Pay discrimination is illegal whether a person or a model sets the number. Colorado’s ADMT law (from 2027) adds notice and human-review duties when software materially influences employment decisions, and California’s civil-rights rules explicitly cover automated-decision systems in employment.',
     reqs: [
       ['Pay differences for equal work must be explained by factors other than sex or another protected trait', 'Equal Pay Act; Title VII', ['equity']],
       colorado(['equity']),
@@ -20,7 +20,7 @@ export const US: Record<string, FwEntry> = {
   },
   credit: {
     cat: 'specific', status: 'Fair-lending law plus state AI rules',
-    summary: 'US credit law already demands what many AI rules ask for: lenders must not discriminate and must give each declined applicant specific, accurate reasons. The CFPB has said a complex model is no excuse. Colorado adds AI-specific duties for lending decisions.',
+    summary: 'US credit law already demands what many AI rules ask for: lenders must not discriminate and must give each declined applicant specific, accurate reasons. The CFPB has said a complex model is no excuse. From 2027, Colorado adds notice, explanation and human-review duties for lending decisions.',
     reqs: [
       ['Give specific and accurate reasons for each credit denial', 'ECOA / Regulation B; CFPB Circulars 2022-03 and 2023-03', ['explain']],
       ['Do not discriminate, including through proxies such as postcode that produce disparate impact', 'ECOA; Fair Housing Act', ['dropzip', 'reweigh']],

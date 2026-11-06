@@ -13,7 +13,7 @@ A training website that shows, with working examples, how AI and machine learnin
   - how each framework classifies the use and what it requires, linked to the safeguards in the simulation
   - real cases from public reporting
 - **Frameworks**: ten frameworks grouped by region (EU AI Act, GDPR, UK, US laws, NIST AI RMF, China, South Korea, Singapore, ISO/IEC 42001, OWASP), a worldwide timeline, and a guide for each: categories, key requirements, animated timeline, roadmap to compliance, a learning path through the examples, framework-specific sections, penalties and how it treats every example. Ten more frameworks are summarised.
-- **Compare**: a 3D chart of how all ten frameworks handle eight topics (transparency, oversight, fairness, risk assessment, data, generative AI, incidents, enforcement), with detail per topic.
+- **Compare**: a strength grid and radar of how all the frameworks handle each topic (transparency, oversight, fairness, risk assessment, data, generative AI, incidents, enforcement), with detail per topic.
 - **Basics**: a short tutorial on how models work, where risk comes from, eight kinds of harm, laws vs. standards vs. security guides, a 60-minute workshop plan and a glossary.
 - **View through**: a switch in the header that shows the whole site through one of the ten frameworks. The overview is recoloured by that framework’s categories and model pages show only its requirements.
 

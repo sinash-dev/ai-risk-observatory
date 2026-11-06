@@ -23,9 +23,9 @@ export const genaiLabs: LabDef[] = [
       { id: 'noescalate', kind: 'shortcut', label: 'No human hand-off, no AI disclosure', desc: 'Maximise containment: the bot never says it is a bot and never transfers to staff.', risk: { transparency: 34, accountability: 20, safety: 8 }, value: 10, headline: 'Customers trapped in “doom loop” with airline AI', outlet: 'Consumer Voice' },
     ],
     mitigations: [
-      { id: 'rag', label: 'Ground in the policy base + citations', desc: 'Answer only from approved documents and show the source; say “I don’t know” otherwise.', counters: ['hallu'], cost: 2, stage: 'design', refs: ['OWASP LLM09 Misinformation', 'NIST AI 600-1 GenAI profile: confabulation'] },
-      { id: 'guard', label: 'Guardrails & system-prompt hardening', desc: 'Input/output classifiers, refusal policies and red-team suites before every release.', counters: ['jailbreak'], cost: 2, stage: 'deploy', refs: ['OWASP LLM01 Prompt Injection', 'OWASP LLM07 System Prompt Leakage'] },
-      { id: 'authz', label: 'Identity verification & PII redaction', desc: 'Tools only return data for the authenticated customer; outputs are scanned for PII.', counters: ['pii'], cost: 3, stage: 'design', refs: ['OWASP LLM02 Sensitive Information Disclosure', 'GDPR Art. 32'] },
+      { id: 'rag', label: 'Ground in the policy base + citations', desc: 'Answer only from approved documents and show the source; say “I don’t know” otherwise.', counters: ['hallu'], cost: 2, stage: 'design', refs: ['OWASP LLM07:2026 Misinformation', 'NIST AI 600-1 GenAI profile: confabulation'] },
+      { id: 'guard', label: 'Guardrails & system-prompt hardening', desc: 'Input/output classifiers, refusal policies and red-team suites before every release.', counters: ['jailbreak'], cost: 2, stage: 'deploy', refs: ['OWASP LLM01:2026 Prompt Injection', 'OWASP LLM08:2026 Hidden Context Exposure'] },
+      { id: 'authz', label: 'Identity verification & PII redaction', desc: 'Tools only return data for the authenticated customer; outputs are scanned for PII.', counters: ['pii'], cost: 3, stage: 'design', refs: ['OWASP LLM02:2026 Sensitive Information Disclosure', 'GDPR Art. 32'] },
       { id: 'handoff', label: 'AI disclosure + human hand-off', desc: 'Tell users they are talking to AI; transfer to a person on request or distress.', counters: ['noescalate'], cost: 4, stage: 'deploy', refs: ['EU AI Act Art. 50(1)', 'EU AI Act Art. 14'] },
     ],
     incidents: [
@@ -58,9 +58,9 @@ export const genaiLabs: LabDef[] = [
     ],
     mitigations: [
       { id: 'fresh', label: 'Document lifecycle & freshness metadata', desc: 'Every source has an owner and expiry; superseded versions are removed from the index.', counters: ['stale'], cost: 2, stage: 'data', refs: ['ISO/IEC 42001 A.7 (data for AI systems)', 'NIST AI RMF MAP 4.1'] },
-      { id: 'sanitize', label: 'Content sanitisation & source allow-list', desc: 'Strip hidden text, quarantine external uploads and treat retrieved text as data, never instructions.', counters: ['poison'], cost: 2, stage: 'data', refs: ['OWASP LLM01 Prompt Injection', 'OWASP LLM04 Data & Model Poisoning'] },
-      { id: 'acl', label: 'Permission-aware retrieval', desc: 'Retrieval enforces each user’s existing access rights; sensitive libraries excluded by default.', counters: ['perm'], cost: 3, stage: 'design', refs: ['OWASP LLM08 Vector & Embedding Weaknesses', 'GDPR Art. 5(1)(f) & 32'] },
-      { id: 'cite', label: 'Mandatory citations + groundedness checks', desc: 'Each claim links to a source; ungrounded answers are blocked or flagged.', counters: ['nocite'], cost: 1, stage: 'deploy', refs: ['OWASP LLM09 Misinformation', 'NIST AI RMF MEASURE 2.9'] },
+      { id: 'sanitize', label: 'Content sanitisation & source allow-list', desc: 'Strip hidden text, quarantine external uploads and treat retrieved text as data, never instructions.', counters: ['poison'], cost: 2, stage: 'data', refs: ['OWASP LLM01:2026 Prompt Injection', 'OWASP LLM05:2026 Data & Model Poisoning'] },
+      { id: 'acl', label: 'Permission-aware retrieval', desc: 'Retrieval enforces each user’s existing access rights; sensitive libraries excluded by default.', counters: ['perm'], cost: 3, stage: 'design', refs: ['OWASP LLM09:2026 Vector & Embedding Weaknesses', 'GDPR Art. 5(1)(f) & 32'] },
+      { id: 'cite', label: 'Mandatory citations + groundedness checks', desc: 'Each claim links to a source; ungrounded answers are blocked or flagged.', counters: ['nocite'], cost: 1, stage: 'deploy', refs: ['OWASP LLM07:2026 Misinformation', 'NIST AI RMF MEASURE 2.9'] },
     ],
     incidents: [
       { year: '2023', title: 'Indirect prompt injection', text: 'Greshake et al. showed that instructions hidden in web pages or documents can hijack LLM-integrated apps that retrieve them.' },
@@ -125,10 +125,10 @@ export const genaiLabs: LabDef[] = [
       { id: 'secret', kind: 'event', label: 'Live API key in the context window', desc: 'A .env file is open in the editor; the assistant “helpfully” reuses the key in code.', risk: { security: 30, privacy: 18 }, headline: 'Live payment keys found in public repo after AI autocomplete', outlet: 'Cyber Brief' },
     ],
     mitigations: [
-      { id: 'sast', label: 'SAST gate in CI + secure-coding rules', desc: 'Static analysis blocks merges with injection, XSS or unsafe deserialisation.', counters: ['accept'], cost: 2, stage: 'validate', refs: ['OWASP LLM05 Improper Output Handling', 'NIST SSDF (SP 800-218)'] },
+      { id: 'sast', label: 'SAST gate in CI + secure-coding rules', desc: 'Static analysis blocks merges with injection, XSS or unsafe deserialisation.', counters: ['accept'], cost: 2, stage: 'validate', refs: ['OWASP LLM10:2026 Improper Output Handling', 'NIST SSDF (SP 800-218)'] },
       { id: 'review', label: 'Mandatory human code review', desc: 'AI-written code gets the same two-person review as any other code.', counters: ['accept'], cost: 4, stage: 'deploy', refs: ['ISO/IEC 42001 A.9 (use of AI systems)', 'NIST AI RMF GOVERN 3.2'] },
-      { id: 'deps', label: 'Dependency allow-list & provenance', desc: 'Only vetted packages from an internal mirror; signatures and provenance checked.', counters: ['pkg'], cost: 2, stage: 'deploy', refs: ['OWASP LLM03 Supply Chain', 'SLSA / Sigstore provenance'] },
-      { id: 'secrets', label: 'Secret scanning & context filtering', desc: 'Exclude .env and key files from assistant context; pre-commit secret scanning.', counters: ['secret'], cost: 1, stage: 'design', refs: ['OWASP LLM02 Sensitive Information Disclosure', 'CWE-798'] },
+      { id: 'deps', label: 'Dependency allow-list & provenance', desc: 'Only vetted packages from an internal mirror; signatures and provenance checked.', counters: ['pkg'], cost: 2, stage: 'deploy', refs: ['OWASP LLM04:2026 Supply Chain', 'SLSA / Sigstore provenance'] },
+      { id: 'secrets', label: 'Secret scanning & context filtering', desc: 'Exclude .env and key files from assistant context; pre-commit secret scanning.', counters: ['secret'], cost: 1, stage: 'design', refs: ['OWASP LLM02:2026 Sensitive Information Disclosure', 'CWE-798'] },
     ],
     incidents: [
       { year: '2021', title: '“Asleep at the Keyboard?”', text: 'Pearce et al. found about 40% of programs GitHub Copilot generated for security-relevant scenarios contained vulnerabilities.' },

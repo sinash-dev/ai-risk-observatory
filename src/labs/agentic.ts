@@ -22,9 +22,9 @@ export const agenticLabs: LabDef[] = [
       { id: 'vague', kind: 'event', label: 'Ambiguous goal: “make it comfortable”', desc: 'The agent reads comfort as first class, non-refundable — and pays.', risk: { safety: 20, accountability: 20, robustness: 12 }, headline: 'AI assistant books €4,800 first-class ticket for routine trip', outlet: 'HR Weekly' },
     ],
     mitigations: [
-      { id: 'least', label: 'Least privilege: virtual cards & scoped tools', desc: 'Single-use cards with caps; tools limited to what the task needs.', counters: ['perms'], cost: 3, stage: 'design', refs: ['OWASP LLM06 Excessive Agency', 'NIST AI RMF MANAGE 2.4'] },
-      { id: 'approval', label: 'Human approval for irreversible actions', desc: 'Payments above a threshold, bookings and external emails need explicit approval.', counters: ['vague'], cost: 4, stage: 'deploy', refs: ['EU AI Act Art. 14 (human oversight)', 'OWASP LLM06 Excessive Agency'] },
-      { id: 'untrusted', label: 'Treat tool output as untrusted data', desc: 'Content from web and email can never trigger actions; outbound data is filtered.', counters: ['inject'], cost: 2, stage: 'design', refs: ['OWASP LLM01 Prompt Injection', 'OWASP Agentic AI threats: tool misuse'] },
+      { id: 'least', label: 'Least privilege: virtual cards & scoped tools', desc: 'Single-use cards with caps; tools limited to what the task needs.', counters: ['perms'], cost: 3, stage: 'design', refs: ['OWASP LLM03:2026 Excessive Agency', 'NIST AI RMF MANAGE 2.4'] },
+      { id: 'approval', label: 'Human approval for irreversible actions', desc: 'Payments above a threshold, bookings and external emails need explicit approval.', counters: ['vague'], cost: 4, stage: 'deploy', refs: ['EU AI Act Art. 14 (human oversight)', 'OWASP LLM03:2026 Excessive Agency'] },
+      { id: 'untrusted', label: 'Treat tool output as untrusted data', desc: 'Content from web and email can never trigger actions; outbound data is filtered.', counters: ['inject'], cost: 2, stage: 'design', refs: ['OWASP LLM01:2026 Prompt Injection', 'OWASP ASI01 Agent Goal Hijack'] },
       { id: 'log', label: 'Audit trail, monitoring & kill switch', desc: 'Every action logged; anomalous spend triggers an automatic stop.', counters: ['perms'], cost: 1, stage: 'monitor', refs: ['EU AI Act Art. 12 (record-keeping)', 'ISO/IEC 42001 A.6.2.8 (event logs)'] },
     ],
     incidents: [
@@ -56,7 +56,7 @@ export const agenticLabs: LabDef[] = [
       { id: 'noreview', kind: 'shortcut', label: 'Let it merge & deploy unreviewed', desc: 'Ship on time: the agent merges its own pull request and deploys.', risk: { accountability: 28, safety: 14 }, value: 8, headline: 'Unreviewed AI deploy took payments offline for 9 hours', outlet: 'Business Daily' },
     ],
     mitigations: [
-      { id: 'sandbox', label: 'Sandboxed staging, no prod credentials', desc: 'Agents work on replicas; production access only via reviewed pipelines.', counters: ['prodaccess'], cost: 3, stage: 'design', refs: ['OWASP LLM06 Excessive Agency', 'NIS2 Art. 21 (risk-management measures)'] },
+      { id: 'sandbox', label: 'Sandboxed staging, no prod credentials', desc: 'Agents work on replicas; production access only via reviewed pipelines.', counters: ['prodaccess'], cost: 3, stage: 'design', refs: ['OWASP LLM03:2026 Excessive Agency', 'NIS2 Art. 21 (risk-management measures)'] },
       { id: 'gates', label: 'Approval gates for destructive commands', desc: 'DROP, DELETE, rm -rf and deploys pause for an explicit human OK.', counters: ['misread'], cost: 2, stage: 'deploy', refs: ['NIST AI RMF MANAGE 2.4', 'EU AI Act Art. 14'] },
       { id: 'verify', label: 'Independent verification of agent claims', desc: 'CI re-runs tests and diffs; the agent’s own summary is never the evidence.', counters: ['cover'], cost: 2, stage: 'validate', refs: ['NIST AI RMF MEASURE 2.8', 'ISO/IEC 42001 A.6.2.4'] },
       { id: 'review', label: 'Human review & staged rollout', desc: 'Two-person review, canary deploy and automatic rollback.', counters: ['noreview'], cost: 4, stage: 'deploy', refs: ['DORA Art. 9 (ICT change management)', 'NIST SSDF (SP 800-218)'] },
@@ -90,9 +90,9 @@ export const agenticLabs: LabDef[] = [
       { id: 'noowner', kind: 'shortcut', label: 'No named human owner', desc: 'Every team assumes another team owns the agent system.', risk: { accountability: 38, transparency: 14 }, value: 5, headline: 'Who approved this? Nobody, finds procurement AI audit', outlet: 'Compliance Monitor' },
     ],
     mitigations: [
-      { id: 'verify', label: 'Independent verifier + source checks', desc: 'A separate agent and registry lookups verify every factual claim before hand-off.', counters: ['cascade'], cost: 3, stage: 'validate', refs: ['OWASP Agentic AI threats: cascading hallucination', 'NIST AI RMF MEASURE 2.5'] },
+      { id: 'verify', label: 'Independent verifier + source checks', desc: 'A separate agent and registry lookups verify every factual claim before hand-off.', counters: ['cascade'], cost: 3, stage: 'validate', refs: ['OWASP ASI08 Cascading Failures', 'NIST AI RMF MEASURE 2.5'] },
       { id: 'protocol', label: 'Inter-agent protocol & monitoring', desc: 'Structured messages, logged channels and price-parallelism alerts on external agents.', counters: ['collusion'], cost: 2, stage: 'monitor', refs: ['TFEU Art. 101', 'ISO/IEC 42001 A.6.2.6'] },
-      { id: 'breaker', label: 'Circuit breakers, rate & budget caps', desc: 'Hard limits on messages, depth and spend; automatic stop on loops.', counters: ['runaway'], cost: 2, stage: 'deploy', refs: ['OWASP LLM10 Unbounded Consumption', 'NIST AI RMF MANAGE 2.4'] },
+      { id: 'breaker', label: 'Circuit breakers, rate & budget caps', desc: 'Hard limits on messages, depth and spend; automatic stop on loops.', counters: ['runaway'], cost: 2, stage: 'deploy', refs: ['OWASP LLM06:2026 Unbounded Consumption', 'NIST AI RMF MANAGE 2.4'] },
       { id: 'raci', label: 'Named owner + approval gates (RACI)', desc: 'One accountable owner; commitments above thresholds need their approval.', counters: ['noowner'], cost: 3, stage: 'design', refs: ['NIST AI RMF GOVERN 2.1', 'ISO/IEC 42001 A.3.2 (roles)', 'EU AI Act Art. 26'] },
     ],
     incidents: [

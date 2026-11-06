@@ -165,7 +165,7 @@ export function Basics() {
             <li><b>Switch on a safeguard</b> to see whether it fixes the problem. The summary below the simulation tells you what is still unhandled.</li>
             <li><b>Check how the rules apply.</b> Each framework’s requirements are listed, with the safeguards in the simulation that meet them.</li>
             <li><b>Change the view.</b> Use “View through” at the top to see the whole site from one framework’s point of view, then follow that framework’s learning path in its guide.</li>
-            <li><b>Compare.</b> The Compare page shows how all ten frameworks answer the same question, such as transparency or human oversight.</li>
+            <li><b>Compare.</b> The Compare page shows how all the frameworks answer the same question, such as transparency or human oversight.</li>
           </ol>
         </div>
       </section>

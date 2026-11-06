@@ -153,7 +153,7 @@ export function Compare({ fw }: { fw?: string }) {
     <div className="wrap" style={{ padding: '44px 0' }}>
       <div className="narrow stack">
         <div className="label accent">Compare</div>
-        <h1>Ten frameworks, eight questions</h1>
+        <h1>{FRAMEWORKS.length} frameworks, {TOPICS.length} questions</h1>
         <p className="lead">How firmly does each framework deal with transparency, human oversight, bias and the rest? Three bars mean a detailed binding rule; no bars mean the topic is not addressed.</p>
       </div>
 

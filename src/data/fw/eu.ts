@@ -1,6 +1,6 @@
 import type { FwEntry, Req } from '../frameworks';
 
-const literacy: Req = ['Make sure the staff who run or rely on the system understand how it works and where it fails', 'Art. 4'];
+const literacy: Req = ['Take measures to support the AI literacy of the staff who run or rely on the system', 'Art. 4'];
 
 function highRisk(m: { data?: string[]; oversight?: string[]; robust?: string[]; monitor?: string[] }, extra: Req[] = []): Req[] {
   return [
@@ -21,7 +21,7 @@ export const EU: Record<string, FwEntry> = {
     reqs: [literacy, ['Voluntary codes of conduct are encouraged but not required', 'Art. 95']],
   },
   salary: {
-    cat: 'high', status: 'High-risk (Annex III, point 4(b): decisions on terms of work)',
+    cat: 'high', status: 'High-risk (Annex III, point 4(b): decisions on terms of work), from 2 December 2027',
     summary: 'AI used to make or support decisions about pay, promotion or other terms of employment is high-risk. As the company using a vendor’s tool, Meridian is the deployer; if it builds the tool in-house, it is also the provider and carries the full list.',
     reqs: highRisk({ data: ['equity', 'robust'], oversight: ['bounds'], robust: ['robust', 'bounds'] }, [
       ['Inform workers’ representatives and the affected employees before using it', 'Art. 26(7)'],
@@ -29,7 +29,7 @@ export const EU: Record<string, FwEntry> = {
     ]),
   },
   credit: {
-    cat: 'high', status: 'High-risk (Annex III, point 5(b): creditworthiness)',
+    cat: 'high', status: 'High-risk (Annex III, point 5(b): creditworthiness), from 2 December 2027',
     summary: 'Scoring people’s creditworthiness is explicitly high-risk. Banks that use such a system must also assess its impact on fundamental rights before first use, and applicants can ask for an explanation of the decision.',
     reqs: highRisk({ data: ['dropzip', 'reweigh'], robust: ['monitor'], monitor: ['monitor'] }, [
       ['Assess the impact on fundamental rights before first use', 'Art. 27'],
@@ -37,7 +37,7 @@ export const EU: Record<string, FwEntry> = {
     ]),
   },
   benefits: {
-    cat: 'high', status: 'High-risk (Annex III, point 5(a): access to public benefits)',
+    cat: 'high', status: 'High-risk (Annex III, point 5(a): access to public benefits), from 2 December 2027',
     summary: 'Systems that help public authorities decide on eligibility for benefits, or reduce or revoke them, are high-risk. Public bodies using them must register the use and assess the impact on fundamental rights first. Using nationality as a risk factor would also breach EU non-discrimination law.',
     reqs: highRisk({ data: ['features', 'cv'], oversight: ['hitl'], robust: ['prune', 'cv'] }, [
       ['Assess the impact on fundamental rights before first use', 'Art. 27'],
@@ -61,14 +61,14 @@ export const EU: Record<string, FwEntry> = {
     reqs: [literacy, ['Re-check the classification before using it to assign work to or evaluate individual staff', 'Annex III, 4(b)']],
   },
   lesion: {
-    cat: 'high', status: 'High-risk (safety component of a medical device, Art. 6(1) and Annex I)',
-    summary: 'Diagnostic software is a medical device under the EU Medical Device Regulation. Because it needs a notified body’s assessment under that law, it is high-risk under the AI Act too. Both sets of requirements are checked in one conformity assessment. These duties apply from August 2027.',
+    cat: 'high', status: 'High-risk (safety component of a medical device, Art. 6(1) and Annex I), from 2 August 2028',
+    summary: 'Diagnostic software is a medical device under the EU Medical Device Regulation. Because it needs a notified body’s assessment under that law, it is high-risk under the AI Act too. Both sets of requirements are checked in one conformity assessment. These duties apply from 2 August 2028 (Annex I, after the 2026 Omnibus).',
     reqs: highRisk({ data: ['diverse'], oversight: ['clinician'], robust: ['advtrain', 'saliency'] }, [
       ['Combine the AI Act checks with the medical-device conformity assessment by a notified body', 'Art. 43(3)'],
     ]),
   },
   face: {
-    cat: 'high', status: 'High-risk (Annex III, point 1(a): remote biometric identification)',
+    cat: 'high', status: 'High-risk (Annex III, point 1(a): remote biometric identification), from 2 December 2027',
     summary: 'Identifying people at a distance by their face is high-risk. Some related uses are banned outright: building face databases by untargeted scraping, real-time identification in public spaces for law enforcement (with narrow exceptions) and inferring race or religion from faces. For identification systems, no action may be taken on a match unless at least two qualified people have verified it.',
     reqs: highRisk({ data: ['demotest', 'watchquality'], oversight: ['tworeview'], robust: ['threshold', 'demotest'] }, [
       ['Take no action on a match unless at least two trained people have confirmed it', 'Art. 14(5)', ['tworeview']],
@@ -85,7 +85,7 @@ export const EU: Record<string, FwEntry> = {
     ],
   },
   cv: {
-    cat: 'high', status: 'High-risk (Annex III, point 4(a): recruitment and selection)',
+    cat: 'high', status: 'High-risk (Annex III, point 4(a): recruitment and selection), from 2 December 2027',
     summary: 'Tools that filter applications, rank candidates or evaluate interviews are high-risk. The employer using the tool must inform candidates and workers’ representatives, and keep a trained person in charge of decisions.',
     reqs: highRisk({ data: ['cf', 'proxy'], oversight: ['human'], robust: ['cf'] }, [
       ['Tell candidates that an AI system is used to assess them', 'Art. 26(11)', ['human']],

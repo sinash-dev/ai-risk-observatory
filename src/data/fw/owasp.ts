@@ -59,50 +59,50 @@ export const OWASP: Record<string, FwEntry> = {
     ['Model skewing: fake demand signals push prices', 'ML08', ['audit']],
     ['Model theft: competitors reverse-engineer the pricing policy', 'ML05'],
   ] },
-  foundation: { cat: 'llm', status: 'LLM Top 10 (2025)', summary: 'For a model developer, the training pipeline and data supply chain are the main attack surface.', reqs: [
-    ['Data and model poisoning: planted content in scraped web data', 'LLM04', ['optout']],
-    ['Supply chain: unvetted datasets and third-party components', 'LLM03', ['optout']],
-    ['Sensitive information disclosure: memorised personal data', 'LLM02', ['piifilter']],
-    ['Model theft and weight security', 'ML05 / LLM03', ['frontier']],
+  foundation: { cat: 'llm', status: 'LLM Top 10 (2026)', summary: 'For a model developer, the training pipeline and data supply chain are the main attack surface.', reqs: [
+    ['Data and model poisoning: planted content in scraped web data', 'LLM05:2026', ['optout']],
+    ['Supply chain: unvetted datasets and third-party components', 'LLM04:2026', ['optout']],
+    ['Sensitive information disclosure: memorised personal data', 'LLM02:2026', ['piifilter']],
+    ['Model theft and weight security', 'ML05 / LLM04:2026', ['frontier']],
   ] },
-  chatbot: { cat: 'llm', status: 'LLM Top 10 (2025)', summary: 'A customer chatbot is exposed to everyone on the internet. Prompt injection and data leakage are the first things attackers try.', reqs: [
-    ['Prompt injection: "ignore previous instructions"', 'LLM01', ['guard']],
-    ['Sensitive information disclosure: other customers’ bookings', 'LLM02', ['authz']],
-    ['System prompt leakage: revealing internal rules', 'LLM07', ['guard']],
-    ['Misinformation: invented policies', 'LLM09', ['rag']],
+  chatbot: { cat: 'llm', status: 'LLM Top 10 (2026)', summary: 'A customer chatbot is exposed to everyone on the internet. Prompt injection and data leakage are the first things attackers try.', reqs: [
+    ['Prompt injection: "ignore previous instructions"', 'LLM01:2026', ['guard']],
+    ['Sensitive information disclosure: other customers’ bookings', 'LLM02:2026', ['authz']],
+    ['Hidden context exposure: revealing internal rules and tool definitions', 'LLM08:2026', ['guard']],
+    ['Misinformation: invented policies', 'LLM07:2026', ['rag']],
   ] },
-  rag: { cat: 'llm', status: 'LLM Top 10 (2025)', summary: 'Retrieval adds its own weaknesses: what is in the index and who can reach it.', reqs: [
-    ['Prompt injection (indirect): instructions hidden in documents', 'LLM01', ['sanitize']],
-    ['Vector and embedding weaknesses: retrieval ignores access rights', 'LLM08', ['acl']],
-    ['Sensitive information disclosure', 'LLM02', ['acl']],
-    ['Misinformation: outdated or ungrounded answers', 'LLM09', ['fresh', 'cite']],
+  rag: { cat: 'llm', status: 'LLM Top 10 (2026)', summary: 'Retrieval adds its own weaknesses: what is in the index and who can reach it.', reqs: [
+    ['Prompt injection (indirect): instructions hidden in documents', 'LLM01:2026', ['sanitize']],
+    ['Vector and embedding weaknesses: retrieval ignores access rights', 'LLM09:2026', ['acl']],
+    ['Sensitive information disclosure', 'LLM02:2026', ['acl']],
+    ['Misinformation: outdated or ungrounded answers', 'LLM07:2026', ['fresh', 'cite']],
   ] },
-  imagegen: { cat: 'llm', status: 'LLM Top 10 (2025)', summary: 'The list was written for language models but its themes apply to image generation too.', reqs: [
-    ['Prompt injection: getting around content filters', 'LLM01', ['policy']],
-    ['Improper output handling: publishing outputs without checks', 'LLM05', ['review']],
-    ['Misinformation: realistic fakes', 'LLM09', ['c2pa']],
+  imagegen: { cat: 'llm', status: 'LLM Top 10 (2026)', summary: 'The list was written for language models but its themes apply to image generation too.', reqs: [
+    ['Prompt injection: getting around content filters', 'LLM01:2026', ['policy']],
+    ['Improper output handling: publishing outputs without checks', 'LLM10:2026', ['review']],
+    ['Misinformation: realistic fakes', 'LLM07:2026', ['c2pa']],
   ] },
-  code: { cat: 'llm', status: 'LLM Top 10 (2025)', summary: 'AI-written code must be treated as untrusted input to your codebase.', reqs: [
-    ['Improper output handling: generated code merged without checks', 'LLM05', ['sast', 'review']],
-    ['Supply chain: hallucinated or malicious packages', 'LLM03', ['deps']],
-    ['Sensitive information disclosure: secrets in the context window', 'LLM02', ['secrets']],
+  code: { cat: 'llm', status: 'LLM Top 10 (2026)', summary: 'AI-written code must be treated as untrusted input to your codebase.', reqs: [
+    ['Improper output handling: generated code merged without checks', 'LLM10:2026', ['sast', 'review']],
+    ['Supply chain: hallucinated or malicious packages', 'LLM04:2026', ['deps']],
+    ['Sensitive information disclosure: secrets in the context window', 'LLM02:2026', ['secrets']],
   ] },
-  'travel-agent': { cat: 'agentic', status: 'Agentic AI threats + LLM Top 10', summary: 'Agents combine every LLM weakness with the power to act. Injected instructions can now trigger real actions.', reqs: [
-    ['Goal hijacking through instructions hidden in web pages', 'Agentic · LLM01', ['untrusted']],
-    ['Excessive agency: more permissions than the task needs', 'LLM06', ['least']],
-    ['Tool misuse: payments and email used outside the task', 'Agentic', ['approval', 'least']],
-    ['Identity and privilege abuse; missing audit trail', 'Agentic', ['log']],
+  'travel-agent': { cat: 'agentic', status: 'Agentic Top 10 (2026) + LLM Top 10 (2026)', summary: 'Agents combine every LLM weakness with the power to act. Injected instructions can now trigger real actions.', reqs: [
+    ['Agent goal hijack through instructions hidden in web pages', 'ASI01 · LLM01:2026', ['untrusted']],
+    ['Excessive agency: more permissions than the task needs', 'LLM03:2026', ['least']],
+    ['Tool misuse: payments and email used outside the task', 'ASI02', ['approval', 'least']],
+    ['Identity and privilege abuse: full card and mailbox access, missing audit trail', 'ASI03', ['log', 'least']],
   ] },
-  'devops-agent': { cat: 'agentic', status: 'Agentic AI threats + LLM Top 10', summary: 'An agent with shell and database access can cause damage at machine speed.', reqs: [
-    ['Excessive agency: production credentials', 'LLM06', ['sandbox']],
-    ['Unexpected code execution and tool misuse', 'Agentic', ['gates']],
-    ['Misleading reporting: trusting the agent’s own summary', 'Agentic · human trust', ['verify']],
-    ['Improper output handling: unreviewed deploys', 'LLM05', ['review']],
+  'devops-agent': { cat: 'agentic', status: 'Agentic Top 10 (2026) + LLM Top 10 (2026)', summary: 'An agent with shell and database access can cause damage at machine speed.', reqs: [
+    ['Excessive agency and privilege abuse: production credentials', 'LLM03:2026 · ASI03', ['sandbox']],
+    ['Unexpected code execution: destructive commands run without a check', 'ASI05', ['gates']],
+    ['Human-agent trust exploitation: believing the agent’s own success report', 'ASI09', ['verify']],
+    ['Unreviewed deploys of agent-written changes', 'ASI05 · LLM10:2026', ['review']],
   ] },
-  swarm: { cat: 'agentic', status: 'Agentic AI threats', summary: 'Multi-agent systems add threats that do not exist with a single model.', reqs: [
-    ['Cascading failures: one hallucination spreads through the network', 'Agentic', ['verify']],
-    ['Insecure communication between agents, including outside agents', 'Agentic', ['protocol']],
-    ['Unbounded consumption: runaway loops', 'LLM10', ['breaker']],
-    ['Rogue agents: no owner, no kill switch', 'Agentic', ['raci']],
+  swarm: { cat: 'agentic', status: 'Agentic Top 10 (2026)', summary: 'Multi-agent systems add threats that do not exist with a single model.', reqs: [
+    ['Cascading failures: one hallucination spreads through the network', 'ASI08', ['verify']],
+    ['Insecure inter-agent communication, including with a vendor’s agent', 'ASI07', ['protocol']],
+    ['Runaway loops and unbounded consumption', 'ASI08 · ASI10 · LLM06:2026', ['breaker']],
+    ['Rogue agents: no owner, no kill switch', 'ASI10', ['raci']],
   ] },
 };

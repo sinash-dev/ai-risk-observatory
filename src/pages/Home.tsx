@@ -1,18 +1,14 @@
 import { motion } from 'framer-motion';
 import { useRef, useState } from 'react';
-import { FW_BY_ID, fwName, type FwId } from '../data/frameworks';
+import { FRAMEWORKS, FW_BY_ID, fwName, type FwId } from '../data/frameworks';
 import { LABS, fwEntry } from '../data/labs';
 import { TIERS, TIER_BY_ID } from '../data/risks';
 import type { LabDef } from '../data/types';
 import { useLens } from '../lib/lens';
 import { go, useClock } from '../lib/util';
 
-export const SHORT_NAME: Record<string, string> = {
-  spam: 'Naive Bayes', salary: 'Linear regression', credit: 'Logistic regression', benefits: 'Decision tree', fraud: 'Gradient boosting',
-  segments: 'k-means clustering', staffing: 'Time-series forecast', lesion: 'Image classifier (CNN)', face: 'Face recognition', emotion: 'Emotion recognition',
-  cv: 'Text classifier', feed: 'Recommender system', pricing: 'Reinforcement learning', foundation: 'Foundation model', chatbot: 'LLM chatbot',
-  rag: 'Retrieval (RAG) assistant', imagegen: 'Image generator', code: 'Code assistant', 'travel-agent': 'Tool-using agent', 'devops-agent': 'Coding agent', swarm: 'Multi-agent system',
-};
+export { SHORT_NAME } from '../data/shortNames';
+import { SHORT_NAME } from '../data/shortNames';
 
 const W = 1100, H = 640, CX = 550, CY = 320;
 const RX = [165, 285, 395, 500];
@@ -93,7 +89,7 @@ function Orbit() {
 
 const PURPOSES = [
   { t: 'Learn one framework properly', d: 'Pick it under “View through”. The map, every example and every requirement switch to that framework. Then follow its learning path.', href: '#/rules', cta: 'Choose a framework' },
-  { t: 'Compare frameworks on a topic', d: 'How do ten frameworks treat transparency, human oversight or bias? See it side by side in one 3D chart.', href: '#/compare', cta: 'Open the comparison' },
+  { t: 'Compare frameworks on a topic', d: 'How do the frameworks treat transparency, human oversight or bias? See it side by side in a strength grid and radar chart.', href: '#/compare', cta: 'Open the comparison' },
   { t: 'See how a model fails', d: 'Pick any example below, switch on a problem, then add a safeguard and see whether it helps.', href: '#/model/credit', cta: 'Start with credit scoring' },
   { t: 'Run a training session', d: 'A ready-made 60-minute workshop plan, plus a primer on how models work and where risk comes from.', href: '#/basics', cta: 'Open the basics' },
 ];
@@ -130,11 +126,11 @@ export function Home() {
       <section className="wrap" style={{ padding: '48px 0 0' }}>
         <motion.div className="narrow stack" initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
           <div className="label accent">{fw ? `Viewing through: ${fw.short}` : 'AI Risk Explorer'}</div>
-          <h1>{fw ? `21 AI systems, seen through ${fwName(fw.id)}` : 'Every AI system fails in its own way. Here is how, and what the rules expect you to do about it.'}</h1>
+          <h1>{fw ? `${LABS.length} AI systems, seen through ${fwName(fw.id)}` : 'Every AI system fails in its own way. Here is how, and what the rules expect you to do about it.'}</h1>
           {fw ? (
             <p className="lead">{fw.intro.split('. ').slice(0, 2).join('. ')}. Each model is coloured by how {fwName(fw.id)} treats it. <a href={`#/rules/${fw.id}`}>Open the full guide</a>, including a learning path through these examples.</p>
           ) : (
-            <p className="lead">Twenty-one real uses of AI, from a spam filter to a team of buying agents. Each one runs as a small simulation you can break and repair. Ten governance frameworks, from the EU AI Act to China’s and Korea’s rules, are mapped onto every one of them.</p>
+            <p className="lead">{LABS.length} real uses of AI, from a spam filter to a team of buying agents. Each one runs as a small simulation you can break and repair. {FRAMEWORKS.length} governance frameworks, from the EU AI Act to China’s and Korea’s rules, are mapped onto every one of them.</p>
           )}
         </motion.div>
       </section>
@@ -165,7 +161,7 @@ export function Home() {
       )}
 
       <section className="wrap section">
-        <h2>{fw ? `Grouped by category under ${fwName(fw.id)}` : 'All 21 examples, by type of model'}</h2>
+        <h2>{fw ? `Grouped by category under ${fwName(fw.id)}` : `All ${LABS.length} examples, by type of model`}</h2>
         <p className="muted" style={{ marginTop: 6, marginBottom: 20 }}>Every example opens a simulation and shows how the rules apply to it.</p>
         <div className="grid2" style={{ alignItems: 'start' }}>
           {groups.map((g, i) => (
