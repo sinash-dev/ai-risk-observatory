@@ -26,11 +26,11 @@ export function HTimeline({ events }: { events: { date: string; text: string }[]
   return (
     <div ref={ref} className="scroll-x" tabIndex={0} role="region" aria-label="Timeline, scrolls sideways">
       <div style={{ minWidth: Math.max(640, n * 128 + 152), position: 'relative', padding: '8px 0 0' }}>
-        <div style={{ position: 'relative', height: 2, background: 'rgba(255,255,255,.1)', margin: '120px 76px 0' }}>
+        <div style={{ position: 'relative', height: 2, background: 'var(--wash-3)', margin: '120px 76px 0' }}>
           <motion.div initial={{ width: 0 }} animate={seen ? { width: `${todayX}%` } : {}} transition={{ duration: 1.4, ease: 'easeOut' }} style={{ position: 'absolute', left: 0, top: 0, height: 2, background: 'var(--accent)' }} />
           {past < n && (
             <div style={{ position: 'absolute', left: `${todayX}%`, top: -9, transform: 'translateX(-50%)' }}>
-              <div style={{ width: 2, height: 20, background: '#fff', opacity: 0.6, margin: '0 auto' }} />
+              <div style={{ width: 2, height: 20, background: 'var(--ink)', opacity: 0.6, margin: '0 auto' }} />
             </div>
           )}
         {ev.map((e, i) => {
@@ -39,14 +39,14 @@ export function HTimeline({ events }: { events: { date: string; text: string }[]
             return (
               <motion.div key={e.date + e.text} initial={{ opacity: 0, y: up ? 10 : -10 }} animate={seen ? { opacity: 1, y: 0 } : {}} transition={{ delay: 0.25 + i * 0.12 }}
                 style={{ position: 'absolute', left: `${x(i)}%`, top: up ? -112 : 30, width: 126, transform: 'translateX(-50%)', textAlign: 'center' }}>
-                <div style={{ position: 'absolute', left: '50%', top: up ? 'auto' : -30, bottom: up ? -14 : 'auto', width: 1, height: up ? 24 : 26, background: 'rgba(255,255,255,.2)' }} />
+                <div style={{ position: 'absolute', left: '50%', top: up ? 'auto' : -30, bottom: up ? -14 : 'auto', width: 1, height: up ? 24 : 26, background: 'var(--line2)' }} />
                 <div className="mono" style={{ fontSize: 11.5, color: future ? '#d6c06a' : 'var(--accent)', fontWeight: 600 }}>{e.date}{future ? ' · upcoming' : ''}</div>
                 <div style={{ fontSize: 12.5, color: 'var(--ink2)', lineHeight: 1.35, marginTop: 2 }}>{e.text}</div>
               </motion.div>
             );
           })}
           {ev.map((e, i) => (
-            <span key={'d' + e.date + e.text} style={{ position: 'absolute', left: `${x(i)}%`, top: -5, width: 12, height: 12, borderRadius: '50%', transform: 'translateX(-50%)', background: e.y > TODAY ? '#0c0e11' : 'var(--accent)', border: `2px solid ${e.y > TODAY ? '#d6c06a' : 'var(--accent)'}` }} />
+            <span key={'d' + e.date + e.text} style={{ position: 'absolute', left: `${x(i)}%`, top: -5, width: 12, height: 12, borderRadius: '50%', transform: 'translateX(-50%)', background: e.y > TODAY ? 'var(--bg)' : 'var(--accent)', border: `2px solid ${e.y > TODAY ? '#d6c06a' : 'var(--accent)'}` }} />
           ))}
         </div>
         <div style={{ height: 120 }} />

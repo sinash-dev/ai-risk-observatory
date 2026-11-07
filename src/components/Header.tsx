@@ -1,3 +1,4 @@
+import { setTheme, useTheme } from '../lib/theme';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
 import type { Lens } from '../data/frameworks';
@@ -14,6 +15,21 @@ const preload = () => { void import('./Search'); };
 
 const isActive = (path: string, page: string) =>
   path === '/' ? page === '' || page === 'model' : page === path.slice(1);
+
+/** day/night switch; the label says what pressing it will do */
+function ThemeToggle() {
+  const t = useTheme();
+  const next = t === 'dark' ? 'light' : 'dark';
+  return (
+    <button className="icon-btn theme-btn" onClick={() => setTheme(next)} aria-label={`Switch to ${next} theme`} title={`Switch to ${next} theme`}>
+      {t === 'dark' ? (
+        <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="4.5" fill="none" stroke="currentColor" strokeWidth="2" /><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /></svg>
+      ) : (
+        <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" /></svg>
+      )}
+    </button>
+  );
+}
 
 function LensSelect({ id }: { id: string }) {
   const lens = useLens();
@@ -194,6 +210,7 @@ export function Header({ page }: { page: string }) {
               <span aria-hidden>⌕</span><span className="search-l">Search</span><kbd aria-hidden>{kbd}</kbd>
             </button>
             <div className="lens-wide"><LensSelect id="lens-header" /></div>
+            <ThemeToggle />
             <button className="icon-btn burger" onClick={() => setSheet(true)} aria-label="Open menu" aria-expanded={sheet}>☰</button>
           </div>
         </div>

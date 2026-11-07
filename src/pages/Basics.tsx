@@ -1,3 +1,4 @@
+import { SEV } from '../data/palette';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import { LABS } from '../data/labs';
@@ -46,33 +47,33 @@ function Pipeline() {
       <div className="scroll-x" tabIndex={0} role="region" aria-label="Pipeline diagram, scrolls sideways" style={{ marginTop: 24 }}>
         <div style={{ minWidth: 760 }}>
           <svg viewBox="0 0 1000 170" className="viz-svg" role="img" aria-label={`Data, training, model, prediction, decision${stage ? `. Risk from the ${row?.s.toLowerCase()} stage enters at ${PIPE[hot].t.toLowerCase()}.` : ''}`}>
-            <defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#6cc5b0" /></marker></defs>
+            <defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--accent)" /></marker></defs>
             {PIPE.map((p, i) => {
               const x = 10 + i * 200;
               const on = i === hot;
               return (
                 <g key={p.t}>
-                  <rect x={x} y={10} width={170} height={150} rx={12} fill={on ? 'rgba(224,113,107,.1)' : '#14171c'} stroke={on ? '#e0716b' : 'rgba(255,255,255,.12)'} strokeWidth={on ? 2 : 1} style={{ transition: 'all .3s' }} />
+                  <rect x={x} y={10} width={170} height={150} rx={12} fill={on ? 'rgba(224,113,107,.1)' : 'var(--paper)'} stroke={on ? SEV.severe : 'var(--line2)'} strokeWidth={on ? 2 : 1} style={{ transition: 'all .3s' }} />
                   {on && !still && (
                     <rect x={x} y={10} width={170} height={150} rx={12} fill="none" stroke="#e0716b" strokeWidth="2">
                       <animate attributeName="opacity" values="0.9;0;0.9" dur="1.6s" repeatCount="indefinite" />
                       <animate attributeName="stroke-width" values="2;10;2" dur="1.6s" repeatCount="indefinite" />
                     </rect>
                   )}
-                  <text x={x + 14} y={38} fontSize="17" fontWeight={600} fill="#eceef1" fontFamily="Sora Variable, Sora, sans-serif">{i + 1}. {p.t}</text>
+                  <text x={x + 14} y={38} fontSize="17" fontWeight={600} fill="var(--ink)" fontFamily="Sora Variable, Sora, sans-serif">{i + 1}. {p.t}</text>
                   <foreignObject x={x + 12} y={50} width={148} height={105}>
-                    <div style={{ fontSize: 13, color: '#9298a3', lineHeight: 1.4, fontFamily: 'Manrope Variable, Manrope, sans-serif' }}>{p.d}</div>
+                    <div style={{ fontSize: 13, color: 'var(--muted)', lineHeight: 1.4, fontFamily: 'Manrope Variable, Manrope, sans-serif' }}>{p.d}</div>
                   </foreignObject>
-                  {i < PIPE.length - 1 && <line x1={x + 172} y1={85} x2={x + 198} y2={85} stroke="#6cc5b0" strokeWidth="2" strokeDasharray="4 4" markerEnd="url(#arr)" />}
+                  {i < PIPE.length - 1 && <line x1={x + 172} y1={85} x2={x + 198} y2={85} stroke="var(--accent)" strokeWidth="2" strokeDasharray="4 4" markerEnd="url(#arr)" />}
                 </g>
               );
             })}
             {/* particles travelling through the pipeline */}
             {[0, 1, 2, 3, 4, 5].map((k) => (
               still
-                ? <circle key={k} cx={182 + (k % 4) * 200} cy={85} r={3} fill="#6cc5b0" opacity={0.7} />
+                ? <circle key={k} cx={182 + (k % 4) * 200} cy={85} r={3} fill="var(--accent)" opacity={0.7} />
                 : (
-                  <circle key={k} r={3.2} fill={hot >= 0 ? '#e0716b' : '#6cc5b0'}>
+                  <circle key={k} r={3.2} fill={hot >= 0 ? SEV.severe : 'var(--accent)'}>
                     <animateMotion dur="4.2s" begin={`${k * 0.7}s`} repeatCount="indefinite" path={path} keyPoints="0;1" keyTimes="0;1" calcMode="linear" />
                     <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;.1;.9;1" dur="4.2s" begin={`${k * 0.7}s`} repeatCount="indefinite" />
                   </circle>

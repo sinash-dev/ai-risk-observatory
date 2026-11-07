@@ -27,9 +27,9 @@ export function Stat({ l, v, s, tone, d = 0, suffix = '', prefix = '' }: { l: st
 /** small segmented control used inside the dark simulation panels */
 export function Seg<T extends string | number | boolean>({ options, value, onChange }: { options: { v: T; l: string }[]; value: T; onChange: (v: T) => void }) {
   return (
-    <div style={{ display: 'inline-flex', padding: 3, borderRadius: 8, background: 'rgba(255,255,255,.06)', border: '1px solid var(--line)' }}>
+    <div style={{ display: 'inline-flex', padding: 3, borderRadius: 8, background: 'var(--wash-2)', border: '1px solid var(--line)' }}>
       {options.map((o) => (
-        <button key={String(o.v)} onClick={() => onChange(o.v)} style={{ border: 'none', padding: '5px 11px', borderRadius: 6, fontSize: 12.5, fontWeight: 600, background: value === o.v ? 'rgba(255,255,255,.14)' : 'transparent', color: value === o.v ? '#fff' : 'var(--muted)' }}>
+        <button key={String(o.v)} onClick={() => onChange(o.v)} style={{ border: 'none', padding: '5px 11px', borderRadius: 6, fontSize: 12.5, fontWeight: 600, background: value === o.v ? 'var(--line2)' : 'transparent', color: value === o.v ? 'var(--ink)' : 'var(--muted)' }}>
           {o.l}
         </button>
       ))}
@@ -40,9 +40,9 @@ export function Seg<T extends string | number | boolean>({ options, value, onCha
 export function Logo() {
   return (
     <svg width="26" height="26" viewBox="0 0 64 64" aria-hidden>
-      <rect width="64" height="64" rx="14" fill="#14171c" stroke="rgba(255,255,255,.15)" />
-      <circle cx="32" cy="32" r="17" fill="none" stroke="#6cc5b0" strokeWidth="3" strokeDasharray="6 4" />
-      <circle cx="32" cy="32" r="6" fill="#eceef1" />
+      <rect width="64" height="64" rx="14" fill="#14171c" stroke="var(--line2)" />
+      <circle cx="32" cy="32" r="17" fill="none" stroke="var(--accent)" strokeWidth="3" strokeDasharray="6 4" />
+      <circle cx="32" cy="32" r="6" fill="var(--ink)" />
       <circle cx="47" cy="22" r="4" fill="#d9a441" />
     </svg>
   );

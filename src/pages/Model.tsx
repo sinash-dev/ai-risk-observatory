@@ -1,3 +1,4 @@
+import { alpha } from '../data/palette';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Suspense, useEffect, useMemo, useRef, useState } from 'react';
 import { Checklist, Newsroom, RiskRadar, TradeOff, letterFor, tradeOff } from '../components/model/Panels';
@@ -414,13 +415,13 @@ export function ModelPage({ id, query }: { id: string; query?: URLSearchParams }
         </div>
         <nav className="prevnext" aria-label="Other examples">
           {prev ? (
-            <a className="card lift pn" href={url(`/model/${prev.id}`)} style={{ borderColor: `${TIER_BY_ID[prev.tier].color}55` }}>
+            <a className="card lift pn" href={url(`/model/${prev.id}`)} style={{ borderColor: alpha(TIER_BY_ID[prev.tier].color, 0.33) }}>
               <span className="dim small">← Previous</span>
               <span className="pn-row"><span className="u-glyph" style={{ borderColor: TIER_BY_ID[prev.tier].color, color: TIER_BY_ID[prev.tier].color }}>{prev.glyph}</span><span><b>{SHORT_NAME[prev.id]}</b><span className="muted small" style={{ display: 'block' }}>{prev.app}</span></span></span>
             </a>
           ) : <span />}
           {next && (
-            <a className="card lift pn next" href={url(`/model/${next.id}`)} style={{ borderColor: `${TIER_BY_ID[next.tier].color}55` }}>
+            <a className="card lift pn next" href={url(`/model/${next.id}`)} style={{ borderColor: alpha(TIER_BY_ID[next.tier].color, 0.33) }}>
               <span className="dim small">Next →</span>
               <span className="pn-row"><span className="u-glyph" style={{ borderColor: TIER_BY_ID[next.tier].color, color: TIER_BY_ID[next.tier].color }}>{next.glyph}</span><span><b>{SHORT_NAME[next.id]}</b><span className="muted small" style={{ display: 'block' }}>{next.app}</span></span></span>
             </a>

@@ -22,13 +22,13 @@ export function RiskRadar({ scores, base, relevant }: { scores: Scores; base: Sc
   const summary = RISKS.map((r) => `${r.short} ${Math.round(scores[r.key])}`).join(', ');
   return (
     <svg viewBox="-58 -10 376 280" className="radar" role="img" aria-label={`Risk radar. ${summary}.`}>
-      {[25, 50, 75, 100].map((g) => <polygon key={g} points={poly(RISKS.map(() => g))} fill="none" stroke="rgba(255,255,255,.08)" />)}
-      {RISKS.map((r, i) => { const [x, y] = pt(i, 100); return <line key={r.key} x1={C} y1={C} x2={x} y2={y} stroke="rgba(255,255,255,.08)" />; })}
-      <polygon points={poly(RISKS.map((r) => base[r.key]))} fill="rgba(255,255,255,.04)" stroke="rgba(255,255,255,.3)" strokeDasharray="3 3" />
+      {[25, 50, 75, 100].map((g) => <polygon key={g} points={poly(RISKS.map(() => g))} fill="none" stroke="var(--wash-3)" />)}
+      {RISKS.map((r, i) => { const [x, y] = pt(i, 100); return <line key={r.key} x1={C} y1={C} x2={x} y2={y} stroke="var(--wash-3)" />; })}
+      <polygon points={poly(RISKS.map((r) => base[r.key]))} fill="var(--wash-1)" stroke="var(--line3)" strokeDasharray="3 3" />
       <polygon points={poly(vals)} fill={fill} fillOpacity={0.25} stroke={fill} strokeWidth={1.8} style={{ transition: 'fill .3s, stroke .3s' }} />
       {RISKS.map((r, i) => {
         const [x, y] = pt(i, 122);
-        return <text key={r.key} x={x} y={y + 4} textAnchor="middle" fontSize="13" fill={relevant.has(r.key) ? '#c8ccd3' : '#6b717c'} fontFamily="Manrope Variable, Manrope, sans-serif">{r.short}</text>;
+        return <text key={r.key} x={x} y={y + 4} textAnchor="middle" fontSize="13" fill={relevant.has(r.key) ? 'var(--ink2)' : 'var(--dim)'} fontFamily="Manrope Variable, Manrope, sans-serif">{r.short}</text>;
       })}
     </svg>
   );
@@ -41,9 +41,9 @@ function Gauge({ label, v, color }: { label: string; v: number; color: string })
   return (
     <div className="gauge">
       <svg viewBox="0 0 120 70" role="img" aria-label={`${label}: ${Math.round(v)} out of 100`}>
-        <path d="M14,60 A46,46 0 0 1 106,60" fill="none" stroke="rgba(255,255,255,.1)" strokeWidth="9" strokeLinecap="round" />
+        <path d="M14,60 A46,46 0 0 1 106,60" fill="none" stroke="var(--wash-3)" strokeWidth="9" strokeLinecap="round" />
         <path d={`M14,60 A46,46 0 0 1 ${x.toFixed(2)},${y.toFixed(2)}`} fill="none" stroke={color} strokeWidth="9" strokeLinecap="round" />
-        <text x="60" y="56" textAnchor="middle" fontSize="20" fontWeight="700" fill="#eceef1" fontFamily="Sora Variable, Sora, sans-serif">{Math.round(t)}</text>
+        <text x="60" y="56" textAnchor="middle" fontSize="20" fontWeight="700" fill="var(--ink)" fontFamily="Sora Variable, Sora, sans-serif">{Math.round(t)}</text>
       </svg>
       <div className="gauge-l">{label}</div>
     </div>
@@ -64,7 +64,7 @@ export function TradeOff({ value, trust }: { value: number; trust: number }) {
     <div className="tradeoff">
       <div className="gauges">
         <Gauge label="Business value" v={value} color="#d6c06a" />
-        <Gauge label="Trust" v={trust} color="#6cc5b0" />
+        <Gauge label="Trust" v={trust} color="var(--accent)" />
       </div>
       <p className="small muted">Shortcuts add value fast; safeguards cost effort. Governance is choosing the balance on purpose.</p>
       <p className="dim small">Indicative, for teaching.</p>
@@ -115,9 +115,9 @@ export function Ring({ n, total, size = 46 }: { n: number; total: number; size?:
   const p = total ? n / total : 0;
   return (
     <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} role="img" aria-label={`${n} of ${total}`}>
-      <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="rgba(255,255,255,.1)" strokeWidth="4" />
-      <motion.circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="#6cc5b0" strokeWidth="4" strokeLinecap="round" transform={`rotate(-90 ${size / 2} ${size / 2})`} strokeDasharray={c} initial={false} animate={{ strokeDashoffset: c * (1 - p) }} />
-      <text x="50%" y="50%" dy="4" textAnchor="middle" fontSize={size > 40 ? 12 : 10} fontWeight="700" fill="#eceef1">{n}/{total}</text>
+      <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="var(--wash-3)" strokeWidth="4" />
+      <motion.circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="var(--accent)" strokeWidth="4" strokeLinecap="round" transform={`rotate(-90 ${size / 2} ${size / 2})`} strokeDasharray={c} initial={false} animate={{ strokeDashoffset: c * (1 - p) }} />
+      <text x="50%" y="50%" dy="4" textAnchor="middle" fontSize={size > 40 ? 12 : 10} fontWeight="700" fill="var(--ink)">{n}/{total}</text>
     </svg>
   );
 }

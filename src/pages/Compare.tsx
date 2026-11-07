@@ -1,3 +1,4 @@
+import { alpha, themed } from '../data/palette';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useMemo, useState } from 'react';
 import { Breadcrumbs } from '../components/Nav';
@@ -10,7 +11,7 @@ import { setLens } from '../lib/lens';
 import { useInView, useTweenArray, url } from '../lib/util';
 
 const LEVEL = ['Not addressed', 'Guidance only', 'Required in some cases', 'Detailed binding rule'];
-const SERIES = ['#6cc5b0', '#e0b25c', '#a99be0', '#e0896b'];
+const SERIES = [themed('s1', '#6cc5b0'), themed('s2', '#e0b25c'), themed('s3', '#a99be0'), themed('s4', '#e0896b')];
 const SHORT: Record<string, string> = { transparency: 'Transparency', oversight: 'Oversight', fairness: 'Fairness', risk: 'Risk', data: 'Data', genai: 'GenAI', incidents: 'Monitoring', enforcement: 'Enforcement', literacy: 'Literacy', prohibited: 'Bans', redress: 'Redress' };
 /** an example where each topic matters most */
 const TOPIC_LAB: Record<string, string> = { transparency: 'chatbot', oversight: 'benefits', fairness: 'credit', risk: 'cv', data: 'foundation', genai: 'imagegen', incidents: 'devops-agent', enforcement: 'face', literacy: 'code', prohibited: 'emotion', redress: 'credit' };
@@ -21,7 +22,7 @@ function Bars({ lv, delay = 0, seen = true }: { lv: number; delay?: number; seen
     <span style={{ display: 'inline-flex', gap: 3, alignItems: 'flex-end', height: 18 }} aria-hidden>
       {[1, 2, 3].map((i) => (
         <motion.span key={i} initial={{ scaleY: 0 }} animate={seen ? { scaleY: 1 } : {}} transition={{ delay: delay + i * 0.05, type: 'spring', stiffness: 260, damping: 18 }}
-          style={{ width: 6, height: 5 + i * 4, borderRadius: 2, transformOrigin: 'bottom', background: i <= lv ? '#6cc5b0' : 'rgba(255,255,255,.1)' }} />
+          style={{ width: 6, height: 5 + i * 4, borderRadius: 2, transformOrigin: 'bottom', background: i <= lv ? 'var(--accent)' : 'var(--wash-3)' }} />
       ))}
     </span>
   );
@@ -105,12 +106,12 @@ function Radar({ initial }: { initial: FwId[] }) {
     <div className="grid2 radar-grid" style={{ alignItems: 'center' }}>
       <svg viewBox={`0 0 ${Wd} ${Hd}`} className="viz-svg" style={{ maxWidth: 780, margin: '0 auto' }} role="img" aria-label={`Radar of ${TOPICS.length} topics. ${summary}.`}>
         {[1, 2, 3].map((lv) => (
-          <polygon key={lv} points={TOPICS.map((_, i) => `${cxx + Math.cos(ang(i)) * (R * lv) / 3},${c + Math.sin(ang(i)) * (R * lv) / 3}`).join(' ')} fill="none" stroke="rgba(255,255,255,.1)" strokeDasharray={lv < 3 ? '3 5' : undefined} />
+          <polygon key={lv} points={TOPICS.map((_, i) => `${cxx + Math.cos(ang(i)) * (R * lv) / 3},${c + Math.sin(ang(i)) * (R * lv) / 3}`).join(' ')} fill="none" stroke="var(--wash-3)" strokeDasharray={lv < 3 ? '3 5' : undefined} />
         ))}
         {TOPICS.map((t, i) => (
           <g key={t.id}>
-            <line x1={cxx} y1={c} x2={cxx + Math.cos(ang(i)) * R} y2={c + Math.sin(ang(i)) * R} stroke="rgba(255,255,255,.08)" />
-            <text x={cxx + Math.cos(ang(i)) * (R + 22)} y={c + Math.sin(ang(i)) * (R + 22) + 5} textAnchor={Math.abs(Math.cos(ang(i))) < 0.2 ? 'middle' : Math.cos(ang(i)) > 0 ? 'start' : 'end'} fontSize="15" fill="#c8ccd3" fontWeight={600}>{SHORT[t.id] ?? t.label}</text>
+            <line x1={cxx} y1={c} x2={cxx + Math.cos(ang(i)) * R} y2={c + Math.sin(ang(i)) * R} stroke="var(--wash-3)" />
+            <text x={cxx + Math.cos(ang(i)) * (R + 22)} y={c + Math.sin(ang(i)) * (R + 22) + 5} textAnchor={Math.abs(Math.cos(ang(i))) < 0.2 ? 'middle' : Math.cos(ang(i)) > 0 ? 'start' : 'end'} fontSize="15" fill="var(--ink2)" fontWeight={600}>{SHORT[t.id] ?? t.label}</text>
           </g>
         ))}
         {[1, 2, 3].map((lv) => <text key={lv} x={cxx + 8} y={c - (R * lv) / 3 + 14} fontSize="10" fill="#8a909b" fontFamily="IBM Plex Mono">{['', 'guidance', 'some cases', 'binding'][lv]}</text>)}
@@ -123,8 +124,8 @@ function Radar({ initial }: { initial: FwId[] }) {
             const i = sel.indexOf(f.id);
             const on = i >= 0;
             return (
-              <button key={f.id} onClick={() => toggle(f.id)} aria-pressed={on} className="tag" style={{ cursor: 'pointer', padding: '6px 12px', minHeight: 36, borderColor: on ? SERIES[i] : 'var(--line)', color: on ? '#eceef1' : 'var(--muted)', background: on ? `${SERIES[i]}22` : 'transparent' }}>
-                <span className="swatch" style={{ background: on ? SERIES[i] : 'rgba(255,255,255,.15)' }} />{f.short}
+              <button key={f.id} onClick={() => toggle(f.id)} aria-pressed={on} className="tag" style={{ cursor: 'pointer', padding: '6px 12px', minHeight: 36, borderColor: on ? SERIES[i] : 'var(--line)', color: on ? 'var(--ink)' : 'var(--muted)', background: on ? alpha(SERIES[i], 0.13) : 'transparent' }}>
+                <span className="swatch" style={{ background: on ? SERIES[i] : 'var(--line2)' }} />{f.short}
               </button>
             );
           })}
@@ -136,7 +137,7 @@ function Radar({ initial }: { initial: FwId[] }) {
             return (
               <div key={f} style={{ display: 'grid', gridTemplateColumns: '150px minmax(0,1fr) 44px', gap: 10, alignItems: 'center', fontSize: 13.5 }}>
                 <span><span className="swatch" style={{ background: SERIES[i], marginRight: 8 }} />{FW_BY_ID[f].short}</span>
-                <div style={{ height: 6, borderRadius: 3, background: 'rgba(255,255,255,.07)' }}><motion.div animate={{ width: `${(total / MAX) * 100}%` }} style={{ height: 6, borderRadius: 3, background: SERIES[i] }} /></div>
+                <div style={{ height: 6, borderRadius: 3, background: 'var(--wash-2)' }}><motion.div animate={{ width: `${(total / MAX) * 100}%` }} style={{ height: 6, borderRadius: 3, background: SERIES[i] }} /></div>
                 <span className="mono dim small">{total}/{MAX}</span>
               </div>
             );

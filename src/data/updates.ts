@@ -6,6 +6,11 @@ export interface Update { date: string; title: string; body: string; fw?: FwId[]
 export const UPDATES: Update[] = [
   {
     date: '2026-11-07',
+    title: 'Light theme',
+    body: 'The site now has a light theme as well as the dark one. It follows your device setting until you choose, and the sun and moon button in the header switches between them; your choice is remembered in this browser. The simulations, the globe and the 3D scenes keep their dark panels in both themes so their charts read the same. Every page was checked for colour contrast in both themes.',
+  },
+  {
+    date: '2026-11-07',
     title: 'New visuals: the EU risk pyramid and more',
     body: 'The EU AI Act guide now shows the four risk levels as a pyramid you can turn and explore, with dates, duties and fines for each level. Results in the classification tool and My AI register show where a system sits on it. The register gained a timeline of upcoming dates, the toolkit a map of which template to use at which stage, the sector guides a comparison across sectors, and the workshop slides a 60-minute agenda bar. Legal references such as 5(c) no longer display as a copyright sign.',
     fw: ['eu'],

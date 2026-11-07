@@ -1,3 +1,4 @@
+import { SEV } from '../data/palette';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Multi, Radio } from '../components/Choice';
@@ -14,7 +15,7 @@ import { tierOfCategory } from '../data/euTiers';
 import { track } from '../lib/track';
 import { url } from '../lib/util';
 
-const TONE: Record<EuCat, string> = { banned: '#e0716b', high: '#e09a5c', 'gpai-systemic': '#86a7d6', gpai: '#86a7d6', limited: '#d6c06a', minimal: '#6cc5b0', outside: '#7c838e' };
+const TONE: Record<EuCat, string> = { banned: SEV.severe, high: SEV.high, 'gpai-systemic': SEV.info, gpai: SEV.info, limited: SEV.mid, minimal: 'var(--accent)', outside: SEV.neutral };
 
 function download(name: string, data: string | Blob, type: string) {
   const a = document.createElement('a');

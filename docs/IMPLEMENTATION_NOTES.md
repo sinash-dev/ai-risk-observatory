@@ -2,6 +2,14 @@
 
 Notes from implementing the "AI Risk Explorer: Implementation Spec" (workstreams WS1–WS11), November 2026. They list where the build differs from the spec, what needs the owner's decision, and what was left out.
 
+## Light theme (November 2026)
+
+- `:root[data-theme='light']` in `src/styles.css` redefines every colour token; an inline script in `index.html` (same text as `THEME_BOOT` in `src/lib/theme.ts`, checked by a unit test) sets `data-theme` before the first paint from the saved choice (`are-theme`) or the system setting. `useTheme` follows system changes until the visitor chooses. The header button switches and updates the `theme-color` meta tag.
+- Dark islands: `.figure` (simulations) and `.stage` (3D pyramid, globe, home map) re-declare the dark tokens, so their many hand-tuned dark colours stay correct in the light theme.
+- Category colours (risk levels, AI families, harm types, Compare series, status pills) are `var(--c-name, darkHex)` (`themed()` in `src/data/palette.ts`); the light theme gives each a deeper shade that reaches 4.5:1 on white, and dark islands reset them to the fallback. `solid()` extracts the hex for WebGL; `alpha()` uses `color-mix` instead of appending hex alpha.
+- About 90 hard-coded colours in the stylesheet and page components were replaced with tokens; the certificate, memo, news clipping and template preview keep their paper look on purpose, and the Compare PNG export stays dark.
+- Verification: axe colour contrast on all 84 routes in both themes (light via the smoke test, which now runs in the browser's default light preference; dark in `e2e/theme.spec.ts`), plus tests for the switch, persistence and the dark simulation panel.
+
 ## Visual pass and site review (November 2026)
 
 - **Where visuals were added, and why there:** the EU risk pyramid on `/rules/eu` (the central concept of the Act; 3D with `src/three/Pyramid.tsx`, flat SVG fallback, full text panel in `src/components/RiskPyramid.tsx`, data in `src/data/euTiers.ts` checked against Arts. 5, 50, 99, 111 and 113); a small pyramid marker on classification results and register entries; a category bar and deadline timeline in the register (`src/components/RegisterCharts.tsx`); a life-cycle map of templates on the toolkit (stage field in `src/data/templates.ts`); a sector-by-rule matrix on `/sectors` (matrix field in `src/data/sectors.ts`); a 60-minute agenda bar on the workshop slides; progress meters in the team record. Elsewhere the existing simulations, globe and timelines already carry the visual load, so nothing was added.

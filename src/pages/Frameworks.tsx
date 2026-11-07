@@ -3,6 +3,7 @@ import { useCallback, useMemo, useState } from 'react';
 import { RiskPyramid } from '../components/RiskPyramid';
 import { WorldTimeline } from '../components/WorldTimeline';
 import { tierOfCategory } from '../data/euTiers';
+import { solid } from '../data/palette';
 import { BindMeter, ExamplesTable, MythCard } from '../components/GuideParts';
 import { FW_GUIDE } from '../data/fwGuide';
 import { allRoutes } from '../data/routes';
@@ -80,7 +81,7 @@ function firmArcs() {
 
 function GlobeSection() {
   const [sel, setSel] = useState<FwId | null>(null);
-  const markers: GlobeMarker[] = useMemo(() => FRAMEWORKS.map((f) => ({ id: f.id, label: f.short, type: f.type, binding: f.binding, color: fwColor(f), ...PLACE[f.id] })), []);
+  const markers: GlobeMarker[] = useMemo(() => FRAMEWORKS.map((f) => ({ id: f.id, label: f.short, type: f.type, binding: f.binding, color: solid(fwColor(f)), ...PLACE[f.id] })), []);
   const others: GlobeOther[] = useMemo(() => OTHER_FRAMEWORKS.flatMap((o, idx) => {
     const p = OTHER_PLACES.find((x) => x.match.test(o.name));
     return p ? [{ idx, label: p.label, lat: p.lat, lon: p.lon }] : [];
@@ -103,7 +104,7 @@ function GlobeSection() {
     <section className="section globe-section" aria-label="Rules around the world">
       <div className="globe-grid">
         <div className="globe-stage">
-          <SceneShell className="globe-wrap" height="clamp(420px, 46vw, 560px)" load={() => import('../three/Globe')} props={props} fallback={null} />
+          <SceneShell className="globe-wrap stage" height="clamp(420px, 46vw, 560px)" load={() => import('../three/Globe')} props={props} fallback={null} />
           <div className="globe-legend" aria-hidden>
             {kinds.map((k) => <span key={k}><span className="swatch" style={{ background: KIND_COLOR[k] }} />{k}</span>)}
             <span><span className="swatch" style={{ background: '#7c838e' }} />Other frameworks</span>
@@ -115,7 +116,7 @@ function GlobeSection() {
               <div className="label" style={{ color: fwColor(f) }}>{fwKind(f)}</div>
               <h2 style={{ fontSize: 24 }}>{f.name}</h2>
               <p className="muted">{f.intro.split('. ').slice(0, 2).join('. ')}.</p>
-              {next && <p className="small"><span className="mono" style={{ color: '#d6c06a' }}>Next: {next.date}</span> · {next.text}</p>}
+              {next && <p className="small"><span className="mono" style={{ color: 'var(--c-mid, #d6c06a)' }}>Next: {next.date}</span> · {next.text}</p>}
               <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
                 <a className="btn btn-primary" href={url(`/rules/${f.id}`)}>Open guide</a>
                 <button className="btn" onClick={() => { setLens(f.id); go('/'); }}>View site through it</button>

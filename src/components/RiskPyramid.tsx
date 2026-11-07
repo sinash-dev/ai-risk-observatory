@@ -64,7 +64,7 @@ export function RiskPyramid({ examples }: { examples: PyramidExample[] }) {
   const ex = examples.filter((e) => e.tier === sel);
   return (
     <div className="pyr">
-      <div className="pyr-visual">
+      <div className="pyr-visual stage">
         <SceneShell className="pyr-scene" height="clamp(330px, 34vw, 420px)" load={load} props={props}
           fallback={<PyramidSvg labels selected={sel} onSelect={setSel} className="pyr-flat" />} />
         <p className="small muted pyr-hint">Higher up means more restrictions. Choose a level to see what it covers, when it applies and what it requires.</p>

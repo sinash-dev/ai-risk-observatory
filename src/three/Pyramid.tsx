@@ -4,6 +4,7 @@ import { Canvas, useFrame } from '@react-three/fiber';
 import { useMemo, useRef, useState } from 'react';
 import * as THREE from 'three';
 import type { EuTier, TierKey } from '../data/euTiers';
+import { solid } from '../data/palette';
 import type { SceneProps } from './SceneShell';
 
 export interface PyramidProps { tiers: EuTier[]; selected: TierKey; onSelect: (k: TierKey) => void; counts: Record<TierKey, number> }
@@ -24,7 +25,7 @@ function Slab({ i, n, tier, active, hover, onHover, onPick }: {
   const y = yOf(i, n);
   // a cylinder's radius reaches the corners; scale by √2 so the half-width matches
   const geo = useMemo(() => new THREE.CylinderGeometry(top * Math.SQRT2, bottom * Math.SQRT2, H, 4, 1), [top, bottom]);
-  const color = useMemo(() => new THREE.Color(tier.color), [tier.color]);
+  const color = useMemo(() => new THREE.Color(solid(tier.color)), [tier.color]);
   const mat = useRef<THREE.MeshStandardMaterial>(null);
   const mesh = useRef<THREE.Mesh>(null);
   useFrame((_, dt) => {
@@ -64,7 +65,7 @@ function Scene({ tiers, selected, onSelect, counts, active }: PyramidProps & { a
       {/* labels stay still while the pyramid turns */}
       {tiers.map((t, i) => (
         <Html key={t.key} position={[BASE * 1.5, yOf(i, n), 0]} style={{ pointerEvents: 'none' }} zIndexRange={[10, 0]}>
-          <div className={`pyr-tag ${selected === t.key ? 'on' : ''}`} style={{ borderColor: t.color }}>
+          <div className={`pyr-tag ${selected === t.key ? 'on' : ''}`} style={{ borderColor: solid(t.color) }}>
             <b>{t.label.replace(' duties', '')}</b>
             <span>{counts[t.key]} example{counts[t.key] === 1 ? '' : 's'}</span>
           </div>

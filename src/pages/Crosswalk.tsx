@@ -1,3 +1,4 @@
+import { SEV } from '../data/palette';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import { Breadcrumbs } from '../components/Nav';
@@ -7,7 +8,7 @@ import { LAB_BY_ID } from '../data/labs';
 import { url } from '../lib/util';
 
 const LEVEL = ['Not addressed', 'Guidance only', 'Required in some cases', 'Detailed binding rule'];
-const DOT = ['rgba(255,255,255,.15)', '#86a7d6', '#d6c06a', '#6cc5b0'];
+const DOT = ['var(--line2)', SEV.info, SEV.mid, 'var(--accent)'];
 
 export function crosswalkCsv(fws: FwId[] = FRAMEWORKS.map((f) => f.id)) {
   const q = (s: string) => (/[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s);

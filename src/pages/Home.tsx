@@ -12,6 +12,7 @@ import { prefersReducedMotion, useProgress } from '../lib/util';
 import { FRAMEWORKS, FW_BY_ID, fwName, type FwId } from '../data/frameworks';
 import { LABS, fwEntry } from '../data/labs';
 import { TIERS, TIER_BY_ID } from '../data/risks';
+import { solid } from '../data/palette';
 import type { LabDef } from '../data/types';
 import { useLens } from '../lib/lens';
 import { go, useClock, url } from '../lib/util';
@@ -60,7 +61,7 @@ function Orbit() {
     <div ref={box} className="map-wrap" onMouseMove={(e) => { const r = e.currentTarget.getBoundingClientRect(); setTilt(Math.min(1, Math.max(0, (e.clientY - r.top) / r.height))); }}>
       <svg viewBox={`0 0 ${W} ${H}`} className="viz-svg" role="img" aria-label="All models orbiting from classical machine learning in the centre to AI agents at the edge">
         <defs>
-          <radialGradient id="core"><stop offset="0" stopColor="#ffffff" stopOpacity=".55" /><stop offset=".35" stopColor="#6cc5b0" stopOpacity=".18" /><stop offset="1" stopColor="#6cc5b0" stopOpacity="0" /></radialGradient>
+          <radialGradient id="core"><stop offset="0" stopColor="#ffffff" stopOpacity=".55" /><stop offset=".35" stopColor="var(--accent)" stopOpacity=".18" /><stop offset="1" stopColor="var(--accent)" stopOpacity="0" /></radialGradient>
           <filter id="soft"><feGaussianBlur stdDeviation="1.2" /></filter>
         </defs>
         <ellipse cx={CX} cy={CY} rx={130} ry={130 * ry} fill="url(#core)" />
@@ -81,7 +82,7 @@ function Orbit() {
               <circle cx={p.x} cy={p.y} r={r} fill={c} opacity={lens === 'all' ? 0.08 : 0.28} />
               <circle cx={p.x - r * 0.3} cy={p.y - r * 0.35} r={r * 0.35} fill="#fff" opacity=".06" />
               <text x={p.x} y={p.y + 4 * s} textAnchor="middle" fontSize={11.5 * s} fontWeight={700} fill={c} fontFamily="Sora Variable, Sora, sans-serif" style={{ pointerEvents: 'none' }}>{l.glyph}</text>
-              {showLabel && <text x={p.x} y={p.y + r + 16} textAnchor="middle" fontSize={12 * s} fill="#c8ccd3" stroke="#0c0e11" strokeWidth="4" style={{ paintOrder: 'stroke', pointerEvents: 'none' }}>{SHORT_NAME[l.id]}</text>}
+              {showLabel && <text x={p.x} y={p.y + r + 16} textAnchor="middle" fontSize={12 * s} fill="var(--ink2)" stroke="#0c0e11" strokeWidth="4" style={{ paintOrder: 'stroke', pointerEvents: 'none' }}>{SHORT_NAME[l.id]}</text>}
             </g>
           );
         })}
@@ -136,10 +137,10 @@ export function Home() {
   const progress = useProgress();
   const nodes: UniverseNode[] = useMemo(() => LABS.map((l) => {
     const c = colourFor(l, lens);
-    return { id: l.id, ring: TIER_BY_ID[l.tier].ring - 1, glyph: l.glyph, title: l.model, app: l.app, short: SHORT_NAME[l.id], color: c.c, status: c.status, tierColor: TIER_BY_ID[l.tier].color, explored: !!progress.labs?.[l.id] };
+    return { id: l.id, ring: TIER_BY_ID[l.tier].ring - 1, glyph: l.glyph, title: l.model, app: l.app, short: SHORT_NAME[l.id], color: solid(c.c), status: c.status, tierColor: solid(TIER_BY_ID[l.tier].color), explored: !!progress.labs?.[l.id] };
   }), [lens, progress]);
   const pick = useCallback((id: string) => go(`/model/${id}`), []);
-  const sceneProps = useMemo(() => ({ nodes, rings: TIERS.map((t) => (lens === 'all' ? t.color : '#8a919c')), onPick: pick }), [nodes, lens, pick]);
+  const sceneProps = useMemo(() => ({ nodes, rings: TIERS.map((t) => (lens === 'all' ? solid(t.color) : '#8a919c')), onPick: pick }), [nodes, lens, pick]);
   const exploredN = LABS.filter((l) => progress.labs?.[l.id]).length;
   const cases = LABS.reduce((n, l) => n + l.incidents.length, 0);
   const upcoming = FRAMEWORKS.flatMap((f) => f.timeline.map((e) => ({ f, e, y: parseDate(e.date) }))).filter((x) => x.y > TODAY).sort((a, b) => a.y - b.y);
@@ -180,7 +181,7 @@ export function Home() {
               <span className="small muted">{exploredN ? `${exploredN} of ${LABS.length} explored. Switch on a problem and a safeguard in any example to count it.` : 'Your progress shows here: switch on a problem and a safeguard in any example.'}</span>
             </div>
           </motion.div>
-          <div className="hero-map" data-tour="orbit">
+          <div className="hero-map stage" data-tour="orbit">
             <a className="sr-only skip-map" href="#all-examples">Skip the 3D map</a>
             <div className="hero-legend" aria-hidden>
               {fw
