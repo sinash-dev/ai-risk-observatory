@@ -8,6 +8,7 @@ export const NAV: NavItem[] = [
   { path: '/compare', label: 'Compare', desc: 'Frameworks side by side', group: 'main' },
   { path: '/basics', label: 'Basics', desc: 'How models work and where risk comes from', group: 'learn' },
   { path: '/tracks', label: 'Learning tracks', desc: 'Routes through the site by role', group: 'learn' },
+  { path: '/sectors', label: 'Sector guides', desc: 'The rules that matter in your sector', group: 'learn' },
   { path: '/glossary', label: 'Glossary', desc: 'Plain definitions of the terms used here', group: 'learn' },
   { path: '/quiz', label: 'Quizzes', desc: 'Check what you have learned', group: 'learn' },
   { path: '/register', label: 'My AI register', desc: 'Your AI systems, rules and to-dos', group: 'tools' },
@@ -19,5 +20,5 @@ export const NAV: NavItem[] = [
   { path: '/updates', label: 'Updates', desc: 'What changed and when', group: 'about' },
 ];
 /** Paths of the top-level pages that exist (must match STATIC_PAGES; checked by the integrity test). */
-export const LIVE_PATHS = ['/', '/start', '/register', '/rules', '/compare', '/basics', '/classify', '/cases', '/crosswalk', '/toolkit', '/tracks', '/quiz', '/certificate', '/glossary', '/about', '/updates'];
+export const LIVE_PATHS = ['/', '/start', '/register', '/sectors', '/rules', '/compare', '/basics', '/classify', '/cases', '/crosswalk', '/toolkit', '/tracks', '/quiz', '/certificate', '/glossary', '/about', '/updates'];
 export const liveNav = (group?: NavItem['group']) => NAV.filter((n) => (!group || n.group === group) && LIVE_PATHS.includes(n.path));

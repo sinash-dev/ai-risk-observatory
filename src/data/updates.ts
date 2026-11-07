@@ -6,6 +6,13 @@ export interface Update { date: string; title: string; body: string; fw?: FwId[]
 export const UPDATES: Update[] = [
   {
     date: '2026-11-07',
+    title: 'New: framework packs, sector guides and a Word report',
+    body: 'Nine new templates follow the law clause by clause: EU AI Act technical documentation (Annex IV), quality management (Art. 17), declaration of conformity (Annex V), post-market monitoring (Art. 72), a deployer pack (Art. 26) and transparency notices (Art. 50), plus an ISO/IEC 42001 Statement of Applicability, NYC Local Law 144 notices and Korea AI Basic Act notices. An evidence checklist lists what auditors and regulators may ask to see. Six sector guides cover banking, insurance, HR, health care, the public sector and education. My AI register now exports a Word report. The EU templates were checked against the consolidated AI Act of 27 July 2026, which includes the Omnibus changes.',
+    fw: ['eu', 'iso', 'us', 'kr'],
+    links: [{ label: 'Toolkit', to: '/toolkit' }, { label: 'Sector guides', to: '/sectors' }],
+  },
+  {
+    date: '2026-11-07',
     title: 'New: My AI register and a Start here page',
     body: 'List the AI systems your organisation builds or uses, see each one’s category under the EU AI Act and the other rules that apply where you work, and tick off what needs doing. Exports as a Markdown report, CSV or JSON. Everything stays in your browser. A new Start here page suggests a route through the site for compliance leads, trainers, product teams and students.',
     links: [{ label: 'My AI register', to: '/register' }, { label: 'Start here', to: '/start' }],

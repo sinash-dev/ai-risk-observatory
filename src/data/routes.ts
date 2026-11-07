@@ -1,6 +1,7 @@
 import { FRAMEWORKS } from './frameworks';
 import { LABS } from './labs';
 import { QUIZZES } from './quizzes';
+import { SECTORS } from './sectors';
 import { TIER_BY_ID } from './risks';
 
 export interface RouteMeta {
@@ -22,10 +23,11 @@ export const STATIC_PAGES: RouteMeta[] = [
   { path: '/basics', title: 'The basics', description: 'A short guide to how AI models work, where their risks come from, and how laws, standards and security guides deal with them.', og: 'default' },
   { path: '/start', title: 'Start here', description: 'Where to begin, depending on whether you look after compliance, run training, build AI systems or study the subject.', og: 'default' },
   { path: '/register', title: 'My AI register', description: 'List the AI systems your organisation uses, see which rules apply to each, and track what to do. Everything stays in your browser.', og: 'default' },
+  { path: '/sectors', title: 'Sector guides', description: 'The AI rules that matter most in banking, insurance, HR, health care, the public sector and education, with examples, real cases and templates.', og: 'default' },
   { path: '/classify', title: 'Classify your system', description: 'Ten short questions give an indicative classification under the EU AI Act and the other frameworks that apply where you operate, with next steps.', og: 'default' },
   { path: '/cases', title: 'Case library', description: 'Real AI incidents, rulings and reports, filterable by harm, model family, sector, jurisdiction, year and outcome.', og: 'default' },
   { path: '/crosswalk', title: 'Controls crosswalk', description: 'Twenty common AI governance controls mapped to the clauses of ten frameworks, with a CSV export.', og: 'default' },
-  { path: '/toolkit', title: 'Toolkit', description: 'Free templates for AI governance: intake, inventory, risk assessment, FRIA, DPIA supplement, model card, oversight checklist, vendor questions and more.', og: 'default' },
+  { path: '/toolkit', title: 'Toolkit', description: 'Free templates for AI governance, from intake forms and risk assessments to EU AI Act packs (Annex IV, Art. 17, Art. 26, Art. 50, Art. 72), an ISO/IEC 42001 Statement of Applicability and an evidence checklist.', og: 'default' },
   { path: '/tracks', title: 'Learning tracks', description: 'Routes through the site for executives, legal, data science, security, product, procurement and internal audit.', og: 'default' },
   { path: '/quiz', title: 'Quizzes', description: 'Short scenario quizzes on each framework and each type of model, with explanations for every answer.', og: 'default' },
   { path: '/certificate', title: 'Certificate', description: 'A printable record of the AI Risk Explorer modules you have completed. Nothing leaves your browser.', og: 'default' },
@@ -49,6 +51,12 @@ export function allRoutes(): RouteMeta[] {
       title: `${f.name}: guide`,
       description: `${f.intro.split('. ')[0]}. Categories, key requirements, timeline, roadmap and how it treats ${LABS.length} AI examples.`,
       og: `fw-${f.id}`,
+    })),
+    ...SECTORS.map((s) => ({
+      path: `/sectors/${s.id}`,
+      title: `${s.name}: AI rules, cases and templates`,
+      description: `${s.intro.split('. ')[0]}. Which EU AI Act points apply, other laws, examples, real cases and templates.`,
+      og: 'default',
     })),
     ...QUIZZES.map((q) => ({
       path: `/quiz/${q.id}`,

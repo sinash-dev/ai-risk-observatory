@@ -13,7 +13,7 @@ Approved by the owner on 7 November 2026; Phase 1 done the same day. Facts are s
 | Consulting | Boutiques to Big Four | Gap assessments, ISO/IEC 42001 readiness, documentation | Vendor-published figures: gap assessments about $2,000–15,000; SMB ISO/IEC 42001 implementation about $15,000–50,000 ([Axipro](https://axipro.co/iso-42001-consulting-cost/), [Truvo](https://truvocyber.com/blog/iso-42001-certification-cost)) | Too expensive for small organisations with one or two AI systems |
 
 **Recent facts the site must reflect** (verified):
-- EN 18286:2026, the quality management system standard for the AI Act, was published in July 2026; Implementing Decision (EU) 2026/2274 published its reference in the Official Journal in October 2026, making it the first harmonised standard and giving a presumption of conformity with Art. 17 ([JTC 21](https://jtc21.eu/en-18286-becomes-the-first-harmonised-standard-under-the-eu-ai-act/)).
+- EN 18286:2026, the quality management system standard for the AI Act, was published in July 2026; Implementing Decision (EU) 2026/2274 published its reference in the Official Journal in October 2026, making it the first harmonised standard; following it gives a presumption of conformity with the requirements it covers (quality management, including post-market monitoring processes) ([JTC 21](https://jtc21.eu/en-18286-becomes-the-first-harmonised-standard-under-the-eu-ai-act/)).
 - The Commission published draft guidelines on classifying high-risk AI systems (Art. 6) for consultation on 19 May 2026; they are not final ([Commission](https://digital-strategy.ec.europa.eu/en/library/draft-commission-guidelines-classification-high-risk-ai-systems)).
 
 ## 2. What makes this site different (the niche)

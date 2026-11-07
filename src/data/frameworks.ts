@@ -97,6 +97,8 @@ const BASE: Framework[] = [
       { label: 'European Commission: AI Omnibus enters into force', url: 'https://digital-strategy.ec.europa.eu/en/news/ai-omnibus-enters-force' },
       { label: 'Draft Commission guidelines on classifying high-risk AI systems (19 May 2026)', url: 'https://digital-strategy.ec.europa.eu/en/library/draft-commission-guidelines-classification-high-risk-ai-systems' },
       { label: 'CEN-CENELEC JTC 21: EN 18286 becomes the first harmonised standard', url: 'https://jtc21.eu/en-18286-becomes-the-first-harmonised-standard-under-the-eu-ai-act/' },
+      { label: 'Implementing Decision (EU) 2026/2274 (EN 18286)', url: 'https://eur-lex.europa.eu/eli/dec_impl/2026/2274/oj' },
+      { label: 'AI Act consolidated text including the 2026 Omnibus (EUR-Lex)', url: 'https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:02024R1689-20260727' },
       { label: 'AI Act Service Desk (official compliance checker and helpdesk)', url: 'https://ai-act-service-desk.ec.europa.eu/en' },
     ],
   },

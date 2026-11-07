@@ -793,3 +793,14 @@ section[id], [id^="m"] { scroll-margin-top: 120px; }
   .reg-print p, .reg-print li { color: #000; }
   .reg-print-sys { break-inside: avoid; }
 }
+.tk-group { padding-top: 34px; }
+.tk-group + .tk-group { margin-top: 18px; border-top: 1px solid var(--line); }
+.tk .label { margin-bottom: -4px; }
+.sec-grid { margin-top: 26px; }
+.sec-card { display: grid; gap: 8px; color: var(--ink); text-decoration: none; }
+.sec-sec { padding: 34px 0; }
+.sec-rules { list-style: none; margin: 14px 0 10px; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 12px; }
+.sec-rules li { display: grid; gap: 6px; align-content: start; }
+.sec-rules p { color: var(--ink2); font-size: 15px; }
+.sec-steps, .sec-tpl, .sec-cases { margin: 14px 0 10px; padding-left: 20px; display: grid; gap: 10px; max-width: 820px; }
+.sec-sec .grid3 { margin-top: 14px; }

@@ -13,9 +13,9 @@ import { url } from '../lib/util';
 
 const TONE: Record<EuCat, string> = { banned: '#e0716b', high: '#e09a5c', 'gpai-systemic': '#86a7d6', gpai: '#86a7d6', limited: '#d6c06a', minimal: '#6cc5b0', outside: '#7c838e' };
 
-function download(name: string, text: string, type: string) {
+function download(name: string, data: string | Blob, type: string) {
   const a = document.createElement('a');
-  a.href = URL.createObjectURL(new Blob([text], { type }));
+  a.href = URL.createObjectURL(typeof data === 'string' ? new Blob([data], { type }) : data);
   a.download = name;
   document.body.appendChild(a);
   a.click();
@@ -126,6 +126,7 @@ export default function Register() {
   const [data, setData] = useState<RegisterData>(loadRegister);
   const [open, setOpen] = useState<string | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
+  const [busy, setBusy] = useState(false);
   useEffect(() => { saveRegister(data); }, [data]);
   const systems = data.systems;
   const sel = systems.find((s) => s.id === open) ?? null;
@@ -167,6 +168,15 @@ export default function Register() {
         <div className="reg-tools">
           <button className="btn btn-primary" onClick={add}>Add a system</button>
           <button className="btn" disabled={!systems.length} onClick={() => { download(`ai-register-${stamp}.md`, registerMarkdown(systems, data.org), 'text/markdown;charset=utf-8'); track('register-export-md'); }}>Export report (Markdown)</button>
+          <button className="btn" disabled={!systems.length || busy} onClick={async () => {
+            setBusy(true);
+            try {
+              const { registerDocxBlob } = await import('../lib/registerDocx');
+              download(`ai-register-${stamp}.docx`, await registerDocxBlob(systems, data.org), 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
+              track('register-export-docx');
+            } catch { toast('The Word file could not be created. Try the Markdown export instead.'); }
+            setBusy(false);
+          }}>{busy ? 'Preparing…' : 'Export report (Word)'}</button>
           <button className="btn" disabled={!systems.length} onClick={() => { download(`ai-register-${stamp}.csv`, registerCsv(systems), 'text/csv;charset=utf-8'); track('register-export-csv'); }}>Export CSV</button>
           <button className="btn" disabled={!systems.length} onClick={() => { download(`ai-register-${stamp}.json`, JSON.stringify({ format: 'ai-risk-explorer-register', version: 1, ...data }, null, 2), 'application/json'); track('register-export-json'); }}>Back up (JSON)</button>
           <button className="btn" onClick={() => fileRef.current?.click()}>Import JSON</button>

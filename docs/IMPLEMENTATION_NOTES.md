@@ -2,6 +2,15 @@
 
 Notes from implementing the "AI Risk Explorer: Implementation Spec" (workstreams WS1–WS11), November 2026. They list where the build differs from the spec, what needs the owner's decision, and what was left out.
 
+## Phase 2 (November 2026)
+
+- **Framework packs** in `public/toolkit/` (listed in `src/data/templates.ts`): EU AI Act Annex IV, Art. 17, Annex V, Art. 72, Art. 26 and Art. 50; ISO/IEC 42001 Statement of Applicability (CSV, objective headings only, no standard text); NYC Local Law 144 notice and audit summary; Korea AI Basic Act Art. 31 notices; an evidence checklist. EU content was checked line by line against the consolidated AI Act of 27 July 2026 (CELEX 02024R1689-20260727), which marks the Omnibus changes. Notable points: simplified Annex IV form for SMEs and small mid-caps (Art. 11(1)); proportionate QMS (Art. 17(2)); Commission post-market monitoring template due by 2 September 2027 (Art. 72(3)); DPIA cross-references in the FRIA (Art. 27(4)); Art. 26 unchanged.
+- **EN 18286 wording corrected.** Implementing Decision (EU) 2026/2274 gives a presumption of conformity with "the requirements covered" by the standard. The site no longer says it presumes compliance with Art. 17 as a whole.
+- **Korea:** decree article numbers are left out because sources disagree; the fine (Art. 43) and grace period come from the US International Trade Administration and Korean law firms.
+- **Word report** from the register: `src/lib/registerDocx.ts`, using `docx` 9.11.0 (MIT, pinned), loaded only on click (about 118 kB gzip, never preloaded).
+- **Sector guides**: `src/data/sectors.ts`, `src/pages/Sectors.tsx`, routes `/sectors/` and `/sectors/<id>/`. EU points cite Annex III from the consolidated text; cases come from each example's incidents.
+- Tests: `src/data/__tests__/toolkit.test.ts` (every file listed, licence line, renderable tables, CSV shape), `sectors.test.ts`, `registerDocx.test.ts`, `e2e/phase2.spec.ts`.
+
 ## Phase 1 (November 2026)
 
 Phase 1 of `docs/STRATEGY.md`, without the Hostinger items, which the owner moved to a later Phase 4.

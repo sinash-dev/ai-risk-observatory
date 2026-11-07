@@ -4,19 +4,13 @@ import { Breadcrumbs } from '../components/Nav';
 import { csvToHtml, markdownToHtml } from '../lib/markdown';
 import { track } from '../lib/track';
 import { BASE } from '../lib/util';
+import { TEMPLATES } from '../data/templates';
 
-export const TEMPLATES: { file: string; title: string; desc: string; icon: string }[] = [
-  { file: 'ai-use-case-intake.md', title: 'AI use case intake', desc: 'A one-page screening form for new AI ideas, purchases and pilots.', icon: '◎' },
-  { file: 'ai-system-inventory.csv', title: 'AI system inventory', desc: 'A spreadsheet register of every AI system: owner, purpose, category and review dates.', icon: '▦' },
-  { file: 'ai-risk-assessment.md', title: 'AI risk assessment', desc: 'Context, a risk table with likelihood and severity, testing evidence and residual risk sign-off.', icon: '△' },
-  { file: 'fundamental-rights-impact-assessment.md', title: 'Fundamental-rights impact assessment', desc: 'Structured on the six elements of EU AI Act Art. 27(1).', icon: '⚖' },
-  { file: 'dpia-ai-supplement.md', title: 'DPIA supplement for AI', desc: 'AI-specific questions to add to a GDPR data protection impact assessment.', icon: '🔒' },
-  { file: 'model-card.md', title: 'Model card', desc: 'Intended use, data, performance by group, limits and monitoring.', icon: '▤' },
-  { file: 'human-oversight-checklist.md', title: 'Human oversight checklist', desc: 'What overseers must be able to do under EU AI Act Art. 14.', icon: '◉' },
-  { file: 'vendor-ai-questionnaire.md', title: 'Vendor AI questionnaire', desc: 'Fifteen questions to ask suppliers of AI systems and features.', icon: '⇄' },
-  { file: 'ai-incident-report.md', title: 'AI incident report', desc: 'Impact, immediate actions, reporting duties and root cause.', icon: '!' },
-  { file: 'agent-authorisation-matrix.md', title: 'Agent authorisation matrix', desc: 'Tools, scope, limits, approval gates, logging and kill switch for each AI agent.', icon: '⌘' },
-  { file: 'workshop-facilitator-guide.md', title: 'Workshop facilitator guide', desc: 'A 60-minute session plan with links to pre-configured scenarios and debrief questions.', icon: '✎' },
+export { TEMPLATES } from '../data/templates';
+
+const GROUPS = [
+  { id: 'everyday', title: 'Everyday governance', intro: 'For any organisation that builds or uses AI: from the first intake form to incident reports.', items: TEMPLATES.filter((t) => !t.pack) },
+  { id: 'packs', title: 'Framework packs', intro: 'Outlines that follow a specific law or standard, clause by clause. Each field names the clause it comes from, so you can check it against the official text.', items: TEMPLATES.filter((t) => t.pack) },
 ];
 
 const href = (file: string) => `${BASE}toolkit/${file}`;
@@ -68,22 +62,31 @@ export default function Toolkit() {
       <div className="narrow stack">
         <Breadcrumbs trail={[{ label: 'Tools' }, { label: 'Toolkit' }]} />
         <h1>Toolkit</h1>
-        <p className="lead">{TEMPLATES.length} practical templates for running AI governance: from the first intake form to incident reports. Placeholders are in [brackets].</p>
+        <p className="lead">{TEMPLATES.length} templates for running AI governance, including outlines that follow the EU AI Act, ISO/IEC 42001, NYC Local Law 144 and Korea's AI Basic Act. Placeholders are in [brackets].</p>
         <p className="small muted">The templates are free to adapt (CC BY 4.0). They are starting points, not legal advice.</p>
       </div>
-      <div className="grid3 tk-grid">
-        {TEMPLATES.map((t, i) => (
-          <motion.div key={t.file} className="card card-pad tk" initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: (i % 3) * 0.06 }}>
-            <span className="tk-ic" aria-hidden>{t.icon}</span>
-            <h2 className="tk-t">{t.title}</h2>
-            <p className="muted small">{t.desc}</p>
-            <div className="tk-actions">
-              <button className="btn btn-sm" onClick={() => setOpen(t)}>Preview</button>
-              <a className="btn btn-sm" href={href(t.file)} download onClick={() => track(`template-${t.file.replace(/\.[a-z]+$/, '')}`)}>Download {t.file.endsWith('.csv') ? 'CSV' : 'Markdown'}</a>
-            </div>
-          </motion.div>
-        ))}
-      </div>
+      {GROUPS.map((g) => (
+        <section key={g.id} id={g.id} className="tk-group" aria-labelledby={`${g.id}-h`}>
+          <div className="narrow stack">
+            <h2 id={`${g.id}-h`}>{g.title}</h2>
+            <p className="muted">{g.intro}</p>
+          </div>
+          <div className="grid3 tk-grid">
+            {g.items.map((t, i) => (
+              <motion.div key={t.file} className="card card-pad tk" initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: (i % 3) * 0.06 }}>
+                <span className="tk-ic" aria-hidden>{t.icon}</span>
+                {t.pack && <span className="label">{t.pack}</span>}
+                <h3 className="tk-t">{t.title}</h3>
+                <p className="muted small">{t.desc}</p>
+                <div className="tk-actions">
+                  <button className="btn btn-sm" onClick={() => setOpen(t)}>Preview</button>
+                  <a className="btn btn-sm" href={href(t.file)} download onClick={() => track(`template-${t.file.replace(/\.[a-z]+$/, '')}`)}>Download {t.file.endsWith('.csv') ? 'CSV' : 'Markdown'}</a>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </section>
+      ))}
       <AnimatePresence>{open && <Preview key={open.file} file={open.file} title={open.title} onClose={() => setOpen(null)} />}</AnimatePresence>
     </div>
   );
