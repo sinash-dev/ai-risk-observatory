@@ -66,6 +66,13 @@ const META: Record<string, { jur: string; type: OutcomeType; url?: string; sourc
   'CrowdStrike outage': { jur: 'International', type: 'report' },
   'The Flash Crash': { jur: 'United States', type: 'report' },
   'OWASP agentic threat taxonomy': { jur: 'International', type: 'law' },
+  'Test-Achats ruling': { jur: 'European Union', type: 'court' },
+  'NAIC AI Model Bulletin': { jur: 'United States', type: 'law' },
+  'Ogletree v. Cleveland State University': { jur: 'United States', type: 'court' },
+  'VU Amsterdam proctoring complaint': { jur: 'Netherlands', type: 'court' },
+  'Biden robocall deepfake': { jur: 'United States', type: 'fine' },
+  'FCC ruling on AI voices': { jur: 'United States', type: 'law' },
+  'MCP tool poisoning disclosure': { jur: 'International', type: 'report' },
 };
 
 export interface Case extends Incident {

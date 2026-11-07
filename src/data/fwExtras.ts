@@ -16,6 +16,8 @@ export const EXTRAS: Partial<Record<FwId, Extra>> = {
     learn: [
       ['emotion', 'A banned practice. Notice that the only safeguard that works is switching it off.'],
       ['credit', 'A high-risk use (Annex III). Read how Articles 9, 10, 14, 15 and 86 map to the safeguards.'],
+      ['insurance', 'Annex III 5(c), and the fundamental-rights impact assessment that Art. 27 requires of insurers.'],
+      ['exam', 'Annex III 3(d) proctoring, with the emotion-recognition ban in education right next to it.'],
       ['lesion', 'High-risk through a product law (medical devices), applying from 2 August 2028.'],
       ['face', 'High-risk biometrics, and the two-person rule in Article 14(5).'],
       ['chatbot', 'Transparency duties only: the user must know it is an AI.'],
@@ -188,6 +190,7 @@ export const EXTRAS: Partial<Record<FwId, Extra>> = {
       ['pricing', 'The ban on "big-data price discrimination".'],
       ['foundation', 'Filing and security assessment for public generative AI.'],
       ['imagegen', 'Deep synthesis consent rules and mandatory labels.'],
+      ['voice', 'Consent before cloning a voice, and labels on synthetic audio.'],
       ['face', 'The 2025 facial recognition measures.'],
     ],
     extras: [
@@ -213,6 +216,8 @@ export const EXTRAS: Partial<Record<FwId, Extra>> = {
       ['cv', 'Hiring is a named high-impact area.'],
       ['credit', 'Loan screening is a named high-impact area.'],
       ['imagegen', 'Deepfake labelling under Article 31.'],
+      ['voice', 'Notice and labelling for synthetic voices.'],
+      ['exam', 'Student evaluation is a named high-impact area.'],
       ['foundation', 'Safety duties for very large models.'],
     ],
     extras: [

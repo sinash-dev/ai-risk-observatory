@@ -105,4 +105,24 @@ export const OWASP: Record<string, FwEntry> = {
     ['Runaway loops and unbounded consumption', 'ASI08 · ASI10 · LLM06:2026', ['breaker']],
     ['Rogue agents: no owner, no kill switch', 'ASI10', ['raci']],
   ] },
+  insurance: { cat: 'ml', status: 'ML Security Top 10', summary: 'Applicants have an incentive to game the price, and the model holds sensitive health data.', reqs: [
+    ['Input manipulation: applicants tune answers to lower the premium', 'ML01', ['reprice']],
+    ['Membership inference: learning whether someone’s health data was in the training set', 'ML04', ['consent']],
+    ['AI supply chain: third-party data sources such as wearables', 'ML06', ['consent']],
+  ] },
+  exam: { cat: 'ml', status: 'ML Security Top 10', summary: 'Students have every incentive to fool the camera, and the system holds biometric video.', reqs: [
+    ['Input manipulation: second devices and looped gaze videos', 'ML01', ['assess']],
+    ['AI supply chain: a vendor model with unknown training data', 'ML06', ['pergroup']],
+  ] },
+  voice: { cat: 'ml', status: 'ML Security Top 10 (audio)', summary: 'The LLM list fits audio poorly, so the ML list is used here. The main threat is misuse of cloned voices for impersonation.', reqs: [
+    ['Output integrity: synthetic audio passed off as genuine', 'ML09', ['disclose', 'callback']],
+    ['Model inversion: reconstructing a person’s voice from stored voiceprints', 'ML03', ['noprint']],
+    ['AI supply chain: a vendor voice model trained on unlicensed recordings', 'ML06', ['licence']],
+  ] },
+  'browser-agent': { cat: 'agentic', status: 'Agentic Top 10 (2026) + LLM Top 10 (2026)', summary: 'Every MCP server is part of the agent’s supply chain. Hidden instructions in tool descriptions turn into actions.', reqs: [
+    ['Agentic supply chain: poisoned or changed tool definitions', 'ASI04 · LLM01:2026', ['pin']],
+    ['Unexpected code execution: scripts run to “fix” files', 'ASI05', ['sandbox']],
+    ['Human-agent trust exploitation: reflexive approvals', 'ASI09', ['approvalux']],
+    ['Identity and privilege abuse: a shared admin account', 'ASI03', ['identity']],
+  ] },
 };

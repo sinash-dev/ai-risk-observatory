@@ -184,4 +184,41 @@ export const US: Record<string, FwEntry> = {
       ['Keep humans accountable for contracts the agents sign', 'Contract and agency law', ['raci']],
     ],
   },
+  insurance: {
+    cat: 'specific', status: 'State insurance law + NAIC AI bulletin',
+    summary: 'Insurance is regulated by the states. Unfair-discrimination law applies to rating factors, the NAIC Model Bulletin (adopted 4 December 2023) sets expectations for AI governance, testing and vendor oversight, and Colorado SB21-169 restricts insurers’ use of external consumer data and algorithms that unfairly discriminate.',
+    reqs: [
+      ['Rating factors must not unfairly discriminate', 'State insurance unfair-discrimination laws', ['neutral', 'fairvalue']],
+      ['Have a written AI governance programme, test models and oversee vendors', 'NAIC Model Bulletin on the Use of AI Systems by Insurers (2023)', ['reprice']],
+      ['Do not use external consumer data or algorithms that unfairly discriminate', 'Colorado SB21-169', ['consent', 'neutral']],
+    ],
+  },
+  exam: {
+    cat: 'specific', status: 'Constitutional and biometric privacy law',
+    summary: 'At public universities, room scans can be an unconstitutional search: a federal judge ruled so in Ogletree v. Cleveland State University (2022). Illinois BIPA requires written consent before collecting face geometry.',
+    reqs: [
+      ['Public universities: avoid room scans that amount to an unreasonable search', 'Fourth Amendment (Ogletree v. Cleveland State University, 2022)', ['minimal']],
+      ['Get written consent before collecting face geometry', 'Illinois BIPA', ['minimal']],
+      ['Do not discriminate on race, including through biased tools', 'Civil Rights Act, Title VI', ['pergroup']],
+      ftc,
+    ],
+  },
+  voice: {
+    cat: 'specific', status: 'Telemarketing and voice-likeness laws',
+    summary: 'The FCC ruled in February 2024 (FCC 24-17) that AI-generated voices are “artificial” under the Telephone Consumer Protection Act, so robocalls using them need prior express consent. Tennessee’s ELVIS Act (2024) protects a person’s voice against unauthorised simulation.',
+    reqs: [
+      ['Get prior express consent for robocalls that use an AI-generated voice', 'TCPA; FCC Declaratory Ruling FCC 24-17', ['disclose']],
+      ['Do not use a real person’s voice without permission', 'Tennessee ELVIS Act; state right-of-publicity laws', ['licence']],
+      ['Get consent before collecting voiceprints', 'Illinois BIPA', ['noprint']],
+      ftc,
+    ],
+  },
+  'browser-agent': {
+    cat: 'general', status: 'General law only',
+    summary: 'No AI-specific rule applies to back-office automation. The company is bound by payments the agent makes and must protect the data it handles.',
+    reqs: [
+      ['Expect to be bound by payments and orders the agent makes', 'Contract and agency law', ['approvalux']],
+      ['Take reasonable security measures', 'FTC Act §5; state data-security laws', ['pin', 'sandbox', 'identity']],
+    ],
+  },
 };

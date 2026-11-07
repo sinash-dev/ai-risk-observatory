@@ -24,4 +24,8 @@ export const VIZ: Record<string, LazyExoticComponent<ComponentType<VizProps>>> =
   'travel-agent': lazy(() => import('./agenticViz').then((m) => ({ default: m.TravelAgentViz }))),
   'devops-agent': lazy(() => import('./agenticViz').then((m) => ({ default: m.DevopsAgentViz }))),
   'swarm': lazy(() => import('./agenticViz').then((m) => ({ default: m.SwarmViz }))),
+  insurance: lazy(() => import('./newViz').then((m) => ({ default: m.InsuranceViz }))),
+  exam: lazy(() => import('./newViz').then((m) => ({ default: m.ExamViz }))),
+  voice: lazy(() => import('./newViz').then((m) => ({ default: m.VoiceViz }))),
+  'browser-agent': lazy(() => import('./newViz').then((m) => ({ default: m.BrowserAgentViz }))),
 };

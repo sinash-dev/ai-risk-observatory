@@ -4,4 +4,5 @@ export const SHORT_NAME: Record<string, string> = {
   segments: 'k-means clustering', staffing: 'Time-series forecast', lesion: 'Image classifier (CNN)', face: 'Face recognition', emotion: 'Emotion recognition',
   cv: 'Text classifier', feed: 'Recommender system', pricing: 'Reinforcement learning', foundation: 'Foundation model', chatbot: 'LLM chatbot',
   rag: 'Retrieval (RAG) assistant', imagegen: 'Image generator', code: 'Code assistant', 'travel-agent': 'Tool-using agent', 'devops-agent': 'Coding agent', swarm: 'Multi-agent system',
+  insurance: 'Insurance pricing model', exam: 'Proctoring vision model', voice: 'Voice clone (TTS)', 'browser-agent': 'Browser agent (MCP)',
 };

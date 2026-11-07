@@ -175,4 +175,38 @@ export const EU: Record<string, FwEntry> = {
       ['Assign human oversight proportionate to the decisions the agents take', 'Art. 14 (good practice outside high-risk)', ['raci']],
     ],
   },
+  insurance: {
+    cat: 'high', status: 'High-risk (Annex III, point 5(c): risk assessment and pricing in life and health insurance), from 2 December 2027',
+    summary: 'Pricing life and health insurance for individuals is explicitly high-risk, and deployers must assess the impact on fundamental rights before first use (Art. 27). Separately, EU law has banned using sex as a factor that leads to different premiums since 21 December 2012 (Test-Achats, C-236/09; Directive 2004/113/EC).',
+    reqs: highRisk({ data: ['neutral', 'consent'], robust: ['reprice'], monitor: ['reprice'] }, [
+      ['Assess the impact on fundamental rights before first use', 'Art. 27'],
+      ['Do not use sex as a factor that leads to different premiums', 'Directive 2004/113/EC; Test-Achats (C-236/09)', ['neutral']],
+    ]),
+  },
+  exam: {
+    cat: 'high', status: 'High-risk (Annex III, point 3(d): monitoring prohibited behaviour during tests), from 2 December 2027',
+    summary: 'Monitoring and detecting prohibited behaviour of students during tests is listed in Annex III. Adding emotion or “stress” inference would make it a banned practice: emotion recognition in education is prohibited under Art. 5(1)(f), except for medical or safety reasons.',
+    reqs: highRisk({ data: ['pergroup'], oversight: ['review'], robust: ['pergroup', 'assess'] }, [
+      ['Do not infer students’ emotions', 'Art. 5(1)(f)', ['noemotion']],
+    ]),
+  },
+  voice: {
+    cat: 'limited', status: 'Transparency duties (Art. 50)',
+    summary: 'As deployer, Meridian must tell people they are interacting with an AI system (Art. 50(1)) and disclose deep-fake audio (Art. 50(4)). The provider of the text-to-speech system must mark its output in a machine-readable way (Art. 50(2)); for systems placed on the market before 2 August 2026 this applies from 2 December 2026.',
+    reqs: [
+      ['Tell people they are interacting with an AI system', 'Art. 50(1)', ['disclose']],
+      ['Providers must mark generated audio so it can be detected as AI-generated', 'Art. 50(2)', ['disclose']],
+      ['Deployers must disclose deep-fake audio', 'Art. 50(4)', ['disclose', 'licence']],
+      literacy,
+    ],
+  },
+  'browser-agent': {
+    cat: 'depends', status: 'Depends on the task',
+    summary: 'As with other agents, the Act classifies the use, not the agent. Processing supplier invoices is minimal risk. If the same agent were used to evaluate staff or assess creditworthiness, it would be high-risk.',
+    reqs: [
+      ['Re-check the classification for every new task the agent takes on', 'Art. 6, Annex III'],
+      ['Assign human oversight proportionate to the decisions the agent takes', 'Art. 14 (good practice outside high-risk)', ['approvalux']],
+      literacy,
+    ],
+  },
 };

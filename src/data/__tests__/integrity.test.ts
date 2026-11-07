@@ -96,4 +96,9 @@ describe('data integrity', () => {
       expect(g.myths.length, f.id).toBe(3);
     }
   });
+
+  it('has the 25 examples, including the four added in 2026', () => {
+    expect(LABS.length).toBe(25);
+    for (const id of ['exam', 'insurance', 'voice', 'browser-agent']) expect(LABS.some((l) => l.id === id), id).toBe(true);
+  });
 });
