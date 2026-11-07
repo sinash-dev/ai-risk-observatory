@@ -1,5 +1,25 @@
 # Translation plan
 
+## Status: paused by the owner on 8 November 2026
+
+Other changes to the site come first; translation resumes when the owner asks.
+
+| Step | State |
+|---|---|
+| L1 Language support | **Done and live** (commit 8d5ed0f). English unchanged; other languages hidden. |
+| L2 Term glossary | Not started. The official German and French consolidated AI Act texts were downloaded from EUR-Lex for it; download them again when resuming (CELEX 02024R1689-20260727, `/DE/` and `/FR/`). Confirmed so far: *Anbieter* / *Betreiber* (DE), *fournisseur* / *déployeur* (FR). |
+| L3–L6 | Not started. |
+
+Decisions already made: Chinese is **Simplified** (`zh-Hans`). Still open: who reviews each language before launch.
+
+How the L1 work fits together, for whoever resumes it:
+- `src/i18n/locales.ts`: list of languages with a `published` flag (only English is `true`). A language becomes visible everywhere (pages, switch, sitemap) by setting `published: true`.
+- `src/lib/util.ts`: `url()` keeps the current language; `routeParts()` drops the prefix, so pages need no changes.
+- Preview a hidden language in the browser with `localStorage.setItem('are-preview-locales', '1')`, then open e.g. `/ai-risk-observatory/ar/`.
+- `ALL_LOCALES=1 npm run build` builds every language for testing; `AUDIT_LOCALE=ar node scripts/audit.mjs 4174` audits the right-to-left layout.
+- Tests: `src/lib/__tests__/locales.test.ts`, `e2e/languages.spec.ts`.
+- Any new page or component should use logical CSS (`margin-inline-start`, `inset-inline-end`, `text-align: start`) so right-to-left keeps working.
+
 Languages requested by the owner: German, French, Arabic, Persian (Farsi) and Chinese. English stays the source and the reference version.
 
 ## Size of the job
