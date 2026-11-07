@@ -1,7 +1,7 @@
 export const SITE = {
   name: 'AI Risk Explorer',
   /** content review date, shown in footer and guides */
-  reviewed: '2026-11-06',
+  reviewed: '2026-11-07',
   repo: 'https://github.com/sinash-dev/ai-risk-observatory',
   url: 'https://sinash-dev.github.io/ai-risk-observatory/',
 } as const;

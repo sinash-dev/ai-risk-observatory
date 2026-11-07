@@ -1,4 +1,6 @@
-home: perf 85, a11y 100, best 100, seo 100 | LCP 3.4 s, TBT 0 ms, CLS 0.085
-model-credit: perf 85, a11y 100, best 100, seo 100 | LCP 3.4 s, TBT 70 ms, CLS 0.085
-rules-eu: perf 86, a11y 100, best 100, seo 100 | LCP 3.4 s, TBT 0 ms, CLS 0.085
-classify: perf 91, a11y 100, best 100, seo 100 | LCP 2.8 s, TBT 0 ms, CLS 0.082
+home: perf 89, a11y 100, best 100, seo 100 | LCP 2.9 s, TBT 0 ms, CLS 0.085
+model-credit: perf 86, a11y 100, best 100, seo 100 | LCP 3.4 s, TBT 160 ms, CLS 0.085
+rules-eu: perf 85, a11y 100, best 100, seo 100 | LCP 3.5 s, TBT 40 ms, CLS 0.085
+classify: perf 89, a11y 100, best 100, seo 100 | LCP 3.1 s, TBT 40 ms, CLS 0.085
+start: perf 89, a11y 100, best 100, seo 100 | LCP 3.2 s, TBT 20 ms, CLS 0.085
+register: perf 91, a11y 100, best 100, seo 100 | LCP 3.1 s, TBT 50 ms, CLS 0.035

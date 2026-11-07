@@ -127,6 +127,7 @@ export function classify(a: Answers): Result {
     }
     if (eu !== 'banned' && a.area !== 'none' && a.narrow === 'yes' && a.product !== 'yes') notes.push('You answered that it only performs a narrow or preparatory task and does not profile people (Art. 6(3)). If so, you must document this assessment and still register the system.');
     if (a.area === 'services' && a.service === 'fraud') notes.push('Annex III point 5(b) covers creditworthiness and credit scoring but excludes AI used to detect financial fraud.');
+    if (eu === 'high' && high?.annex === 'III') notes.push('The Commission published draft guidelines on what counts as high-risk, with practical examples, on 19 May 2026. They are still a draft, but worth checking against your use case.');
     if (a.product === 'unsure') notes.push('Check whether your product falls under one of the EU laws listed in Annex I (such as medical devices, machinery, toys, lifts or vehicles). If it does and needs third-party conformity assessment, it is high-risk from 2 August 2028.');
     if (eu !== 'banned' && eu !== 'minimal' && transparency && eu !== 'limited') next.push('The transparency duties in Art. 50 also apply: disclose AI interaction and mark generated content.');
     next.push('Everyone: take measures to support the AI literacy of staff who build or use the system (Art. 4).');

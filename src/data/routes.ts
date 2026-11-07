@@ -20,6 +20,8 @@ export const STATIC_PAGES: RouteMeta[] = [
   { path: '/rules', title: 'Frameworks', description: `${FRAMEWORKS.length} ways of governing AI: laws, standards and security guides, grouped by region, with a worldwide timeline of AI rules.`, og: 'default' },
   { path: '/compare', title: 'Compare frameworks', description: `How ${FRAMEWORKS.length} AI governance frameworks treat transparency, human oversight, bias, risk assessment and more, side by side.`, og: 'default' },
   { path: '/basics', title: 'The basics', description: 'A short guide to how AI models work, where their risks come from, and how laws, standards and security guides deal with them.', og: 'default' },
+  { path: '/start', title: 'Start here', description: 'Where to begin, depending on whether you look after compliance, run training, build AI systems or study the subject.', og: 'default' },
+  { path: '/register', title: 'My AI register', description: 'List the AI systems your organisation uses, see which rules apply to each, and track what to do. Everything stays in your browser.', og: 'default' },
   { path: '/classify', title: 'Classify your system', description: 'Ten short questions give an indicative classification under the EU AI Act and the other frameworks that apply where you operate, with next steps.', og: 'default' },
   { path: '/cases', title: 'Case library', description: 'Real AI incidents, rulings and reports, filterable by harm, model family, sector, jurisdiction, year and outcome.', og: 'default' },
   { path: '/crosswalk', title: 'Controls crosswalk', description: 'Twenty common AI governance controls mapped to the clauses of ten frameworks, with a CSV export.', og: 'default' },

@@ -160,6 +160,15 @@ export function Home() {
               <a className="btn btn-primary" href={url('/model/credit')}>Start with credit scoring</a>
               {hasClassify ? <a className="btn" href={url('/classify')}>Classify your system</a> : <a className="btn" href={url('/compare')}>Compare frameworks</a>}
             </div>
+            {!fw && (
+              <nav className="hero-aud" aria-label="Start for your role">
+                <span className="small muted">Start as someone who:</span>
+                <a href={url('/start#compliance')}>looks after compliance</a>
+                <a href={url('/start#trainers')}>runs training</a>
+                <a href={url('/start#builders')}>builds AI systems</a>
+                <a href={url('/register')}>keeps a list of AI systems</a>
+              </nav>
+            )}
             <dl className="hero-stats">
               <div><dt>examples</dt><dd><Num v={LABS.length} /></dd></div>
               <div><dt>frameworks</dt><dd><Num v={FRAMEWORKS.length} /></dd></div>

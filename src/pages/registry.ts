@@ -19,4 +19,6 @@ export const REGISTRY: Record<string, ComponentType<PageProps>> = {
   tracks: L(() => import('./Tracks')),
   quiz: L(() => import('./Quiz')),
   certificate: L(() => import('./Certificate')),
+  start: L(() => import('./Start')),
+  register: L(() => import('./Register')),
 };

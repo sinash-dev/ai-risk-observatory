@@ -4,6 +4,7 @@ import { Ring } from '../components/model/Panels';
 import { Breadcrumbs } from '../components/Nav';
 import { QUIZZES, QUIZ_BY_ID, type Quiz } from '../data/quizzes';
 import { order, passed, saveQuizResult, useQuizResults } from '../lib/quizStore';
+import { track } from '../lib/track';
 import { url } from '../lib/util';
 import type { PageProps } from './registry';
 
@@ -57,6 +58,7 @@ function Run({ quiz }: { quiz: Quiz }) {
   const next = () => {
     if (i < quiz.questions.length - 1) { setI(i + 1); setPicked(null); return; }
     saveQuizResult(quiz.id, { score, total: quiz.questions.length, at: Date.now() });
+    track(`quiz-${quiz.id}-done`);
     setDone(true);
   };
   const retry = () => { setI(0); setPicked(null); setScore(0); setDone(false); };

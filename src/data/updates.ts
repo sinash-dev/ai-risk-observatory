@@ -5,6 +5,19 @@ export interface Update { date: string; title: string; body: string; fw?: FwId[]
 /** Newest first. Also published as an RSS feed (updates.xml) by scripts/postbuild.ts. */
 export const UPDATES: Update[] = [
   {
+    date: '2026-11-07',
+    title: 'New: My AI register and a Start here page',
+    body: 'List the AI systems your organisation builds or uses, see each one’s category under the EU AI Act and the other rules that apply where you work, and tick off what needs doing. Exports as a Markdown report, CSV or JSON. Everything stays in your browser. A new Start here page suggests a route through the site for compliance leads, trainers, product teams and students.',
+    links: [{ label: 'My AI register', to: '/register' }, { label: 'Start here', to: '/start' }],
+  },
+  {
+    date: '2026-11-07',
+    title: 'EU AI Act: first harmonised standard and draft high-risk guidelines',
+    body: 'The EU guide now covers EN 18286, the quality management standard whose reference was published in the Official Journal in October 2026, and the Commission’s draft guidelines on what counts as high-risk (19 May 2026, still a draft). The classification tool now points to the Commission’s own free checker as a second opinion.',
+    fw: ['eu'],
+    links: [{ label: 'EU AI Act guide', to: '/rules/eu' }],
+  },
+  {
     date: '2026-11-06',
     title: 'Four new examples',
     body: 'Online exam proctoring, life and health insurance pricing, voice cloning for customer calls, and a back-office browser agent that uses tools through MCP. Each comes with a simulation, all ten framework mappings and real cases.',

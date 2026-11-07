@@ -2,6 +2,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
 import { Breadcrumbs } from '../components/Nav';
 import { csvToHtml, markdownToHtml } from '../lib/markdown';
+import { track } from '../lib/track';
 import { BASE } from '../lib/util';
 
 export const TEMPLATES: { file: string; title: string; desc: string; icon: string }[] = [
@@ -47,7 +48,7 @@ function Preview({ file, title, onClose }: { file: string; title: string; onClos
         <div className="tk-modal-top">
           <b>{title}</b>
           <span style={{ flex: 1 }} />
-          <a className="btn btn-sm" href={href(file)} download>Download</a>
+          <a className="btn btn-sm" href={href(file)} download onClick={() => track(`template-${file.replace(/\.[a-z]+$/, '')}`)}>Download</a>
           <button className="btn btn-sm" onClick={onClose}>Close</button>
         </div>
         <div className="tk-doc" tabIndex={0}>
@@ -78,7 +79,7 @@ export default function Toolkit() {
             <p className="muted small">{t.desc}</p>
             <div className="tk-actions">
               <button className="btn btn-sm" onClick={() => setOpen(t)}>Preview</button>
-              <a className="btn btn-sm" href={href(t.file)} download>Download {t.file.endsWith('.csv') ? 'CSV' : 'Markdown'}</a>
+              <a className="btn btn-sm" href={href(t.file)} download onClick={() => track(`template-${t.file.replace(/\.[a-z]+$/, '')}`)}>Download {t.file.endsWith('.csv') ? 'CSV' : 'Markdown'}</a>
             </div>
           </motion.div>
         ))}

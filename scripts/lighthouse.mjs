@@ -4,7 +4,7 @@ import lighthouse from 'lighthouse';
 import { mkdirSync, writeFileSync } from 'node:fs';
 
 const port = process.argv[2] ?? '4174';
-const pages = { home: '', 'model-credit': 'model/credit/', 'rules-eu': 'rules/eu/', classify: 'classify/' };
+const pages = { home: '', 'model-credit': 'model/credit/', 'rules-eu': 'rules/eu/', classify: 'classify/', start: 'start/', register: 'register/' };
 mkdirSync('docs/lighthouse', { recursive: true });
 const browser = await chromium.launch({ args: ['--remote-debugging-port=9333'] });
 const rows = [];

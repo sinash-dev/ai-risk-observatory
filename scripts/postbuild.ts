@@ -26,7 +26,7 @@ const manifest: Record<string, ManifestEntry> = existsSync(manifestPath) ? JSON.
 const vizSrc = readFileSync(join('src', 'labs', 'viz.ts'), 'utf8');
 const VIZ_FILE: Record<string, string> = {};
 for (const m of vizSrc.matchAll(/'([\w-]+)':\s*lazy\(\(\) => import\('\.\/(\w+)'\)/g)) VIZ_FILE[m[1]] = `src/labs/${m[2]}.tsx`;
-const PAGE_FILE: Record<string, string> = { '': 'Home', model: 'Model', rules: 'Frameworks', compare: 'Compare', basics: 'Basics', glossary: 'Glossary', updates: 'Updates', about: 'About', cases: 'Cases', classify: 'Classify', crosswalk: 'Crosswalk', toolkit: 'Toolkit', tracks: 'Tracks', quiz: 'Quiz', certificate: 'Certificate' };
+const PAGE_FILE: Record<string, string> = { '': 'Home', model: 'Model', rules: 'Frameworks', compare: 'Compare', basics: 'Basics', glossary: 'Glossary', updates: 'Updates', about: 'About', cases: 'Cases', classify: 'Classify', crosswalk: 'Crosswalk', toolkit: 'Toolkit', tracks: 'Tracks', quiz: 'Quiz', certificate: 'Certificate', start: 'Start', register: 'Register' };
 const entryChunks = new Set<string>(Object.values(manifest).filter((e) => (e as { isEntry?: boolean }).isEntry).flatMap((e) => [e.file, ...(e.imports ?? []).map((k) => manifest[k]?.file)]));
 function chunksFor(src: string, out = new Set<string>()) {
   const e = manifest[src];

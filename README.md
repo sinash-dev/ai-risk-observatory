@@ -10,7 +10,8 @@ A training website that shows, with working examples, how AI and machine learnin
 - **Frameworks** (`/rules/`, `/rules/:fw/`): a 3D globe, a scroll-driven worldwide timeline, and a guide per framework (EU AI Act, US laws, NIST AI RMF, ISO/IEC 42001, OWASP, GDPR, China, Korea, Singapore, UK) with definitions, categories, requirements, timeline, roadmap, who enforces it, myths and a sortable examples table.
 - **Compare** (`/compare/`, `/compare/:fw/`): strength grid and radar for 11 topics, scoring rubric, gap finder, CSV and PNG export.
 - **Learn**: Basics (`/basics/`), learning tracks for seven roles (`/tracks/`), glossary of 55 terms (`/glossary/`), 14 quizzes (`/quiz/`, `/quiz/:id/`) and a printable certificate (`/certificate/`).
-- **Tools**: Classify your system (`/classify/`), controls crosswalk (`/crosswalk/`), toolkit of 11 templates (`/toolkit/`, files in `public/toolkit/`), case library (`/cases/`).
+- **Start here** (`/start/`): a suggested route through the site for compliance leads, trainers, product teams and students.
+- **Tools**: My AI register (`/register/`, kept in the browser's local storage, with Markdown, CSV and JSON export and JSON import), classify your system (`/classify/`), controls crosswalk (`/crosswalk/`), toolkit of 11 templates (`/toolkit/`, files in `public/toolkit/`), case library (`/cases/`).
 - **About** (`/about/`) and **Updates** (`/updates/`, RSS at `/updates.xml`).
 - **View through**: a switch in the header that shows the whole site through one framework.
 

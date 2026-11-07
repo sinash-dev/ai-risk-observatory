@@ -2,7 +2,19 @@
 
 Notes from implementing the "AI Risk Explorer: Implementation Spec" (workstreams WS1–WS11), November 2026. They list where the build differs from the spec, what needs the owner's decision, and what was left out.
 
-## Status
+## Phase 1 (November 2026)
+
+Phase 1 of `docs/STRATEGY.md`, without the Hostinger items, which the owner moved to a later Phase 4.
+
+- **Start here** (`/start/`, `src/pages/Start.tsx`) and audience links in the home hero.
+- **My AI register** (`/register/`, `src/pages/Register.tsx`, logic in `src/lib/register.ts`). Systems are classified with the same `classify()` as the wizard; the actions are the `next` items of each result card, identified by a hash of card and text so ticks survive a rebuild. Stored under the local storage key `are-register-v1`. "Reset my progress" on the About page does not clear it, since it is the user's own work. Imports are validated and cleaned; malformed entries are dropped. The Colorado reminder is only shown for education, employment and essential services, where the link to "consequential decisions" is clear.
+- **Accuracy refresh**: EN 18286 (Implementing Decision (EU) 2026/2274), the draft Art. 6 guidelines of 19 May 2026, the AI Act Service Desk and its compliance checker; new glossary terms and an updates entry.
+- **Feature counts**: `src/lib/track.ts` sends GoatCounter events (`event-register-add`, `event-register-export-md`, `event-template-…`, `event-quiz-…-done`, `event-classify-result`). Only the feature name is sent. Disclosed on the About page.
+- **Header**: the main navigation now collapses into the menu below 1120 px, and the lens label hides below 1200 px. Before this change the lens selector was pushed off-screen between about 900 and 1100 px.
+- Shared form pieces moved to `src/components/Choice.tsx` and `src/lib/classifyOptions.ts`.
+- Checks: 41 unit tests, full e2e suite (233 passed, 5 screenshot-only skipped) including `e2e/register.spec.ts` and axe on the two new routes, Lighthouse mobile: start 89, register 91 for performance and 100 for the other three categories.
+
+## Status (WS1–WS11)
 
 All workstreams are implemented and committed one per workstream (`ws1:` … `ws11:`).
 
