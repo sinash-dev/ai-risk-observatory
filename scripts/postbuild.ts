@@ -8,6 +8,7 @@ import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync
 import { dirname, join } from 'node:path';
 import { allRoutes, type RouteMeta } from '../src/data/routes';
 import { SITE } from '../src/data/site';
+import { LOCALES, localePrefix, type LocaleInfo } from '../src/i18n/locales';
 import { renderOgImages } from './og';
 
 const DIST = 'dist';
@@ -44,15 +45,23 @@ function preloadsFor(path: string) {
   return [...files].filter((f) => f.endsWith('.js') && !entryChunks.has(f) && !/vendor-3d/.test(f)).map((f) => `<link rel="modulepreload" crossorigin href="${base}${f}" />`);
 }
 
-const fullTitle = (r: RouteMeta) => (r.path === '/' ? r.title : `${r.title} · ${SITE.name}`);
-const routeUrl = (p: string) => SITE_URL + (p === '/' ? '' : p.replace(/^\//, '') + '/');
+/* ---- languages: pages are built for published languages only (ALL_LOCALES=1 builds every language, for testing) ---- */
+const PUB: LocaleInfo[] = LOCALES.filter((l) => l.published || process.env.ALL_LOCALES === '1');
+const EN = LOCALES[0];
 
-function page(r: RouteMeta, opts: { noindex?: boolean } = {}) {
+const fullTitle = (r: RouteMeta) => (r.path === '/' ? r.title : `${r.title} · ${SITE.name}`);
+const routeUrl = (p: string, l: LocaleInfo = EN) => SITE_URL + localePrefix(l.code) + (p === '/' ? '' : p.replace(/^\//, '') + '/');
+
+function page(r: RouteMeta, opts: { noindex?: boolean } = {}, l: LocaleInfo = EN) {
   const title = fullTitle(r);
-  const u = routeUrl(r.path);
+  const u = routeUrl(r.path, l);
+  // links between the language versions of this page (only once a second language is published)
+  const alternates = PUB.length > 1 && !opts.noindex ? [...PUB.map((x) => `<link rel="alternate" hreflang="${x.tag}" href="${routeUrl(r.path, x)}" />`), `<link rel="alternate" hreflang="x-default" href="${routeUrl(r.path)}" />`] : [];
   const img = `${SITE_URL}og/${r.og}.png`;
   const head = [
     `<link rel="canonical" href="${u}" />`,
+    ...alternates,
+    `<meta property="og:locale" content="${l.tag.replace('-', '_')}" />`,
     `<meta property="og:type" content="website" />`,
     `<meta property="og:site_name" content="${SITE.name}" />`,
     `<meta property="og:title" content="${esc(title)}" />`,
@@ -69,6 +78,7 @@ function page(r: RouteMeta, opts: { noindex?: boolean } = {}) {
     ...preloadsFor(r.path),
   ].filter(Boolean).join('\n    ');
   return template
+    .replace('<html lang="en">', `<html lang="${l.tag}" dir="${l.dir}">`)
     .replace(/<title>[^<]*<\/title>/, `<title>${esc(title)}</title>`)
     .replace(/<meta name="description" content="[^"]*" \/>/, `<meta name="description" content="${esc(r.description)}" />`)
     .replace('</head>', `    ${head}\n  </head>`)
@@ -77,18 +87,21 @@ function page(r: RouteMeta, opts: { noindex?: boolean } = {}) {
 }
 
 const routes = allRoutes();
-for (const r of routes) {
-  const file = r.path === '/' ? join(DIST, 'index.html') : join(DIST, r.path.slice(1), 'index.html');
-  mkdirSync(dirname(file), { recursive: true });
-  writeFileSync(file, page(r));
+for (const l of PUB) {
+  for (const r of routes) {
+    const rel = localePrefix(l.code) + (r.path === '/' ? '' : r.path.slice(1) + '/');
+    const file = join(DIST, rel, 'index.html');
+    mkdirSync(dirname(file), { recursive: true });
+    writeFileSync(file, page(r, {}, l));
+  }
 }
 writeFileSync(join(DIST, '404.html'), page({ path: '/404', title: 'Page not found', description: 'This page does not exist. Search the site or start from the overview.', og: 'default' }, { noindex: true }));
 
 writeFileSync(join(DIST, 'route-manifest.json'), JSON.stringify(routes.map((r) => ({ path: r.path === '/' ? '/' : r.path + '/', title: fullTitle(r) })), null, 2));
 
 writeFileSync(join(DIST, 'sitemap.xml'), `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${routes.map((r) => `  <url><loc>${routeUrl(r.path)}</loc><lastmod>${SITE.reviewed}</lastmod></url>`).join('\n')}
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"${PUB.length > 1 ? ' xmlns:xhtml="http://www.w3.org/1999/xhtml"' : ''}>
+${PUB.flatMap((l) => routes.map((r) => `  <url><loc>${routeUrl(r.path, l)}</loc><lastmod>${SITE.reviewed}</lastmod>${PUB.length > 1 ? PUB.map((x) => `<xhtml:link rel="alternate" hreflang="${x.tag}" href="${routeUrl(r.path, x)}" />`).join('') : ''}</url>`)).join('\n')}
 </urlset>
 `);
 writeFileSync(join(DIST, 'robots.txt'), `User-agent: *\nAllow: /\nSitemap: ${SITE_URL}sitemap.xml\n`);
@@ -112,4 +125,4 @@ ${items}
 
 const n = await renderOgImages(routes, join(DIST, 'og'));
 rmSync(join(DIST, '.vite'), { recursive: true, force: true }); // build manifest is not published
-console.log(`postbuild: ${routes.length} route pages, 404, sitemap, robots, manifest, ${n} OG images`);
+console.log(`postbuild: ${routes.length} route pages x ${PUB.length} language${PUB.length === 1 ? "" : "s"} (${PUB.map((l) => l.code).join(", ")}), 404, sitemap, robots, manifest, ${n} OG images`);

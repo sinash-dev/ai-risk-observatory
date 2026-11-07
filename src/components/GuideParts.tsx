@@ -65,7 +65,7 @@ export function ExamplesTable({ f }: { f: Framework }) {
         <button className={`chip-btn ${cat === 'all' ? 'on' : ''}`} aria-pressed={cat === 'all'} onClick={() => setCat('all')}>All ({LABS.length})</button>
         {used.map((c) => (
           <button key={c.id} className={`chip-btn ${cat === c.id ? 'on' : ''}`} aria-pressed={cat === c.id} onClick={() => setCat(c.id)}>
-            <span className="swatch" style={{ background: c.color, marginRight: 6 }} />{c.label} ({LABS.filter((l) => fwEntry(f.id, l.id).cat === c.id).length})
+            <span className="swatch" style={{ background: c.color, marginInlineEnd: 6 }} />{c.label} ({LABS.filter((l) => fwEntry(f.id, l.id).cat === c.id).length})
           </button>
         ))}
       </div>

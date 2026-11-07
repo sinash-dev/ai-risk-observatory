@@ -1,5 +1,7 @@
 import '@fontsource-variable/manrope';
 import '@fontsource-variable/sora';
+// Arabic and Persian letters; the browser downloads the Arabic subset only when such text appears
+import '@fontsource-variable/vazirmatn';
 import '@fontsource/ibm-plex-mono/400.css';
 import '@fontsource/ibm-plex-mono/500.css';
 import React from 'react';

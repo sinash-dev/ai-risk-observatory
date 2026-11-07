@@ -91,7 +91,7 @@ function RadarShape({ fw, color, cx, cy, R }: { fw: FwId; color: string; cx: num
   return (
     <motion.g initial={{ opacity: 0, scale: 0.6 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.6 }} style={{ transformOrigin: `${cx}px ${cy}px` }}>
       <polygon points={pts.map((p) => p.join(',')).join(' ')} fill={color} fillOpacity=".14" stroke={color} strokeWidth="2.2" strokeLinejoin="round" />
-      {pts.map((p, i) => <circle key={i} cx={p[0]} cy={p[1]} r="3.6" fill={color} stroke="#14171c" strokeWidth="1.5" />)}
+      {pts.map((p, i) => <circle key={i} cx={p[0]} cy={p[1]} r="3.6" fill={color} stroke="var(--paper)" strokeWidth="1.5" />)}
     </motion.g>
   );
 }
@@ -136,7 +136,7 @@ function Radar({ initial }: { initial: FwId[] }) {
             const total = TOPICS.reduce((a, t) => a + COMPARE[t.id][f][0], 0);
             return (
               <div key={f} style={{ display: 'grid', gridTemplateColumns: '150px minmax(0,1fr) 44px', gap: 10, alignItems: 'center', fontSize: 13.5 }}>
-                <span><span className="swatch" style={{ background: SERIES[i], marginRight: 8 }} />{FW_BY_ID[f].short}</span>
+                <span><span className="swatch" style={{ background: SERIES[i], marginInlineEnd: 8 }} />{FW_BY_ID[f].short}</span>
                 <div style={{ height: 6, borderRadius: 3, background: 'var(--wash-2)' }}><motion.div animate={{ width: `${(total / MAX) * 100}%` }} style={{ height: 6, borderRadius: 3, background: SERIES[i] }} /></div>
                 <span className="mono dim small">{total}/{MAX}</span>
               </div>

@@ -82,7 +82,7 @@ export default function Cases() {
         <div className="filters-foot">
           <span className="small muted" aria-live="polite">{shown.length} of {CASES.length} cases</span>
           <button className="btn btn-sm" onClick={reset}>Clear filters</button>
-          <div className="tabs" role="tablist" style={{ marginLeft: 'auto' }}>
+          <div className="tabs" role="tablist" style={{ marginInlineStart: 'auto' }}>
             <button role="tab" aria-selected={view === 'grid'} className={view === 'grid' ? 'on' : ''} onClick={() => setView('grid')}>Cards</button>
             <button role="tab" aria-selected={view === 'timeline'} className={view === 'timeline' ? 'on' : ''} onClick={() => setView('timeline')}>Timeline</button>
           </div>

@@ -164,7 +164,7 @@ export function Basics() {
         </div>
         <div className="grid2" style={{ marginTop: 20 }}>
           {TIERS.map((t) => (
-            <div key={t.id} className="card card-pad" style={{ borderLeft: `4px solid ${t.color}` }}>
+            <div key={t.id} className="card card-pad" style={{ borderInlineStart: `4px solid ${t.color}` }}>
               <h3>{t.label}</h3>
               <p className="muted" style={{ marginTop: 6 }}>{t.tagline}</p>
               <p className="small" style={{ marginTop: 10 }}>
@@ -182,7 +182,7 @@ export function Basics() {
         </div>
         <div className="card" tabIndex={0} role="region" aria-label="Risk stages table, scrolls sideways" style={{ marginTop: 20, overflowX: 'auto' }}>
           <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 15, minWidth: 760 }}>
-            <thead><tr style={{ textAlign: 'left' }}>{['Stage', 'What goes wrong', 'Example', 'Typical safeguard'].map((h) => <th key={h} className="label" style={{ padding: '12px 16px', borderBottom: '1px solid var(--line)' }}>{h}</th>)}</tr></thead>
+            <thead><tr style={{ textAlign: 'start' }}>{['Stage', 'What goes wrong', 'Example', 'Typical safeguard'].map((h) => <th key={h} className="label" style={{ padding: '12px 16px', borderBottom: '1px solid var(--line)' }}>{h}</th>)}</tr></thead>
             <tbody>
               {STAGE_ROWS.map((r) => (
                 <tr key={r.s}>
@@ -232,7 +232,7 @@ export function Basics() {
       <section className="wrap section" id="m6">
         <div className="narrow stack">
           <h2>6. How to use this site</h2>
-          <ol style={{ paddingLeft: 20, margin: 0 }} className="stack">
+          <ol style={{ paddingInlineStart: 20, margin: 0 }} className="stack">
             <li><b>Pick an example</b> from the <a href={url('/')}>overview</a>. Each one pairs a model with a realistic use.</li>
             <li><b>Read the situation.</b> It explains what the organisation wants and who is affected.</li>
             <li><b>Switch on a problem</b> in the simulation and watch what changes. Problems are labelled as design choices, real-world changes or attacks.</li>

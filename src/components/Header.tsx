@@ -1,3 +1,4 @@
+import { availableLocales, type Locale } from '../i18n/locales';
 import { setTheme, useTheme } from '../lib/theme';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
@@ -7,7 +8,7 @@ import { fwColor } from '../data/fwKind';
 import { liveNav, type NavItem } from '../data/nav';
 import { setLens, useLens } from '../lib/lens';
 import { isMac, openSearch } from '../lib/searchStore';
-import { url } from '../lib/util';
+import { url, useRoute } from '../lib/util';
 import { Link } from './Link';
 import { Logo } from './ui';
 
@@ -17,6 +18,21 @@ const isActive = (path: string, page: string) =>
   path === '/' ? page === '' || page === 'model' : page === path.slice(1);
 
 /** day/night switch; the label says what pressing it will do */
+/** language switch; hidden until a second language is published (or preview mode is on) */
+function LanguageSwitch() {
+  const { hash, locale } = useRoute();
+  const langs = availableLocales();
+  if (langs.length < 2) return null;
+  return (
+    <label className="lang-switch">
+      <span className="sr-only">Language</span>
+      <select value={locale} onChange={(e) => { location.href = url(hash + location.search, e.target.value as Locale); }}>
+        {langs.map((l) => <option key={l.code} value={l.code} lang={l.tag}>{l.native}</option>)}
+      </select>
+    </label>
+  );
+}
+
 function ThemeToggle() {
   const t = useTheme();
   const next = t === 'dark' ? 'light' : 'dark';
@@ -134,9 +150,9 @@ function Sheet({ open, onClose, page }: { open: boolean; onClose: () => void; pa
             aria-modal="true"
             aria-label="Site menu"
             onKeyDown={onKey}
-            initial={{ x: '100%' }}
+            initial={{ x: document.dir === 'rtl' ? '-100%' : '100%' }}
             animate={{ x: 0 }}
-            exit={{ x: '100%' }}
+            exit={{ x: document.dir === 'rtl' ? '-100%' : '100%' }}
             transition={{ type: 'spring', stiffness: 380, damping: 38 }}
           >
             <div className="sheet-top">
@@ -145,6 +161,7 @@ function Sheet({ open, onClose, page }: { open: boolean; onClose: () => void; pa
             </div>
             <button className="btn sheet-search" onClick={() => { onClose(); setTimeout(openSearch, 50); }}>⌕ Search the site</button>
             <LensSelect id="lens-sheet" />
+            <div className="sheet-lang"><LanguageSwitch /></div>
             {groups.filter(([, items]) => items.length).map(([g, items]) => (
               <nav key={g} aria-label={g}>
                 <div className="label" style={{ margin: '18px 0 6px' }}>{g}</div>
@@ -210,6 +227,7 @@ export function Header({ page }: { page: string }) {
               <span aria-hidden>⌕</span><span className="search-l">Search</span><kbd aria-hidden>{kbd}</kbd>
             </button>
             <div className="lens-wide"><LensSelect id="lens-header" /></div>
+            <LanguageSwitch />
             <ThemeToggle />
             <button className="icon-btn burger" onClick={() => setSheet(true)} aria-label="Open menu" aria-expanded={sheet}>☰</button>
           </div>

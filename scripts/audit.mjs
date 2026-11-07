@@ -6,6 +6,8 @@ import { readFileSync } from 'node:fs';
 const port = process.argv[2] ?? '4174';
 const ORIGIN = `http://localhost:${port}`;
 const BASE = '/ai-risk-observatory/';
+// AUDIT_LOCALE=ar audits the pages under /ar/ in preview mode (layout check before translations are published)
+const LOC = process.env.AUDIT_LOCALE ? process.env.AUDIT_LOCALE + '/' : '';
 const routes = JSON.parse(readFileSync('dist/route-manifest.json', 'utf8'));
 const paths = (Array.isArray(routes) ? routes : routes.routes ?? Object.keys(routes)).map((r) => (typeof r === 'string' ? r : r.path));
 
@@ -15,12 +17,13 @@ const titles = new Map();
 const internal = new Set();
 for (const [label, viewport] of [['phone', { width: 375, height: 812 }], ['desktop', { width: 1366, height: 860 }]]) {
   const ctx = await browser.newContext({ viewport, reducedMotion: 'reduce' });
+  if (LOC) await ctx.addInitScript(() => localStorage.setItem('are-preview-locales', '1'));
   for (const p of paths) {
     const page = await ctx.newPage();
     const errs = [];
     page.on('pageerror', (e) => errs.push(e.message));
     page.on('console', (m) => { if (m.type() === 'error' && !/goatcounter|gc\.zgo\.at|ERR_NAME|net::/i.test(m.text())) errs.push(m.text()); });
-    const url = ORIGIN + BASE + p.replace(/^\//, '') + (p === '/' ? '' : '/');
+    const url = ORIGIN + BASE + LOC + p.replace(/^\//, '') + (p === '/' ? '' : '/');
     await page.goto(url, { waitUntil: 'load' });
     await page.waitForTimeout(700);
     const r = await page.evaluate(() => {

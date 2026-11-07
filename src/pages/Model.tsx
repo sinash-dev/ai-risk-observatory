@@ -315,7 +315,7 @@ export function ModelPage({ id, query }: { id: string; query?: URLSearchParams }
             {active.length === 0 ? (
               <p className="muted" style={{ marginTop: 8 }}>No problems switched on yet. The system is running as designed. Switch on a problem to see its effect.</p>
             ) : (
-              <ul style={{ margin: '10px 0 0', paddingLeft: 18 }}>
+              <ul style={{ margin: '10px 0 0', paddingInlineStart: 18 }}>
                 {active.map((st) => (
                   <li key={st.id} style={{ marginBottom: 10 }}>
                     <b>{st.label}</b>: {live(st.id) ? <span style={{ color: 'var(--bad)' }}>not handled.</span> : <span style={{ color: 'var(--good)' }}>handled.</span>}

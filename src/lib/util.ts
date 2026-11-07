@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, useSyncExternalStore } from 'react';
+import { availableLocales, localePrefix, splitLocale, type Locale } from '../i18n/locales';
 
 /* ---------- seeded random ---------- */
 export function rng(seed = 1) {
@@ -35,24 +36,40 @@ function subscribe(cb: () => void) {
 }
 const snapshot = () => window.location.pathname + window.location.search;
 
-/** Split a site path ("/model/credit") into parts, relative to BASE. */
-export function routeParts(pathname: string) {
+function rawParts(pathname: string) {
   const rel = pathname.startsWith(BASE) ? pathname.slice(BASE.length) : pathname.replace(/^\//, '');
   return rel.split('/').filter(Boolean);
 }
+
+/** Split a site path ("/de/model/credit") into parts relative to BASE, without the language prefix. */
+export function routeParts(pathname: string) {
+  return splitLocale(rawParts(pathname)).rest;
+}
+
+/** Language of a path; unpublished languages count as English unless preview mode is on. */
+export function localeOfPath(pathname: string): Locale {
+  const l = splitLocale(rawParts(pathname)).locale;
+  return availableLocales().some((x) => x.code === l) ? l : 'en';
+}
+
+/** Language of the page being shown. */
+export const currentLocale = (): Locale => (typeof location === 'undefined' ? 'en' : localeOfPath(location.pathname));
 
 export function useRoute() {
   const loc = useSyncExternalStore(subscribe, snapshot, () => '/');
   const [pathname, search = ''] = loc.split('?');
   const parts = routeParts(pathname);
-  return { hash: '/' + parts.join('/'), page: parts[0] ?? '', param: parts[1], query: new URLSearchParams(search) };
+  return { hash: '/' + parts.join('/'), page: parts[0] ?? '', param: parts[1], query: new URLSearchParams(search), locale: localeOfPath(pathname) };
 }
 
-/** Full URL for a site path: url('/model/credit') -> '/ai-risk-observatory/model/credit/'. */
-export function url(to: string) {
+/**
+ * Full URL for a site path in the current language (or the one given):
+ * url('/model/credit') -> '/ai-risk-observatory/model/credit/', or '.../de/model/credit/' on a German page.
+ */
+export function url(to: string, locale: Locale = currentLocale()) {
   const m = to.match(/^([^?#]*)(.*)$/)!;
   const path = m[1].replace(/^\/+|\/+$/g, '');
-  return BASE + (path ? path + '/' : '') + m[2];
+  return BASE + localePrefix(locale) + (path ? path + '/' : '') + m[2];
 }
 
 export function navigate(to: string, opts: { replace?: boolean } = {}) {

@@ -9,7 +9,8 @@ import { REGISTRY } from './pages/registry';
 import { setDocumentMeta } from './lib/meta';
 import { installSearchShortcut, useSearchOpen } from './lib/searchStore';
 import { useTilt } from './lib/tilt';
-import { BASE, navigate, routeParts, useRoute } from './lib/util';
+import { BASE, currentLocale, localeOfPath, navigate, routeParts, useRoute } from './lib/util';
+import { LOCALE_BY_CODE, isLocale } from './i18n/locales';
 
 const Home = lazy(() => import('./pages/Home').then((m) => ({ default: m.Home })));
 const ModelPage = lazy(() => import('./pages/Model').then((m) => ({ default: m.ModelPage })));
@@ -54,6 +55,7 @@ function useLinkInterception() {
       const u = new URL(a.href, location.href);
       if (u.origin !== location.origin || !u.pathname.startsWith(BASE)) return;
       if (/\.[a-z0-9]{2,5}$/i.test(u.pathname)) return; // files such as templates, feeds, images
+      if (localeOfPath(u.pathname) !== currentLocale()) return; // another language: full load, so lang and dir come from the page
       e.preventDefault();
       navigate('/' + routeParts(u.pathname).join('/') + u.search + u.hash);
     };
@@ -63,7 +65,18 @@ function useLinkInterception() {
 }
 
 export default function App() {
-  const { page, param, hash, query } = useRoute();
+  const { page, param, hash, query, locale } = useRoute();
+  // language and direction of the document follow the address
+  useEffect(() => {
+    const info = LOCALE_BY_CODE[locale];
+    document.documentElement.lang = info.tag;
+    document.documentElement.dir = info.dir;
+  }, [locale]);
+  // an address in a language that is not published yet goes to the English page
+  useEffect(() => {
+    const first = location.pathname.slice(BASE.length).split('/')[0];
+    if (isLocale(first) && first !== 'en' && first !== locale) navigate(hash + location.search + location.hash, { replace: true });
+  }, [locale, hash]);
   // titles come from the route table, loaded on demand (the static HTML already has the first one)
   useEffect(() => { let live = true; import('./data/routes').then((m) => { if (live) { const meta = m.routeMeta(hash); setDocumentMeta(meta.title, meta.description); } }); return () => { live = false; }; }, [hash]);
   useLinkInterception();

@@ -162,7 +162,7 @@ export function Frameworks() {
         <h2>At a glance</h2>
         <div className="card" style={{ marginTop: 18, overflowX: 'auto' }}>
           <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 15, minWidth: 780 }}>
-            <thead><tr style={{ textAlign: 'left' }}>{['Framework', 'Type', 'Where', 'Binding?', 'How it sorts AI systems'].map((h) => <th key={h} className="label" style={{ padding: '14px 16px', borderBottom: '1px solid var(--line)' }}>{h}</th>)}</tr></thead>
+            <thead><tr style={{ textAlign: 'start' }}>{['Framework', 'Type', 'Where', 'Binding?', 'How it sorts AI systems'].map((h) => <th key={h} className="label" style={{ padding: '14px 16px', borderBottom: '1px solid var(--line)' }}>{h}</th>)}</tr></thead>
             <tbody>
               {FRAMEWORKS.map((f) => (
                 <tr key={f.id} className="row-link" onClick={() => go(`/rules/${f.id}`)} style={{ cursor: 'pointer' }}>
@@ -292,7 +292,7 @@ export function FrameworkPage({ id }: { id: string }) {
             const labs = LABS.filter((l) => fwEntry(f.id, l.id).cat === c.id);
             return (
               <motion.div key={c.id} className="card card-pad stack" initial={{ opacity: 0, y: 14 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.06 }}>
-                <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}><span className="swatch" style={{ background: c.color, width: 11, height: 11 }} /><h3>{c.label}</h3><span className="dim small" style={{ marginLeft: 'auto' }}>{labs.length}</span></div>
+                <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}><span className="swatch" style={{ background: c.color, width: 11, height: 11 }} /><h3>{c.label}</h3><span className="dim small" style={{ marginInlineStart: 'auto' }}>{labs.length}</span></div>
                 <p className="muted small">{c.desc}</p>
                 {labs.length > 0 && <div className="small">{labs.map((l, k) => <span key={l.id}>{k ? ' · ' : ''}<a href={url(`/model/${l.id}`)}>{l.app}</a></span>)}</div>}
               </motion.div>

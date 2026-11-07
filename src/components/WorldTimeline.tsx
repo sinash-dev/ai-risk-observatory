@@ -105,7 +105,7 @@ function List({ events }: { events: Ev[] }) {
                 <li key={e.id + e.date + e.text}>
                   {marker && <div className="wt-list-today mono small">today · {TODAY_LABEL}</div>}
                   <span className={`wt-dot ${future ? 'future' : ''}`} aria-hidden />
-                  <span className="mono small" style={{ color: future ? '#d6c06a' : 'var(--muted)' }}>{e.date}{future ? ' (upcoming)' : ''}</span>
+                  <span className="mono small" style={{ color: future ? 'var(--c-mid, #d6c06a)' : 'var(--muted)' }}>{e.date}{future ? ' (upcoming)' : ''}</span>
                   <span className="tag">{e.f}</span>
                   <span>{e.text}</span>
                 </li>
