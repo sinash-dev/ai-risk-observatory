@@ -236,12 +236,12 @@ export function FoundationViz({ s, m }: VizProps) {
         ))}
       </div>
       <div className="mono dim" style={{ fontSize: 10.5, margin: '18px 0 6px' }}>TRAINING COMPUTE (operations, log scale) · dashed lines = legal thresholds</div>
-      <div style={{ position: 'relative', height: 46 }}>
+      <div style={{ position: 'relative', height: 60 }}>
         <div style={{ position: 'absolute', top: 12, left: 0, right: 0, height: 10, borderRadius: 5, background: 'rgba(255,255,255,.07)' }} />
         <motion.div animate={{ width: `${lx(flops)}%` }} style={{ position: 'absolute', top: 12, left: 0, height: 10, borderRadius: 5, background: scale ? C.warn : '#8fb3d9' }} />
         {[[1e25, 'EU: 10²⁵'], [1e26, 'California SB 53: 10²⁶']].map(([v, l]) => (
           <div key={l as string} style={{ position: 'absolute', left: `${lx(v as number)}%`, top: 4, bottom: 0, borderLeft: '2px dashed rgba(255,255,255,.5)' }}>
-            <span className="mono" style={{ position: 'absolute', top: 26, left: 4, fontSize: 10, whiteSpace: 'nowrap', color: 'var(--muted)' }}>{l as string}</span>
+            <span className="mono" style={{ position: 'absolute', ...((v as number) >= 1e26 ? { top: 42, right: 4 } : { top: 26, left: 4 }), fontSize: 10, whiteSpace: 'nowrap', color: 'var(--muted)' }}>{l as string}</span>
           </div>
         ))}
       </div>

@@ -76,6 +76,12 @@ function PlanBuilder() {
   );
 }
 
+/** a small bar with the numbers next to it; the numbers carry the meaning */
+function Meter({ n, of }: { n: number; of: number }) {
+  if (!of) return <span className="muted small">-</span>;
+  return <span className="meter"><span className="meter-bar" aria-hidden="true"><span style={{ width: `${(n / of) * 100}%` }} /></span><span className="mono small">{n}/{of}</span></span>;
+}
+
 /* ---------- manager: team record ---------- */
 function TeamRecord() {
   const [records, setRecords] = useState<LearnerRecord[]>(loadTeam);
@@ -109,8 +115,8 @@ function TeamRecord() {
                 <tr key={r.planId + r.name}>
                   <td><b>{r.name}</b>{r.role && <div className="muted small">{r.role}</div>}</td>
                   <td className="small">{r.plan.team || '-'}</td>
-                  <td className="mono small">{p.steps}/{p.stepsTotal}</td>
-                  <td className="mono small">{p.passed}/{p.quizzes}</td>
+                  <td><Meter n={p.steps} of={p.stepsTotal} /></td>
+                  <td><Meter n={p.passed} of={p.quizzes} /></td>
                   <td className="small">{p.complete ? 'Yes' : 'Not yet'}</td>
                   <td className="small">{r.exported.slice(0, 10)}</td>
                 </tr>

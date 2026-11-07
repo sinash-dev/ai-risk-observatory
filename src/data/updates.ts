@@ -6,6 +6,13 @@ export interface Update { date: string; title: string; body: string; fw?: FwId[]
 export const UPDATES: Update[] = [
   {
     date: '2026-11-07',
+    title: 'New visuals: the EU risk pyramid and more',
+    body: 'The EU AI Act guide now shows the four risk levels as a pyramid you can turn and explore, with dates, duties and fines for each level. Results in the classification tool and My AI register show where a system sits on it. The register gained a timeline of upcoming dates, the toolkit a map of which template to use at which stage, the sector guides a comparison across sectors, and the workshop slides a 60-minute agenda bar. Legal references such as 5(c) no longer display as a copyright sign.',
+    fw: ['eu'],
+    links: [{ label: 'EU AI Act guide', to: '/rules/eu' }, { label: 'Toolkit', to: '/toolkit' }, { label: 'Sector guides', to: '/sectors' }],
+  },
+  {
+    date: '2026-11-07',
     title: 'New: team training, workshop slides and quizzes for your learning platform',
     body: 'Trainers and managers can now set up AI literacy training for a team: choose role-based tracks and quizzes, share one link, and collect each person’s record, including what they will do differently at work. The 60-minute workshop is now a set of presenter slides with learning objectives, timings, group tasks and notes for the facilitator. Every quiz can be downloaded as a SCORM 1.2 package for learning platforms such as Moodle. Each learning track now starts with clear learning objectives.',
     fw: ['eu'],

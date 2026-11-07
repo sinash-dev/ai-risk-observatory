@@ -3,8 +3,8 @@ import { useEffect, useRef, useState } from 'react';
 import { Breadcrumbs } from '../components/Nav';
 import { csvToHtml, markdownToHtml } from '../lib/markdown';
 import { track } from '../lib/track';
-import { BASE } from '../lib/util';
-import { TEMPLATES } from '../data/templates';
+import { BASE, url } from '../lib/util';
+import { STAGES, TEMPLATES } from '../data/templates';
 
 export { TEMPLATES } from '../data/templates';
 
@@ -65,6 +65,26 @@ export default function Toolkit() {
         <p className="lead">{TEMPLATES.length} templates for running AI governance, including outlines that follow the EU AI Act, ISO/IEC 42001, NYC Local Law 144 and Korea's AI Basic Act. Placeholders are in [brackets].</p>
         <p className="small muted">The templates are free to adapt (CC BY 4.0). They are starting points, not legal advice.</p>
       </div>
+      <section className="tk-map-sec" aria-labelledby="tk-map-h">
+        <div className="narrow stack">
+          <h2 id="tk-map-h">Which template, at which stage</h2>
+          <p className="muted">Most templates belong to one moment in a system's life. Find where you are, then open the template to preview it. Training your people runs alongside every stage.</p>
+        </div>
+        <ol className="tk-map">
+          {STAGES.map((st, i) => (
+            <motion.li key={st.id} className="tk-stage" initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.07 }}>
+              <div className="tk-stage-h"><span className="tk-stage-n">{i + 1}</span><b>{st.title}</b></div>
+              <p className="small muted">{st.q}</p>
+              <ul>
+                {TEMPLATES.filter((t) => t.stage === st.id).map((t) => (
+                  <li key={t.file}><button className={`tk-chip ${t.pack ? 'pack' : ''}`} onClick={() => setOpen(t)}>{t.title}{t.pack && <span className="tk-chip-p">{t.pack}</span>}</button></li>
+                ))}
+              </ul>
+            </motion.li>
+          ))}
+        </ol>
+        <p className="small muted tk-people">Alongside every stage: {TEMPLATES.filter((t) => t.stage === 'people').map((t, k) => <span key={t.file}>{k ? ', ' : ''}<button className="link-btn" onClick={() => setOpen(t)}>{t.title.toLowerCase()}</button></span>)}, <a href={url('/team')}>team training</a> and the <a href={url('/workshop')}>workshop slides</a>.</p>
+      </section>
       {GROUPS.map((g) => (
         <section key={g.id} id={g.id} className="tk-group" aria-labelledby={`${g.id}-h`}>
           <div className="narrow stack">

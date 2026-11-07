@@ -5,6 +5,15 @@ import { SLIDES, WORKSHOP_SUB, WORKSHOP_TITLE, type Slide } from '../data/worksh
 import { track } from '../lib/track';
 import { BASE, url } from '../lib/util';
 
+/** the timed activities, to scale, for the agenda bar */
+const AGENDA = [
+  { from: 0, to: 10, label: 'Warm-up', slide: 'warmup' },
+  { from: 10, to: 25, label: 'Break and fix', slide: 'credit' },
+  { from: 25, to: 40, label: 'One framework', slide: 'framework' },
+  { from: 40, to: 50, label: 'Compare', slide: 'compare' },
+  { from: 50, to: 55, label: 'Hard case', slide: 'hard' },
+  { from: 55, to: 60, label: 'Take away', slide: 'takeaway' },
+];
 const fromHash = () => { const n = Number(location.hash.slice(1)); return Number.isInteger(n) && n >= 1 && n <= SLIDES.length ? n - 1 : 0; };
 
 function SlideBody({ s }: { s: Slide }) {
@@ -86,13 +95,25 @@ export default function Workshop() {
           <button className="btn btn-sm" onClick={full}>Full screen</button>
           <button className="btn btn-sm" onClick={() => { track('workshop-handout'); window.print(); }}>Print handout</button>
         </div>
+        <ol className="ws-agenda" aria-label="The hour at a glance">
+          {AGENDA.map((a) => {
+            const on = s.time ? (() => { const st = Number(s.time.split(/[–\s]/)[0]); return st >= a.from && st < a.to; })() : false;
+            return (
+              <li key={a.slide} style={{ flexGrow: a.to - a.from }} className={on ? 'on' : ''}>
+                <button onClick={() => go(SLIDES.findIndex((x) => x.id === a.slide))} aria-current={on ? 'step' : undefined}>
+                  <span className="ws-ag-t">{a.from}–{a.to}</span><span className="ws-ag-l">{a.label}</span>
+                </button>
+              </li>
+            );
+          })}
+        </ol>
         <div className="ws-dots" role="tablist" aria-label="Slides">
           {SLIDES.map((x, k) => <button key={x.id} role="tab" aria-selected={k === i} aria-label={`Slide ${k + 1}: ${x.title}`} className={k === i ? 'on' : ''} onClick={() => go(k)} />)}
         </div>
       </div>
 
       <section className="print-only ws-handout">
-        <h1>{WORKSHOP_TITLE}</h1>
+        <p className="ws-hand-title">{WORKSHOP_TITLE}</p>
         <p>{WORKSHOP_SUB}. Facilitator handout from AI Risk Explorer (https://sinash-dev.github.io/ai-risk-observatory/), CC BY 4.0.</p>
         {SLIDES.map((x, k) => (
           <div key={x.id} className="ws-print-slide">

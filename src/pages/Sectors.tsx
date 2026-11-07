@@ -7,6 +7,14 @@ import { TEMPLATE_BY_FILE } from '../data/templates';
 import { BASE, url } from '../lib/util';
 import type { PageProps } from './registry';
 
+const COLS = [
+  { k: 'banned' as const, label: 'Banned practice to watch', sub: 'Art. 5' },
+  { k: 'high' as const, label: 'High-risk uses', sub: 'Annex III' },
+  { k: 'fria' as const, label: 'Fundamental-rights impact assessment', sub: 'Art. 27' },
+  { k: 'product' as const, label: 'Product safety route', sub: 'Annex I' },
+];
+const LEVEL = { yes: 'Applies', some: 'In some cases', no: 'Not usually' };
+
 function Index() {
   return (
     <div className="wrap" style={{ padding: '30px 0 44px' }}>
@@ -15,6 +23,27 @@ function Index() {
         <h1>Sector guides</h1>
         <p className="lead">Which rules matter most in your sector, the examples on this site that match your work, real cases, and the templates to start with.</p>
       </div>
+      <section className="sec-matrix-sec" aria-labelledby="mx-h">
+        <h2 id="mx-h" style={{ fontSize: 20 }}>The EU AI Act across sectors, at a glance</h2>
+        <div className="sec-matrix-scroll">
+          <table className="sec-matrix">
+            <thead>
+              <tr><th scope="col">Sector</th>{COLS.map((c) => <th key={c.k} scope="col">{c.label}<span>{c.sub}</span></th>)}</tr>
+            </thead>
+            <tbody>
+              {SECTORS.map((s) => (
+                <tr key={s.id}>
+                  <th scope="row"><a href={url(`/sectors/${s.id}`)}>{s.name}</a></th>
+                  {COLS.map((c) => { const cell = s.matrix[c.k]; return (
+                    <td key={c.k}><span className={`mx mx-${cell.level}`} aria-hidden="true" /><span className="sr-only">{LEVEL[cell.level]}: </span>{cell.note}</td>
+                  ); })}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <p className="small muted mx-key"><span className="mx mx-yes" aria-hidden="true" /> Applies across the sector <span className="mx mx-some" aria-hidden="true" /> Applies to some uses or organisations <span className="mx mx-no" aria-hidden="true" /> Not usually relevant. Open a sector for the details and sources.</p>
+      </section>
       <div className="grid3 sec-grid">
         {SECTORS.map((s, i) => (
           <motion.a key={s.id} href={url(`/sectors/${s.id}`)} className="card card-pad lift sec-card" initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: (i % 3) * 0.06 }}>

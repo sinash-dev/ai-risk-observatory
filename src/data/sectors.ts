@@ -3,8 +3,12 @@
  * EU references checked against the consolidated AI Act of 27 July 2026 (including Regulation (EU) 2026/1744).
  */
 export interface SectorRule { ref: string; text: string }
+export type Level = 'yes' | 'some' | 'no';
+export interface MatrixCell { level: Level; note: string }
 export interface Sector {
   id: string;
+  /** at-a-glance comparison on the index page */
+  matrix: { banned: MatrixCell; high: MatrixCell; fria: MatrixCell; product: MatrixCell };
   name: string;
   intro: string;
   uses: string[];
@@ -24,6 +28,7 @@ const HR_DATES = 'High-risk duties for Annex III systems apply from 2 December 2
 export const SECTORS: Sector[] = [
   {
     id: 'finance',
+    matrix: { banned: { level: 'no', note: 'None specific' }, high: { level: 'yes', note: 'Credit scoring, 5(b)' }, fria: { level: 'yes', note: 'Every deployer of 5(b)' }, product: { level: 'no', note: 'Not usually' } },
     name: 'Banking and credit',
     intro: 'Credit decisions are one of the clearest high-risk uses in the EU AI Act, and they also sit under data protection and consumer credit rules that already apply today.',
     uses: ['Credit scoring and affordability checks', 'Fraud and money-laundering detection', 'Customer segmentation and marketing', 'Customer-service chatbots'],
@@ -44,6 +49,7 @@ export const SECTORS: Sector[] = [
   },
   {
     id: 'insurance',
+    matrix: { banned: { level: 'no', note: 'None specific' }, high: { level: 'some', note: 'Life and health only, 5(c)' }, fria: { level: 'some', note: 'Every deployer of 5(c)' }, product: { level: 'no', note: 'Not usually' } },
     name: 'Insurance',
     intro: 'Only life and health insurance pricing and risk assessment are high-risk under the EU AI Act. Motor, home and other lines are not in Annex III, but discrimination and data protection rules still apply to them.',
     uses: ['Risk assessment and pricing', 'Claims triage and fraud detection', 'Customer-service chatbots', 'Marketing and retention models'],
@@ -63,6 +69,7 @@ export const SECTORS: Sector[] = [
   },
   {
     id: 'employment',
+    matrix: { banned: { level: 'yes', note: 'Emotion recognition at work' }, high: { level: 'yes', note: 'Points 4(a) and 4(b)' }, fria: { level: 'some', note: 'Public bodies and public services' }, product: { level: 'no', note: 'Not usually' } },
     name: 'Employment and HR',
     intro: 'Most AI used on job candidates or staff is high-risk in the EU, and one practice is banned outright. Hiring tools are also among the most regulated uses in the US.',
     uses: ['CV screening and candidate ranking', 'Targeted job adverts', 'Performance monitoring and task allocation', 'Pay and promotion decisions'],
@@ -83,6 +90,7 @@ export const SECTORS: Sector[] = [
   },
   {
     id: 'health',
+    matrix: { banned: { level: 'no', note: 'None specific' }, high: { level: 'some', note: 'Triage 5(d), public eligibility 5(a)' }, fria: { level: 'some', note: 'Public bodies and public services' }, product: { level: 'yes', note: 'Medical devices (MDR, IVDR)' } },
     name: 'Health care',
     intro: 'AI that is a medical device follows the medical device rules first; the AI Act adds to them. Hospitals also use AI for planning and triage, which raises different questions.',
     uses: ['Diagnostic support and image analysis', 'Emergency triage', 'Staffing and capacity forecasts', 'Patient chatbots'],
@@ -101,6 +109,7 @@ export const SECTORS: Sector[] = [
   },
   {
     id: 'public',
+    matrix: { banned: { level: 'yes', note: 'Social scoring' }, high: { level: 'yes', note: 'Points 5(a), 6, 7 and 8' }, fria: { level: 'yes', note: 'Public bodies, for Annex III systems' }, product: { level: 'no', note: 'Not usually' } },
     name: 'Public sector',
     intro: 'Public bodies face extra duties under the EU AI Act, and the best-known AI failures in Europe happened in public administration.',
     uses: ['Eligibility for benefits and services', 'Fraud and risk flags', 'Citizen chatbots and internal assistants', 'Law enforcement and migration'],
@@ -121,6 +130,7 @@ export const SECTORS: Sector[] = [
   },
   {
     id: 'education',
+    matrix: { banned: { level: 'yes', note: 'Emotion recognition of students' }, high: { level: 'yes', note: 'Points 3(a) to 3(d)' }, fria: { level: 'some', note: 'Public bodies and public services' }, product: { level: 'no', note: 'Not usually' } },
     name: 'Education',
     intro: 'Admissions, grading and exam proctoring are high-risk in the EU, and emotion recognition of students is banned.',
     uses: ['Admissions and placement', 'Automated marking and feedback', 'Exam proctoring', 'Student-facing chatbots'],

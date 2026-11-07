@@ -5,6 +5,8 @@ import { copyText, toast } from '../components/Toast';
 import { LAB_BY_ID, fwEntry } from '../data/labs';
 import { AREA_TEXT, EMPTY, classify, type Answers } from '../lib/classify';
 import { AREAS, BANNED, INTERACT, ROLE, SERVICES, WHERE, type Opt } from '../lib/classifyOptions';
+import { PyramidMini } from '../components/RiskPyramid';
+import { tierOfCategory } from '../data/euTiers';
 import { track } from '../lib/track';
 import { url } from '../lib/util';
 import type { PageProps } from './registry';
@@ -127,7 +129,7 @@ export default function Classify({ query }: PageProps) {
                 <h2 ref={head} tabIndex={-1}>Your result</h2>
                 {result!.cards.map((c, k) => (
                   <motion.section key={c.id} className={`card card-pad res res-${c.tone}`} initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.08 * k }}>
-                    <div className="res-h"><h3>{c.title}</h3><span className="res-v">{c.verdict}</span></div>
+                    <div className="res-h"><h3>{c.title}</h3><span className="res-v">{c.id === 'eu' && <PyramidMini tier={tierOfCategory(result!.eu)} />}{c.verdict}</span></div>
                     <div className="grid2" style={{ gap: 18, marginTop: 10 }}>
                       <div><div className="label">Why</div><ul>{c.why.map((w) => <li key={w}>{w}</li>)}</ul></div>
                       <div><div className="label">What to do next</div><ul>{c.next.map((n) => <li key={n}>{n}</li>)}</ul></div>

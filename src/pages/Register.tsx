@@ -8,6 +8,9 @@ import { LAB_BY_ID } from '../data/labs';
 import type { Answers, EuCat } from '../lib/classify';
 import { AREAS, BANNED, INTERACT, ROLE, SERVICES, WHERE } from '../lib/classifyOptions';
 import { EU_LABEL, STATUS_LABEL, actionsOf, deadlines, loadRegister, newSystem, parseImport, progressOf, registerCsv, registerMarkdown, resultOf, saveRegister, systemMarkdown, type RegSystem, type RegisterData, type Status } from '../lib/register';
+import { CategoryBar, DeadlineChart } from '../components/RegisterCharts';
+import { PyramidMini } from '../components/RiskPyramid';
+import { tierOfCategory } from '../data/euTiers';
 import { track } from '../lib/track';
 import { url } from '../lib/util';
 
@@ -35,7 +38,7 @@ function Editor({ s, onChange, onDelete }: { s: RegSystem; onChange: (s: RegSyst
       <div className="reg-ed-head">
         <div>
           <h2 style={{ fontSize: 22 }}>{s.name || 'New system'}</h2>
-          <span className="tag" style={{ marginTop: 6 }}><span className="swatch" style={{ background: TONE[r.eu] }} />EU AI Act: {EU_LABEL[r.eu]}{r.euFrom ? ` (from ${r.euFrom})` : ''}</span>
+          <span className="reg-tier"><PyramidMini tier={tierOfCategory(r.eu)} /><span className="tag"><span className="swatch" style={{ background: TONE[r.eu] }} />EU AI Act: {EU_LABEL[r.eu]}{r.euFrom ? ` (from ${r.euFrom})` : ''}</span></span>
         </div>
         <Ring n={p.done} total={p.total} size={54} />
       </div>
@@ -196,16 +199,15 @@ export default function Register() {
           <div className="reg-summary no-print">
             <div className="card card-pad">
               <div className="label">Systems by EU AI Act category</div>
-              <div className="reg-cats">
-                {(Object.keys(EU_LABEL) as EuCat[]).filter((k) => counts[k]).map((k) => <span key={k} className="tag"><span className="swatch" style={{ background: TONE[k] }} />{EU_LABEL[k]}: {counts[k]}</span>)}
-              </div>
+              <CategoryBar items={(Object.keys(EU_LABEL) as EuCat[]).map((k) => ({ key: k, label: EU_LABEL[k], color: TONE[k], n: counts[k] ?? 0 }))} />
             </div>
             <div className="card card-pad reg-prog">
               <Ring n={totals.done} total={totals.total} size={58} />
               <div><div className="label">Actions done</div><p className="small muted">{systems.length === 1 ? 'For your one system.' : `Across your ${systems.length} systems.`}</p></div>
             </div>
-            <div className="card card-pad">
+            <div className="card card-pad reg-dl">
               <div className="label">Coming up</div>
+              <DeadlineChart items={dl} />
               {dl.length ? <ul className="reg-why">{dl.slice(0, 4).map((d, i) => <li key={i}><span className="mono small accent">{d.date.toISOString().slice(0, 10)}</span> <b>{d.system || 'Unnamed system'}</b><span className="small muted" style={{ display: 'block' }}>{d.label}</span></li>)}</ul> : <p className="small muted">No upcoming dates for these systems.</p>}
             </div>
           </div>

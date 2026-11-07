@@ -89,6 +89,7 @@ export default function Cases() {
         </div>
       </div>
 
+      <h2 className="sr-only">Cases ({shown.length})</h2>
       {view === 'grid' ? (
         <div className="masonry">
           <AnimatePresence initial={false}>

@@ -30,7 +30,7 @@ test('register: add, classify, tick, export, reload and import', async ({ page }
   expect(total).toBeGreaterThan(2);
   await boxes.first().check();
   await expect(page.getByRole('tab', { name: `3. Actions (1/${total})` })).toBeVisible();
-  await expect(page.locator('.reg-summary')).toContainText('High-risk: 1');
+  await expect(page.locator('.reg-summary .cat-legend')).toContainText(/High-risk\s*1/);
 
   // the register survives a reload
   await page.waitForTimeout(200);

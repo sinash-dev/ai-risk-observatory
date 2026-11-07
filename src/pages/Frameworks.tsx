@@ -1,6 +1,8 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { useCallback, useMemo, useState } from 'react';
+import { RiskPyramid } from '../components/RiskPyramid';
 import { WorldTimeline } from '../components/WorldTimeline';
+import { tierOfCategory } from '../data/euTiers';
 import { BindMeter, ExamplesTable, MythCard } from '../components/GuideParts';
 import { FW_GUIDE } from '../data/fwGuide';
 import { allRoutes } from '../data/routes';
@@ -277,6 +279,9 @@ export function FrameworkPage({ id }: { id: string }) {
 
       <section className="section" id="categories">
         <h2>{f.catsTitle}</h2>
+        {f.id === 'eu' && (
+          <RiskPyramid examples={LABS.flatMap((l) => { const k = tierOfCategory(fwEntry('eu', l.id).cat); return k ? [{ id: l.id, app: l.app, tier: k }] : []; })} />
+        )}
         <p className="muted small" style={{ marginTop: 6 }}>How the {total} examples on this site are distributed:</p>
         <div style={{ display: 'flex', height: 14, borderRadius: 7, overflow: 'hidden', marginTop: 12, background: 'rgba(255,255,255,.05)' }}>
           {f.cats.map((c, i) => counts[i] ? <motion.div key={c.id} title={`${c.label}: ${counts[i]}`} initial={{ width: 0 }} whileInView={{ width: `${(counts[i] / total) * 100}%` }} viewport={{ once: true }} transition={{ duration: 0.9, delay: i * 0.1 }} style={{ background: c.color }} /> : null)}
