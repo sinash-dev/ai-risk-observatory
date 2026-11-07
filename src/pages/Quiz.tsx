@@ -36,7 +36,34 @@ function Index() {
           </div>
         </section>
       ))}
+      <Lms />
     </div>
+  );
+}
+
+async function downloadScorm(q: Quiz) {
+  const { scormZip } = await import('../lib/scorm');
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([scormZip(q)], { type: 'application/zip' }));
+  a.download = `ai-risk-explorer-quiz-${q.id}-scorm12.zip`;
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 500);
+  track(`scorm-${q.id}`);
+}
+
+function Lms() {
+  return (
+    <section className="section" id="lms" style={{ paddingBottom: 0 }}>
+      <div className="narrow stack">
+        <h2 style={{ fontSize: 20 }}>Use these quizzes in your learning platform</h2>
+        <p className="muted">Each quiz is available as a SCORM 1.2 package that you can upload to a learning management system such as Moodle, Cornerstone or Docebo. The platform then records each person's score and whether they passed (80% or more), with their best attempt counting. The questions, explanations and links are the same as on this site.</p>
+        <p className="small muted">The packages contain only the quiz; the hands-on examples stay on this site and are linked from each explanation. We have tested the packages against the SCORM 1.2 run-time interface, but every platform behaves a little differently, so try one in a test course before you assign it to staff.</p>
+      </div>
+      <div className="lms-grid">
+        {QUIZZES.map((q) => <button key={q.id} className="btn btn-sm" onClick={() => downloadScorm(q)}>{q.title} <span className="muted small">.zip</span></button>)}
+      </div>
+    </section>
   );
 }
 

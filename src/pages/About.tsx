@@ -69,7 +69,7 @@ export default function About() {
           <li>No cookies, no advertising and no tracking of individuals.</li>
           <li>A cookieless visit counter (GoatCounter) records page views without personal data, to show how often the site is used. It also counts, anonymously, when a feature is used (for example a template download, a finished quiz or an export from the AI register). Only the name of the feature is sent, never anything you type.</li>
           <li>Fonts are served from this site; no other third-party requests are made.</li>
-          <li>Your progress, checklists, quiz results, certificate name and AI register are kept in your browser’s local storage only. Nothing is sent anywhere.</li>
+          <li>Your progress, checklists, quiz results, certificate name, AI register and team training records are kept in your browser’s local storage only. Nothing is sent anywhere.</li>
         </ul>
         <div>
           <button className="btn" onClick={() => { resetProgress(); toast('Progress reset'); }}>Reset my progress</button>

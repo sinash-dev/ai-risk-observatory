@@ -22,4 +22,6 @@ export const REGISTRY: Record<string, ComponentType<PageProps>> = {
   start: L(() => import('./Start')),
   register: L(() => import('./Register')),
   sectors: L(() => import('./Sectors')),
+  team: L(() => import('./Team')),
+  workshop: L(() => import('./Workshop')),
 };

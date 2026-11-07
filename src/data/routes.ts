@@ -24,6 +24,8 @@ export const STATIC_PAGES: RouteMeta[] = [
   { path: '/start', title: 'Start here', description: 'Where to begin, depending on whether you look after compliance, run training, build AI systems or study the subject.', og: 'default' },
   { path: '/register', title: 'My AI register', description: 'List the AI systems your organisation uses, see which rules apply to each, and track what to do. Everything stays in your browser.', og: 'default' },
   { path: '/sectors', title: 'Sector guides', description: 'The AI rules that matter most in banking, insurance, HR, health care, the public sector and education, with examples, real cases and templates.', og: 'default' },
+  { path: '/team', title: 'Team training', description: 'Set up AI literacy training for a team: choose tracks and quizzes, share one link, and collect a record of who completed what. No accounts, nothing stored on a server.', og: 'default' },
+  { path: '/workshop', title: 'Workshop slides', description: 'Presenter slides for a 60-minute AI risk workshop, with learning objectives, timings, facilitator notes, discussion questions and follow-up.', og: 'default' },
   { path: '/classify', title: 'Classify your system', description: 'Ten short questions give an indicative classification under the EU AI Act and the other frameworks that apply where you operate, with next steps.', og: 'default' },
   { path: '/cases', title: 'Case library', description: 'Real AI incidents, rulings and reports, filterable by harm, model family, sector, jurisdiction, year and outcome.', og: 'default' },
   { path: '/crosswalk', title: 'Controls crosswalk', description: 'Twenty common AI governance controls mapped to the clauses of ten frameworks, with a CSV export.', og: 'default' },

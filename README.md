@@ -11,6 +11,7 @@ A training website that shows, with working examples, how AI and machine learnin
 - **Compare** (`/compare/`, `/compare/:fw/`): strength grid and radar for 11 topics, scoring rubric, gap finder, CSV and PNG export.
 - **Learn**: Basics (`/basics/`), learning tracks for seven roles (`/tracks/`), glossary of 55 terms (`/glossary/`), 14 quizzes (`/quiz/`, `/quiz/:id/`) and a printable certificate (`/certificate/`).
 - **Start here** (`/start/`): a suggested route through the site for compliance leads, trainers, product teams and students.
+- **Training** (`/team/`, `/workshop/`): team plans shared by link, personal learning records and a team record; presenter slides for a 60-minute workshop. Quizzes download as SCORM 1.2 packages from `/quiz/`.
 - **Sector guides** (`/sectors/`, `/sectors/<id>/`): banking, insurance, HR, health care, public sector and education.
 - **Tools**: My AI register (`/register/`, kept in the browser's local storage, with Markdown, Word, CSV and JSON export and JSON import), classify your system (`/classify/`), controls crosswalk (`/crosswalk/`), toolkit of 21 templates, including framework packs for the EU AI Act, ISO/IEC 42001, NYC Local Law 144 and Korea (`/toolkit/`, files in `public/toolkit/`), case library (`/cases/`).
 - **About** (`/about/`) and **Updates** (`/updates/`, RSS at `/updates.xml`).

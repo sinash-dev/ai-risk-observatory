@@ -11,7 +11,7 @@ export const TEMPLATES: Template[] = [
   { file: 'vendor-ai-questionnaire.md', title: 'Vendor AI questionnaire', desc: 'Fifteen questions to ask suppliers of AI systems and features.', icon: '⇄' },
   { file: 'ai-incident-report.md', title: 'AI incident report', desc: 'Impact, immediate actions, reporting duties and root cause.', icon: '!' },
   { file: 'agent-authorisation-matrix.md', title: 'Agent authorisation matrix', desc: 'Tools, scope, limits, approval gates, logging and kill switch for each AI agent.', icon: '⌘' },
-  { file: 'workshop-facilitator-guide.md', title: 'Workshop facilitator guide', desc: 'A 60-minute session plan with links to pre-configured scenarios and debrief questions.', icon: '✎' },
+  { file: 'workshop-facilitator-guide.md', title: 'Workshop facilitator guide', desc: 'A 60-minute session plan with learning objectives, timings, notes for each activity, common misconceptions and follow-up.', icon: '✎' },
   { file: 'evidence-checklist.md', title: 'Evidence checklist', desc: 'What an auditor or regulator may ask to see under the EU AI Act, GDPR, ISO/IEC 42001 and NYC Local Law 144.', icon: '✓' },
   { file: 'eu-deployer-pack-art26.md', title: 'Deployer pack (Art. 26)', desc: 'Every duty of an organisation that uses a high-risk system, with room for evidence, plus a notice to affected people.', icon: '◧', pack: 'EU AI Act' },
   { file: 'eu-transparency-notices-art50.md', title: 'Transparency notices (Art. 50)', desc: 'Sample wording for chatbots, deepfakes, published AI text and emotion recognition, with the exceptions.', icon: '◫', pack: 'EU AI Act' },

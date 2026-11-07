@@ -27,13 +27,13 @@ export const AUDIENCES: Audience[] = [
     short: 'Training',
     title: 'You run training',
     who: 'Trainers, L&D teams, consultants and lecturers who need people to understand AI risk, not just read about it.',
-    get: 'Hands-on material: simulations people can break and fix, ready-made workshop links, quizzes and a printable certificate.',
+    get: 'Hands-on material: simulations people can break and fix, workshop slides with facilitator notes, team training plans, quizzes for your learning platform and a printable certificate.',
     steps: [
-      { t: 'Use the 60-minute workshop plan', d: 'Timings, links to scenarios with problems already switched on, and debrief questions.', to: '/basics#m8' },
+      { t: 'Run the 60-minute workshop', d: 'Presenter slides with learning objectives, timings, group tasks and notes for you, plus a printable handout.', to: '/workshop' },
       { t: 'Pick a learning track for each role', d: 'Seven routes, from a 15-minute board briefing to a full track for legal teams.', to: '/tracks' },
       { t: 'Send a pre-set scenario', d: 'Set up any example, press “Share this setup” and send the link. Everyone starts from the same state.', to: '/model/credit?p=zip' },
       { t: 'Check what people learned', d: 'Fourteen short quizzes with explanations. A score of 80% adds the module to a printable certificate.', to: '/quiz' },
-      { t: 'Download the facilitator guide', d: 'A Markdown guide you can adapt, with materials, timings and follow-up.', to: '/toolkit' },
+      { t: 'Train a whole team', d: 'Pick tracks and quizzes, send one link, and collect a record of who completed what. The quizzes also come as SCORM packages for your learning platform.', to: '/team' },
     ],
   },
   {

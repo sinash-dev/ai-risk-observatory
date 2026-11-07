@@ -6,6 +6,13 @@ export interface Update { date: string; title: string; body: string; fw?: FwId[]
 export const UPDATES: Update[] = [
   {
     date: '2026-11-07',
+    title: 'New: team training, workshop slides and quizzes for your learning platform',
+    body: 'Trainers and managers can now set up AI literacy training for a team: choose role-based tracks and quizzes, share one link, and collect each person’s record, including what they will do differently at work. The 60-minute workshop is now a set of presenter slides with learning objectives, timings, group tasks and notes for the facilitator. Every quiz can be downloaded as a SCORM 1.2 package for learning platforms such as Moodle. Each learning track now starts with clear learning objectives.',
+    fw: ['eu'],
+    links: [{ label: 'Team training', to: '/team' }, { label: 'Workshop slides', to: '/workshop' }, { label: 'Quizzes', to: '/quiz' }],
+  },
+  {
+    date: '2026-11-07',
     title: 'New: framework packs, sector guides and a Word report',
     body: 'Nine new templates follow the law clause by clause: EU AI Act technical documentation (Annex IV), quality management (Art. 17), declaration of conformity (Annex V), post-market monitoring (Art. 72), a deployer pack (Art. 26) and transparency notices (Art. 50), plus an ISO/IEC 42001 Statement of Applicability, NYC Local Law 144 notices and Korea AI Basic Act notices. An evidence checklist lists what auditors and regulators may ask to see. Six sector guides cover banking, insurance, HR, health care, the public sector and education. My AI register now exports a Word report. The EU templates were checked against the consolidated AI Act of 27 July 2026, which includes the Omnibus changes.',
     fw: ['eu', 'iso', 'us', 'kr'],

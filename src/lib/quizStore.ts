@@ -19,7 +19,10 @@ export function useQuizResults() {
     const h = () => setR(loadQuizResults());
     window.addEventListener('are-quiz', h);
     window.addEventListener('aro-progress', h);
-    return () => { window.removeEventListener('are-quiz', h); window.removeEventListener('aro-progress', h); };
+    // results saved in another tab, e.g. a quiz opened from a team plan
+    const s = (e: StorageEvent) => { if (e.key === KEY) h(); };
+    window.addEventListener('storage', s);
+    return () => { window.removeEventListener('are-quiz', h); window.removeEventListener('aro-progress', h); window.removeEventListener('storage', s); };
   }, []);
   return r;
 }

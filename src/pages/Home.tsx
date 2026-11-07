@@ -103,7 +103,7 @@ const PURPOSES = [
   { t: 'Learn one framework properly', d: 'Pick it under “View through”. The map, every example and every requirement switch to that framework. Then follow its learning path.', href: url('/rules'), cta: 'Choose a framework' },
   { t: 'Compare frameworks on a topic', d: 'How do the frameworks treat transparency, human oversight or bias? See it side by side in a strength grid and radar chart.', href: url('/compare'), cta: 'Open the comparison' },
   { t: 'See how a model fails', d: 'Pick any example below, switch on a problem, then add a safeguard and see whether it helps.', href: url('/model/credit'), cta: 'Start with credit scoring' },
-  { t: 'Run a training session', d: 'A ready-made 60-minute workshop plan, plus a primer on how models work and where risk comes from.', href: url('/basics'), cta: 'Open the basics' },
+  { t: 'Run a training session', d: 'Presenter slides for a 60-minute hands-on workshop, with notes for you, and team plans that keep a record of who completed what.', href: url('/workshop'), cta: 'Open the slides' },
 ];
 
 function Icon({ i }: { i: number }) {

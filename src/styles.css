@@ -804,3 +804,51 @@ section[id], [id^="m"] { scroll-margin-top: 120px; }
 .sec-rules p { color: var(--ink2); font-size: 15px; }
 .sec-steps, .sec-tpl, .sec-cases { margin: 14px 0 10px; padding-left: 20px; display: grid; gap: 10px; max-width: 820px; }
 .sec-sec .grid3 { margin-top: 14px; }
+.track-goals { margin-top: 12px; display: grid; gap: 6px; }
+.track-goals ul { margin: 0; padding-left: 18px; display: grid; gap: 4px; color: var(--ink2); font-size: 14.5px; }
+.team-builder, .team-record { display: grid; gap: 20px; }
+.team-pick { border: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.team-pick legend { font-weight: 700; font-size: 18px; padding: 0; margin-bottom: 4px; }
+.team-opts { grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); }
+.team-quiz-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 6px; }
+.team-quiz-grid .check.on-q { border-color: rgba(108,197,176,.6); background: rgba(108,197,176,.08); }
+.team-share { display: grid; gap: 10px; }
+.team-link { font: inherit; font-family: var(--mono); font-size: 12.5px; color: var(--ink); background: var(--paper2); border: 1px solid var(--line2); border-radius: 10px; padding: 10px 12px; min-height: 44px; width: 100%; }
+.team-brief { margin-top: 22px; display: grid; gap: 8px; }
+.team-note { white-space: pre-line; font-size: 16px; }
+.team-sec { padding: 28px 0 6px; display: grid; gap: 12px; }
+.team-sec h2 { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.team-steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; max-width: 860px; }
+.team-steps li { display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 8px; align-items: center; padding: 8px 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--paper); }
+.team-steps li.on { border-color: rgba(108,197,176,.45); }
+.team-quizzes { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; max-width: 640px; }
+.team-quizzes li { display: flex; justify-content: space-between; gap: 10px; align-items: center; padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--paper); flex-wrap: wrap; }
+.team-steps .step-check { width: 44px; height: 44px; background: transparent; }
+/* workshop slides */
+.ws-stage { margin-top: 24px; display: grid; gap: 12px; background: var(--bg); }
+.ws-stage:fullscreen { padding: 4vh 6vw; align-content: center; overflow: auto; }
+.ws-slide { min-height: 420px; padding: clamp(22px, 4vw, 56px); border: 1px solid var(--line); border-radius: var(--radius-l); background: linear-gradient(160deg, var(--paper2), var(--paper)); overflow: hidden; }
+.ws-stage:fullscreen .ws-slide { min-height: 70vh; font-size: 1.25em; }
+.ws-kicker { display: flex; gap: 12px; align-items: baseline; flex-wrap: wrap; font-size: 13px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); }
+.ws-time { font-family: var(--mono); letter-spacing: 0; text-transform: none; color: var(--muted); font-weight: 500; }
+.ws-title { font-size: clamp(26px, 3.6vw, 44px); line-height: 1.12; margin-top: 12px; max-width: 22ch; }
+.ws-points { margin: 22px 0 0; padding-left: 22px; display: grid; gap: 10px; font-size: clamp(16px, 1.6vw, 21px); color: var(--ink2); max-width: 60ch; }
+.ws-task { margin-top: 22px; padding: 16px 18px; border-left: 3px solid var(--accent); background: var(--accent-soft); border-radius: 0 12px 12px 0; max-width: 64ch; display: grid; gap: 6px; }
+.ws-task p { font-size: clamp(16px, 1.5vw, 20px); }
+.ws-link { margin-top: 16px; font-weight: 600; }
+.ws-notes { padding: 16px 20px; border: 1px dashed var(--line2); border-radius: 12px; display: grid; gap: 8px; }
+.ws-notes ul { margin: 0; padding-left: 18px; display: grid; gap: 6px; color: var(--ink2); font-size: 14.5px; }
+.ws-bar { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.ws-bar .btn { min-height: 44px; min-width: 44px; }
+.ws-dots { display: flex; gap: 6px; flex-wrap: wrap; }
+.ws-dots button { width: 28px; height: 28px; border-radius: 50%; border: 1px solid var(--line2); background: var(--paper); padding: 0; }
+.ws-dots button.on { background: var(--accent); border-color: var(--accent); }
+@media print {
+  .ws-handout { color: #000; font-size: 10.5pt; }
+  .ws-handout h1 { font-size: 18pt; color: #000; }
+  .ws-handout h2 { font-size: 12.5pt; color: #000; margin-top: 12pt; }
+  .ws-handout p, .ws-handout li { color: #000; }
+  .ws-print-slide { break-inside: avoid; }
+}
+.lms-grid { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+.lms-grid .btn { min-height: 44px; }

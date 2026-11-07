@@ -246,7 +246,7 @@ export function Basics() {
       <section className="wrap section" id="m8">
         <div className="narrow stack">
           <h2>Running a 60-minute workshop</h2>
-          <p>A format that has worked well for mixed groups of managers, lawyers and engineers. You need a screen and, ideally, laptops in small groups.</p>
+          <p>A format for mixed groups of managers, lawyers and engineers. You need a screen and, ideally, laptops in small groups. The <a href={url('/workshop')}>workshop slides</a> have the same plan with learning objectives and notes for the facilitator.</p>
         </div>
         <div className="grid3" style={{ marginTop: 20 }}>
           {([
