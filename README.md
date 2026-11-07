@@ -1,23 +1,20 @@
 # AI Risk Explorer
 
-A training website that shows, with working examples, how AI and machine learning systems fail and how the main governance frameworks deal with them.
+A training website that shows, with working examples, how AI and machine learning systems fail and how ten governance frameworks deal with them.
 
 **Live site:** https://sinash-dev.github.io/ai-risk-observatory/
 
-## How it is organised
+## What is on the site
 
-- **Models**: one overview of 21 AI uses, from a naive Bayes spam filter to a multi-agent procurement system, grouped into four families (classical machine learning, deep learning, generative AI, AI agents). Each example has its own page with:
-  - a plain explanation of how the model works and the situation it is used in
-  - a working simulation: switch on a problem, see what goes wrong, switch on a safeguard and see whether it helps
-  - a summary of what is still unhandled and an indicative risk level
-  - how each framework classifies the use and what it requires, linked to the safeguards in the simulation
-  - real cases from public reporting
-- **Frameworks**: ten frameworks grouped by region (EU AI Act, GDPR, UK, US laws, NIST AI RMF, China, South Korea, Singapore, ISO/IEC 42001, OWASP), a worldwide timeline, and a guide for each: categories, key requirements, animated timeline, roadmap to compliance, a learning path through the examples, framework-specific sections, penalties and how it treats every example. Ten more frameworks are summarised.
-- **Compare**: a strength grid and radar of how all the frameworks handle each topic (transparency, oversight, fairness, risk assessment, data, generative AI, incidents, enforcement), with detail per topic.
-- **Basics**: a short tutorial on how models work, where risk comes from, eight kinds of harm, laws vs. standards vs. security guides, a 60-minute workshop plan and a glossary.
-- **View through**: a switch in the header that shows the whole site through one of the ten frameworks. The overview is recoloured by that framework’s categories and model pages show only its requirements.
+- **Models** (`/`, `/model/:id/`): 25 AI uses, from a naive Bayes spam filter to a back-office browser agent with MCP tools, in four families (classical machine learning, deep learning, generative AI, AI agents). A 3D map on the home page, with a 2D fallback. Each example is a case study: memo, simulation with problems and safeguards, risk radar, trade-off gauges, residual risk, how each framework classifies it (with Met / Partly met / Not met against the safeguards switched on), real cases, a before-go-live checklist and workshop prompts. Setups can be shared as links (`?p=…&s=…`).
+- **Frameworks** (`/rules/`, `/rules/:fw/`): a 3D globe, a scroll-driven worldwide timeline, and a guide per framework (EU AI Act, US laws, NIST AI RMF, ISO/IEC 42001, OWASP, GDPR, China, Korea, Singapore, UK) with definitions, categories, requirements, timeline, roadmap, who enforces it, myths and a sortable examples table.
+- **Compare** (`/compare/`, `/compare/:fw/`): strength grid and radar for 11 topics, scoring rubric, gap finder, CSV and PNG export.
+- **Learn**: Basics (`/basics/`), learning tracks for seven roles (`/tracks/`), glossary of 55 terms (`/glossary/`), 14 quizzes (`/quiz/`, `/quiz/:id/`) and a printable certificate (`/certificate/`).
+- **Tools**: Classify your system (`/classify/`), controls crosswalk (`/crosswalk/`), toolkit of 11 templates (`/toolkit/`, files in `public/toolkit/`), case library (`/cases/`).
+- **About** (`/about/`) and **Updates** (`/updates/`, RSS at `/updates.xml`).
+- **View through**: a switch in the header that shows the whole site through one framework.
 
-Classical models (OLS/Huber regression, logistic regression, CART, k-means, seasonal forecasting) are trained live in the browser on synthetic data. Generative AI and agent behaviour is scripted so sessions are free and repeatable.
+Classical models are trained live in the browser on synthetic data. Generative AI and agent behaviour is scripted. Meridian, its people and the headlines in the simulations are fictional.
 
 ## Run locally
 
@@ -26,12 +23,39 @@ npm install
 npm run dev
 ```
 
-`npm run build` writes the site to `dist/`. Every push to `main` deploys to GitHub Pages via `.github/workflows/deploy.yml`.
+| Command | What it does |
+|---|---|
+| `npm run check` | Type-check, unit tests (Vitest) and production build with postbuild |
+| `npm run e2e` | Playwright smoke and feature tests on mobile and desktop, with axe accessibility checks (run after a build) |
+| `npx tsx scripts/check-links.ts` | Checks every external URL in the data (run by hand, not in CI) |
+| `node scripts/lighthouse.mjs 4174` | Lighthouse (mobile) for four pages against a running `vite preview --port 4174`; reports go to `docs/lighthouse/` |
+| `npx tsx scripts/crosswalk-seed.ts` | Prints candidate references per framework for curating the crosswalk |
 
-## Adding content
+Every push to `main` runs `npm run check` and the Playwright suite, then deploys to GitHub Pages (`.github/workflows/deploy.yml`).
 
-- A new example: add a `LabDef` (see `src/data/types.ts`) and a simulation component in `src/labs/`, then add an entry for it in each file in `src/data/fw/`.
-- A new framework: add it to `src/data/frameworks.ts` and create `src/data/fw/<id>.ts` with an entry per example.
+## How it is built
+
+- Vite 5, React 18, TypeScript (strict), framer-motion 11; three.js via @react-three/fiber for the two 3D scenes (lazy-loaded, paused off-screen, 2D fallback for no WebGL, reduced motion, data saver and screens under 640 px).
+- Path routing without a router library (`src/lib/util.ts`), base path `/ai-risk-observatory/`. Old `#/` links redirect.
+- `scripts/postbuild.ts` writes an `index.html` per route (title, description, canonical, Open Graph, a static first paint and module preloads), `404.html`, `sitemap.xml`, `robots.txt`, `route-manifest.json`, `updates.xml` and Open Graph images (`scripts/og.ts`).
+- Pages are code-split; new top-level pages are registered in `src/pages/registry.ts` and listed in `STATIC_PAGES` (`src/data/routes.ts`) and `LIVE_PATHS` (`src/data/nav.ts`).
+- Fonts are self-hosted (@fontsource). A cookieless GoatCounter counter records page views; nothing else is sent anywhere.
+
+## Adding an example
+
+1. Add a `LabDef` (`src/data/types.ts`) in `src/labs/`, including `residual`, at least two `discuss` prompts, a five-item `checklist`, stressor `codes` (OWASP 2026 LLM or ASI codes) where they apply, `unmitigable: true` on problems no safeguard can fix, and incidents with a `url` only when the source has been verified.
+2. Add a simulation component (it receives `s`, `m` and `live`) and register it in `src/labs/viz.ts`.
+3. Add an entry for it in every file in `src/data/fw/`, and a name in `src/data/shortNames.ts`.
+4. Add case metadata (jurisdiction, outcome type) in `src/data/cases.ts`.
+5. Run `npm run check` and `npm run e2e`. The integrity tests check that every framework covers every example and that every problem can be handled.
+
+## Adding a framework
+
+Add it to `src/data/frameworks.ts` (or `frameworksMore.ts`), create `src/data/fw/<id>.ts` with an entry per example, add its guide content to `src/data/fwGuide.ts`, its cells to `src/data/compare.ts` and `src/data/crosswalk.ts`, a quiz to `src/data/quizzes.ts`, and a line to `src/data/fwList.ts`.
+
+## Licence
+
+Code: MIT (`LICENSE`). Content: CC BY 4.0 (`CONTENT_LICENSE.md`).
 
 ---
-Meridian and all people and headlines inside the simulations are fictional. Legal summaries are simplified and dated November 2026; they are not legal advice.
+Legal summaries are simplified and were last reviewed on 6 November 2026; they are not legal advice. See `docs/IMPLEMENTATION_NOTES.md` for open points that need the owner.

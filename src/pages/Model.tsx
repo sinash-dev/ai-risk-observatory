@@ -204,7 +204,7 @@ export function ModelPage({ id, query }: { id: string; query?: URLSearchParams }
     <div>
       <Toc items={TOC} />
       <section className="wrap" style={{ padding: '26px 0 8px' }}>
-        <Breadcrumbs trail={[{ to: '/', label: 'Models' }, { label: tier.label }, { label: lab.short }]} />
+        <Breadcrumbs trail={[{ to: '/', label: 'Models' }, { label: tier.label }, { label: SHORT_NAME[lab.id] ?? lab.model }]} />
         <div className="eyebrow" style={{ color: tier.color, marginTop: 14 }}>{tier.label}</div>
         <h1 style={{ marginTop: 6 }}>{lab.model}</h1>
         <p className="lead" style={{ marginTop: 6 }}>Example: {lab.app.charAt(0).toLowerCase() + lab.app.slice(1)}</p>

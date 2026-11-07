@@ -5,9 +5,8 @@ import { Header } from './components/Header';
 import { PageSkeleton } from './components/PageSkeleton';
 import { ToastHost } from './components/Toast';
 import { Tour } from './components/Tour';
-import { routeMeta } from './data/routes';
 import { REGISTRY } from './pages/registry';
-import { useDocumentMeta } from './lib/meta';
+import { setDocumentMeta } from './lib/meta';
 import { installSearchShortcut, useSearchOpen } from './lib/searchStore';
 import { useTilt } from './lib/tilt';
 import { BASE, navigate, routeParts, useRoute } from './lib/util';
@@ -65,8 +64,8 @@ function useLinkInterception() {
 
 export default function App() {
   const { page, param, hash, query } = useRoute();
-  const meta = routeMeta(hash);
-  useDocumentMeta(meta.title, meta.description);
+  // titles come from the route table, loaded on demand (the static HTML already has the first one)
+  useEffect(() => { let live = true; import('./data/routes').then((m) => { if (live) { const meta = m.routeMeta(hash); setDocumentMeta(meta.title, meta.description); } }); return () => { live = false; }; }, [hash]);
   useLinkInterception();
   useTilt();
   useEffect(() => { countView(hash); }, [hash]);

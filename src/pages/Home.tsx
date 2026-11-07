@@ -36,7 +36,9 @@ function Orbit() {
   const [hover, setHover] = useState<string | null>(null);
   const [tilt, setTilt] = useState(0.5);
   const [box, onScreen] = useOnScreen<HTMLDivElement>();
-  const t = useClock(onScreen && !prefersReducedMotion());
+  // animate only on wider screens without reduced motion; on phones the map stays still (it re-renders every frame)
+  const [wide] = useState(() => typeof matchMedia === 'undefined' || matchMedia('(min-width: 640px)').matches);
+  const t = useClock(onScreen && wide && !prefersReducedMotion());
   const frozen = useRef({ at: 0, off: 0 });
   if (hover && !frozen.current.at) frozen.current.at = t || 0.0001;
   if (!hover && frozen.current.at) { frozen.current.off += t - frozen.current.at; frozen.current.at = 0; }
@@ -92,7 +94,7 @@ function Orbit() {
           <div className="dim small" style={{ marginTop: 6 }}>Click to open the simulation</div>
         </div>
       )}
-      <div className="dim small" style={{ textAlign: 'center', marginTop: -8 }}>Hover a model to pause. Move your mouse up or down to tilt the view.</div>
+      <div className="dim small orbit-hint" style={{ textAlign: 'center', marginTop: -8 }}>Hover a model to pause. Move your mouse up or down to tilt the view.</div>
     </div>
   );
 }
@@ -181,7 +183,7 @@ export function Home() {
               height="clamp(380px, 44vw, 560px)"
               load={() => import('../three/Universe')}
               props={sceneProps}
-              fallback={<div className="scroll-x" tabIndex={0} role="region" aria-label="Model map, scrolls sideways"><div style={{ minWidth: 760 }}><Orbit /></div></div>}
+              fallback={<div className="orbit-fit"><Orbit /></div>}
             />
           </div>
         </div>

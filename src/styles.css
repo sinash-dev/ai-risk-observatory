@@ -729,3 +729,10 @@ section[id], [id^="m"] { scroll-margin-top: 120px; }
 .agent-line.blocked { color: #8fdac7; }
 .agent-ts { color: #8a93a8; margin-right: 8px; }
 @media (max-width: 560px) { .exam-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); } }
+
+/* static first paint written by postbuild */
+.shell-main { padding: 34px 0 0; max-width: 780px; }
+.shell-main .lead { margin-top: 12px; }
+
+.orbit-fit { width: 100%; }
+@media (hover: none), (max-width: 640px) { .orbit-hint { display: none; } }

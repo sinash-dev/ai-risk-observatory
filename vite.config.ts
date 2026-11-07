@@ -6,6 +6,8 @@ export default defineConfig({
   // GitHub Pages serves the site under /ai-risk-observatory/; override with BASE_PATH for other hosts.
   base: process.env.BASE_PATH ?? '/ai-risk-observatory/',
   build: {
+    // manifest lets postbuild preload each route's page and simulation chunks
+    manifest: true,
     rollupOptions: {
       output: {
         manualChunks(id) {

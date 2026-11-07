@@ -1,0 +1,4 @@
+home: perf 85, a11y 100, best 100, seo 100 | LCP 3.4 s, TBT 0 ms, CLS 0.085
+model-credit: perf 85, a11y 100, best 100, seo 100 | LCP 3.4 s, TBT 70 ms, CLS 0.085
+rules-eu: perf 86, a11y 100, best 100, seo 100 | LCP 3.4 s, TBT 0 ms, CLS 0.085
+classify: perf 91, a11y 100, best 100, seo 100 | LCP 2.8 s, TBT 0 ms, CLS 0.082

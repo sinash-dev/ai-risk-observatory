@@ -87,9 +87,13 @@ test('skip link is first and works', async ({ page }) => {
   await expect(skip).toBeFocused();
 });
 
-test('reduced motion home screenshot', async ({ page }, info) => {
-  await page.emulateMedia({ reducedMotion: 'reduce' });
-  await go(page);
-  await page.waitForTimeout(500);
-  await page.screenshot({ path: info.outputPath('reduced-motion-home.png') });
-});
+for (const [name, path] of [['home', ''], ['model-credit', 'model/credit/'], ['rules-eu', 'rules/eu/']]) {
+  test(`reduced motion screenshot: ${name}`, async ({ page }, info) => {
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await page.goto(BASE + path);
+    await page.locator('h1').first().waitFor();
+    await page.waitForTimeout(500);
+    await expect(page.locator('canvas')).toHaveCount(0);
+    await page.screenshot({ path: info.outputPath(`reduced-motion-${name}.png`) });
+  });
+}

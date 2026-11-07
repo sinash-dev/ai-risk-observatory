@@ -101,4 +101,12 @@ describe('data integrity', () => {
     expect(LABS.length).toBe(25);
     for (const id of ['exam', 'insurance', 'voice', 'browser-agent']) expect(LABS.some((l) => l.id === id), id).toBe(true);
   });
+
+  it('the light shell lists (frameworks, live pages) match the full data', async () => {
+    const { FW_LIST } = await import('../fwList');
+    const { LIVE_PATHS } = await import('../nav');
+    const { STATIC_PAGES } = await import('../routes');
+    expect(FW_LIST.map((f) => [f.id, f.short, f.name, f.type])).toEqual(FRAMEWORKS.map((f) => [f.id, f.short, f.name, f.type]));
+    expect([...LIVE_PATHS].sort()).toEqual(STATIC_PAGES.map((p) => p.path).sort());
+  });
 });

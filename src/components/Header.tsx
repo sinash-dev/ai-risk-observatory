@@ -1,8 +1,9 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
-import { FRAMEWORKS, FW_BY_ID, type Lens } from '../data/frameworks';
+import type { Lens } from '../data/frameworks';
+import { FW_LIST, FW_LIST_BY_ID } from '../data/fwList';
 import { fwColor } from '../data/fwKind';
-import { liveNav, type NavItem } from '../data/routes';
+import { liveNav, type NavItem } from '../data/nav';
 import { setLens, useLens } from '../lib/lens';
 import { isMac, openSearch } from '../lib/searchStore';
 import { url } from '../lib/util';
@@ -21,7 +22,7 @@ function LensSelect({ id }: { id: string }) {
       <span>View through</span>
       <select id={id} value={lens} onChange={(e) => setLens(e.target.value as Lens)}>
         <option value="all">All frameworks</option>
-        {FRAMEWORKS.map((f) => <option key={f.id} value={f.id}>{f.short}</option>)}
+        {FW_LIST.map((f) => <option key={f.id} value={f.id}>{f.short}</option>)}
       </select>
     </label>
   );
@@ -147,7 +148,7 @@ function Sheet({ open, onClose, page }: { open: boolean; onClose: () => void; pa
 
 function LensBar() {
   const lens = useLens();
-  const f = lens !== 'all' ? FW_BY_ID[lens] : null;
+  const f = lens !== 'all' ? FW_LIST_BY_ID[lens] : null;
   return (
     <AnimatePresence initial={false}>
       {f && (

@@ -1,0 +1,74 @@
+# Implementation notes
+
+Notes from implementing the "AI Risk Explorer: Implementation Spec" (workstreams WS1–WS11), November 2026. They list where the build differs from the spec, what needs the owner's decision, and what was left out.
+
+## Status
+
+All workstreams are implemented and committed one per workstream (`ws1:` … `ws11:`).
+
+- `npm run check`: type-check, 32 unit tests, build and postbuild pass.
+- `npm run e2e`: about 230 Playwright tests (mobile and desktop) pass, including axe on all 73 routes with zero serious or critical violations, WebGL on and off, and reduced motion.
+- Lighthouse (mobile, median of three runs, `docs/lighthouse/summary.txt`): home 85, model/credit 85, rules/eu 86, classify 91 for performance; 100 for accessibility, best practices and SEO on all four.
+- First-load JavaScript is about 100 kB gzip (budget 200 kB); three.js loads only with the 3D scenes.
+
+## Deviations from the spec
+
+1. **Visit counter kept.** The spec rules out third-party runtime requests. The owner had explicitly asked for a visit counter, so the cookieless GoatCounter script and the footer total remain. It is disclosed on the About page. Remove the script in `index.html`, `countView` in `src/App.tsx` and `VisitCount` in `src/components/Footer.tsx` to drop it.
+2. **AI literacy (EU).** The spec said the Omnibus "removed" the AI literacy duty. Sources say it was reworded (measures to support literacy, without a guaranteed level) and that deployers of high-risk systems must still train overseers. The site says "softened, not removed".
+3. **Colorado SB 26-189** includes correction of inaccurate data and human review or reconsideration, in addition to notice and explanation; both are described.
+4. **New EU ban date.** The ban on AI that generates non-consensual intimate content or CSAM is shown as applying from 2 December 2026, as in the sources.
+5. **Test order.** WS1 e2e tests could only run fully after WS3 (path routing), because hash routes do not return separate documents. The CI gate was enabled with WS3.
+6. **Search dialog and 3D scenes load through plain state updates, not `React.lazy`.** On the home page the 2D orbit re-renders every frame, which starved Suspense retries for seconds.
+7. **The 2D orbit is still on phones** (and under reduced motion). Animating it there cost about 5 s of blocking time in Lighthouse.
+8. **Route titles load on demand** in the client, and the header and footer use light lists (`src/data/fwList.ts`, `src/data/nav.ts`) so the shell does not carry all the data. An integrity test keeps them in sync with the full data.
+9. **Static first paint.** Each route's HTML contains a header bar, the page title and its description, replaced by React on load.
+10. **Globe arcs** link frameworks that set firm rules (strength 2 or more) on at least half of the same Compare topics, rather than on any shared topic; otherwise almost every pair is linked. The NIST AI RMF has no arcs because it is voluntary throughout.
+11. **Quiz index page** (`/quiz/`) was added so the "Quizzes" menu item has a destination.
+12. **Lighthouse** runs through `scripts/lighthouse.mjs` (Playwright's Chromium with a debugging port) because `npx lighthouse` could not start Chrome in the build environment. Lighthouse itself is installed temporarily (`npm i --no-save lighthouse@12.2.1`).
+13. **Voice example and OWASP**: as the spec allows, the ML Top 10 is used for audio, with a note.
+
+## Needs the owner
+
+- **About page biography**: placeholder `[Author name, role, short bio, link]` in `src/pages/About.tsx` (marked TODO). No details were invented.
+- **Licences**: code MIT (`LICENSE`), content CC BY 4.0 (`CONTENT_LICENSE.md`). Please confirm.
+- **Citation**: the About page uses "Shafaei, S. (2026). AI Risk Explorer." as given in the spec. The owner's email spells the surname "Shafai"; please confirm the spelling.
+- **Report-an-error link** opens a GitHub issue with `.github/ISSUE_TEMPLATE/content-error.md`; the repository must allow issues.
+
+### Compare cells needing owner review
+
+Scored conservatively from the guides on the site:
+
+| Topic | Framework | Score | Reason for review |
+|---|---|---|---|
+| AI literacy | EU AI Act | 3 | Set by the spec's anchor; the Omnibus softened the duty, so 2 could be argued |
+| AI literacy | US laws | 0 | No general duty found in the site's sources |
+| AI literacy | China | 0 | No training duty in the rules covered |
+| AI literacy | Korea | 1 | Government promotion duty only; worth checking the Act and Decree |
+| AI literacy | UK | 0 | No specific duty |
+| Banned uses | UK | 1 | Only practice-specific offences (intimate deepfakes) |
+| Banned uses | China | 2 | Scored only from practices described on the site |
+| Banned uses | GDPR | 2 | No list of bans, but Art. 9 rules out many biometric uses |
+| Redress | ISO/IEC 42001 | 1 | A.8 reporting channel, not individual redress |
+
+### Crosswalk cells needing owner review
+
+`src/data/crosswalk.ts` uses only references that already exist in the site's data (`scripts/crosswalk-seed.ts`). Cells marked "—" have no supporting reference on the site, which does not prove the framework is silent. Worth a second look:
+
+- AI literacy for ISO/IEC 42001 is described as "Competence and awareness requirements" without a clause number, because none is cited elsewhere on the site.
+- "Event logging" and "Change management" have several empty cells (US, NIST, GDPR, China, Singapore, UK).
+- US "Explanation and appeal" combines ECOA/Regulation B with Colorado SB 26-189 (from 2027).
+
+## Facts left out because they could not be verified
+
+- Source URLs for most older cases in the case library (for example Apple Card, SyRI, Amazon recruiting, the Dutch childcare-benefits scandal, Mercadona, HireVue and the Flash Crash). Links are shown only where they were checked: Robodebt Royal Commission, Gender Shades, FTC v. Rite Aid, NYC Local Law 144, Moffatt v. Air Canada, the EchoLeak CVE, three arXiv papers, and the Appendix A sources for the four new examples.
+- Five sources block automated checks (CanLII, ISO, ICO, NAIC, Reuters). They were confirmed through search results or Appendix A and should be opened once in a browser.
+- Colorado SB 26-189 is not applied to insurance pricing, because it was not confirmed that the new law keeps insurance as a consequential decision.
+- The UK "loyalty penalty" rules for insurance are not cited; the UK insurance entry stays general (Consumer Duty and equality law), as the spec asked.
+- The public-authority transitional date for legacy high-risk systems (Art. 111) is described without a date.
+
+## Content checks run
+
+- `rg -n "Aug 2027" src`: no results.
+- `rg -n "30 June 2026" src`: no results.
+- `rg -nP "LLM(0[1-9]|10)(?!:20\d\d)" src`: no results (also enforced by an integrity test).
+- `npx tsx scripts/check-links.ts`: 43 URLs, 38 OK, 5 blocked automated checks, 0 broken.
