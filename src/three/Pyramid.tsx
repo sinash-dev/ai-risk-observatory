@@ -65,7 +65,7 @@ function Scene({ tiers, selected, onSelect, counts, active }: PyramidProps & { a
       {tiers.map((t, i) => (
         <Html key={t.key} position={[BASE * 1.5, yOf(i, n), 0]} style={{ pointerEvents: 'none' }} zIndexRange={[10, 0]}>
           <div className={`pyr-tag ${selected === t.key ? 'on' : ''}`} style={{ borderColor: t.color }}>
-            <b>{t.label}</b>
+            <b>{t.label.replace(' duties', '')}</b>
             <span>{counts[t.key]} example{counts[t.key] === 1 ? '' : 's'}</span>
           </div>
         </Html>
