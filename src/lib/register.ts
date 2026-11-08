@@ -172,6 +172,7 @@ export function systemMarkdown(s: RegSystem, today = new Date()) {
   return out.join('\n');
 }
 
+/** Insertion point 'export.board-pack' (see entitlements.ts): a board-ready pack with charts would build on this summary. */
 function summaryMarkdown(list: RegSystem[], today: Date) {
   const { facts, next, actions } = summaryLines(summary(list, today));
   const out = ['## Summary for management', '', ...facts.map((f) => `- ${f}`), ''];

@@ -15,17 +15,11 @@ import { PyramidMini } from '../components/RiskPyramid';
 import { tierOfCategory } from '../data/euTiers';
 import { track } from '../lib/track';
 import { url } from '../lib/util';
+import { exportFile, textBlob } from '../lib/exportFile';
+import { PremiumSlot } from '../components/Premium';
+import { hasFeature } from '../lib/entitlements';
 
 const TONE: Record<EuCat, string> = { banned: SEV.severe, high: SEV.high, 'gpai-systemic': SEV.info, gpai: SEV.info, limited: SEV.mid, minimal: 'var(--accent)', outside: SEV.neutral };
-
-function download(name: string, data: string | Blob, type: string) {
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(typeof data === 'string' ? new Blob([data], { type }) : data);
-  a.download = name;
-  document.body.appendChild(a);
-  a.click();
-  setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 500);
-}
 
 function Editor({ s, onChange, onDelete }: { s: RegSystem; onChange: (s: RegSystem) => void; onDelete: () => void }) {
   const [tab, setTab] = useState<'details' | 'questions' | 'actions'>(s.name ? 'actions' : 'details');
@@ -147,18 +141,18 @@ export default function Register() {
   const add = () => { const s = newSystem(); setData((d) => ({ ...d, systems: [...d.systems, s] })); setOpen(s.id); track('register-add'); setTimeout(() => document.getElementById('reg-editor')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 60); };
   const remove = (id: string) => { setData((d) => ({ ...d, systems: d.systems.filter((x) => x.id !== id) })); setOpen(null); toast('System deleted'); };
   const stamp = new Date().toISOString().slice(0, 10);
-  const exportMd = () => { download(`ai-register-${stamp}.md`, registerMarkdown(systems, data.org), 'text/markdown;charset=utf-8'); track('register-export-md'); };
+  const exportMd = () => { exportFile('markdown', textBlob(registerMarkdown(systems, data.org), 'text/markdown;charset=utf-8'), `ai-register-${stamp}.md`); track('register-export-md'); };
   const exportDocx = async () => {
     setBusy(true);
     try {
       const { registerDocxBlob } = await import('../lib/registerDocx');
-      download(`ai-register-${stamp}.docx`, await registerDocxBlob(systems, data.org), 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
+      exportFile('word', await registerDocxBlob(systems, data.org), `ai-register-${stamp}.docx`);
       track('register-export-docx');
     } catch { toast('The Word file could not be created. Try the Markdown export instead.'); }
     setBusy(false);
   };
-  const exportCsv = () => { download(`ai-register-${stamp}.csv`, registerCsv(systems), 'text/csv;charset=utf-8'); track('register-export-csv'); };
-  const exportJson = () => { download(`ai-register-${stamp}.json`, JSON.stringify({ format: 'ai-risk-explorer-register', version: 1, ...data }, null, 2), 'application/json'); track('register-export-json'); };
+  const exportCsv = () => { exportFile('csv', textBlob(registerCsv(systems), 'text/csv;charset=utf-8'), `ai-register-${stamp}.csv`); track('register-export-csv'); };
+  const exportJson = () => { exportFile('json', textBlob(JSON.stringify({ format: 'ai-risk-explorer-register', version: 1, ...data }, null, 2), 'application/json'), `ai-register-${stamp}.json`); track('register-export-json'); };
   const onImport = async (f: File) => {
     try {
       const { systems: imp, skipped } = parseImport(await f.text());
@@ -175,7 +169,8 @@ export default function Register() {
     <div className="wrap" style={{ padding: '30px 0 44px' }}>
       <div className="narrow stack no-print">
         <Breadcrumbs trail={[{ label: 'Tools' }, { label: 'My AI register' }]} />
-        <h1>My AI register</h1>
+        {/* insertion point: several registers, e.g. one per business unit */}
+        <PremiumSlot feature="register.multi-register"><h1>My AI register</h1></PremiumSlot>
         <p className="lead">This is your inventory of AI systems and the starting point for an audit. Add each tool, answer a few questions, and the register shows its risk level under the EU AI Act and what to do next.</p>
         <p className="small muted reg-privacy">Stored in this browser only. Nothing is sent anywhere. Use Backup to keep a copy or move it to another computer.</p>
       </div>
@@ -187,7 +182,7 @@ export default function Register() {
             <button className="btn btn-primary" onClick={add}>Add a system</button>
             <ActionMenu label={busy ? 'Preparing…' : 'Export'} items={[
               { label: 'Markdown report', onSelect: exportMd },
-              { label: 'Word report', onSelect: exportDocx, disabled: busy },
+              ...(hasFeature('export.word') ? [{ label: 'Word report', onSelect: exportDocx, disabled: busy }] : []),
               { label: 'CSV', onSelect: exportCsv },
               { label: 'Print', onSelect: () => window.print() },
             ]} />

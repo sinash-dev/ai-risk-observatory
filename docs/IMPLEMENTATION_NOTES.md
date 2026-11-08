@@ -2,6 +2,17 @@
 
 Notes from implementing the "AI Risk Explorer: Implementation Spec" (workstreams WS1–WS11), November 2026. They list where the build differs from the spec, what needs the owner's decision, and what was left out.
 
+## E4: monetisation seams (November 2026)
+
+From `docs/ENHANCEMENT_PLAN.md`. Nothing changes for visitors: everything stays free.
+- **A static site cannot enforce paid features.** All code runs in the visitor's browser, so any check could be switched off. Real gating needs an authenticated backend (Phase 4, the move to Hostinger). What exists now are markers, so each future paid feature has one place to change.
+- `src/lib/entitlements.ts`: the `Feature` ids, `FREE_FOR_NOW = true`, `hasFeature()` (true for every feature while free), `SHOW_PREMIUM_HINTS = false` (for a later preview mode; nothing reads it yet) and `PREMIUM_SLOTS`, which records the file, place and possible paid version of each insertion point. `src/lib/__tests__/entitlements.test.ts` checks that nothing is gated, that the feature list matches `PREMIUM_SLOTS`, and that each feature id appears in the file its slot names.
+- `src/components/Premium.tsx`: `<PremiumSlot>` renders its children with no wrapper element, badge or label (a fragment), so the DOM and layout are unchanged.
+- `src/lib/exportFile.ts`: every file the browser builds is saved through `exportFile(kind, blob, filename)`: register Markdown, Word, CSV and JSON; team Markdown, CSV and personal JSON record; SCORM packages; the Compare CSV and PNG; the Crosswalk CSV. Same file names, types and download method as before. Toolkit templates stay plain `<a download>` links to static files (routing them would add a fetch), and the certificate stays a printed page.
+- Insertion points: register Word report (`export.word`, in the Export menu items), the summary for management (`export.board-pack`, `src/lib/register.ts`), the register header (`register.multi-register`), the team record tab (`team.shared-workspace`), each toolkit download link (`toolkit.prefilled`) and the workshop slide body (`workshop.white-label`).
+- Check: `/register/`, `/team/` (both tabs), `/toolkit/` and `/workshop/` screenshotted before and after, in both themes at 390 and 1440 px: pixel-identical, and the HTML of `main` is identical too.
+- Network: the search for `fetch(`, `XMLHttpRequest` and `sendBeacon` finds only calls that predate E4: the toolkit's previews of its own template files and the footer's GoatCounter visit total (added in WS4). E4 adds none.
+
 ## E3: journey tools and editorial pass (November 2026)
 
 From `docs/ENHANCEMENT_PLAN.md`.

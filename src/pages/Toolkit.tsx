@@ -5,6 +5,7 @@ import { csvToHtml, markdownToHtml } from '../lib/markdown';
 import { track } from '../lib/track';
 import { BASE, url } from '../lib/util';
 import { STAGES, TEMPLATES } from '../data/templates';
+import { PremiumSlot } from '../components/Premium';
 
 export { TEMPLATES } from '../data/templates';
 
@@ -100,7 +101,7 @@ export default function Toolkit() {
                 <p className="muted small">{t.desc}</p>
                 <div className="tk-actions">
                   <button className="btn btn-sm" onClick={() => setOpen(t)}>Preview</button>
-                  <a className="btn btn-sm" href={href(t.file)} download onClick={() => track(`template-${t.file.replace(/\.[a-z]+$/, '')}`)}>Download {t.file.endsWith('.csv') ? 'CSV' : 'Markdown'}</a>
+                  <PremiumSlot feature="toolkit.prefilled"><a className="btn btn-sm" href={href(t.file)} download onClick={() => track(`template-${t.file.replace(/\.[a-z]+$/, '')}`)}>Download {t.file.endsWith('.csv') ? 'CSV' : 'Markdown'}</a></PremiumSlot>
                 </div>
               </motion.div>
             ))}

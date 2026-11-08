@@ -4,6 +4,7 @@ import { Breadcrumbs } from '../components/Nav';
 import { SLIDES, WORKSHOP_SUB, WORKSHOP_TITLE, type Slide } from '../data/workshop';
 import { track } from '../lib/track';
 import { BASE, url } from '../lib/util';
+import { PremiumSlot } from '../components/Premium';
 
 /** the timed activities, to scale, for the agenda bar */
 const AGENDA = [
@@ -76,7 +77,7 @@ export default function Workshop() {
         <div className="ws-slide" aria-live="polite">
           <AnimatePresence mode="wait">
             <motion.div key={s.id} initial={{ opacity: 0, x: 24 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -24 }} transition={{ duration: 0.25 }}>
-              <SlideBody s={s} />
+              <PremiumSlot feature="workshop.white-label"><SlideBody s={s} /></PremiumSlot>
             </motion.div>
           </AnimatePresence>
         </div>

@@ -7,6 +7,7 @@ import { order, passed, saveQuizResult, useQuizResults } from '../lib/quizStore'
 import { track } from '../lib/track';
 import { url } from '../lib/util';
 import type { PageProps } from './registry';
+import { exportFile } from '../lib/exportFile';
 
 function Index() {
   const results = useQuizResults();
@@ -43,12 +44,7 @@ function Index() {
 
 async function downloadScorm(q: Quiz) {
   const { scormZip } = await import('../lib/scorm');
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(new Blob([scormZip(q)], { type: 'application/zip' }));
-  a.download = `ai-risk-explorer-quiz-${q.id}-scorm12.zip`;
-  document.body.appendChild(a);
-  a.click();
-  setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 500);
+  exportFile('scorm', new Blob([scormZip(q)], { type: 'application/zip' }), `ai-risk-explorer-quiz-${q.id}-scorm12.zip`);
   track(`scorm-${q.id}`);
 }
 

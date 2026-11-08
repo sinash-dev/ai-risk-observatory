@@ -9,6 +9,7 @@ import { FRAMEWORKS, FW_BY_ID, type FwId } from '../data/frameworks';
 import { LAB_BY_ID } from '../data/labs';
 import { setLens } from '../lib/lens';
 import { useInView, useTweenArray, url } from '../lib/util';
+import { exportFile, textBlob } from '../lib/exportFile';
 
 const LEVEL = ['Not addressed', 'Guidance only', 'Required in some cases', 'Detailed binding rule'];
 const SERIES = [themed('s1', '#6cc5b0'), themed('s2', '#e0b25c'), themed('s3', '#a99be0'), themed('s4', '#e0896b')];
@@ -182,14 +183,6 @@ function GapFinder({ initial }: { initial: FwId }) {
   );
 }
 
-function download(name: string, blob: Blob) {
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = name;
-  document.body.appendChild(a);
-  a.click();
-  setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 500);
-}
 /** Draws the grid straight onto a canvas (no libraries) and downloads it as a PNG. */
 function gridPng() {
   const cw = 92, rh = 44, lw = 230, top = 70, pad = 24;
@@ -223,7 +216,7 @@ function gridPng() {
   });
   g.fillStyle = '#9298a3'; g.font = '12px Manrope Variable, Manrope, sans-serif';
   g.fillText('Bars: 0 not addressed · 1 guidance only · 2 required in some cases · 3 detailed binding rule. Editorial scores for learning, not legal advice.', pad, H - 22);
-  cv.toBlob((b) => b && download('ai-risk-explorer-compare.png', b), 'image/png');
+  cv.toBlob((b) => b && exportFile('png', b, 'ai-risk-explorer-compare.png'), 'image/png');
 }
 
 export function Compare({ fw, query }: { fw?: string; query?: URLSearchParams }) {
@@ -261,7 +254,7 @@ export function Compare({ fw, query }: { fw?: string; query?: URLSearchParams })
             {LEVEL.map((l, i) => <span key={l} className="small muted" style={{ display: 'inline-flex', gap: 8, alignItems: 'center' }}><Bars lv={i} />{l}</span>)}
           </div>
           <div style={{ display: 'flex', gap: 8 }}>
-            <button className="btn btn-sm" onClick={() => download('ai-risk-explorer-compare.csv', new Blob([compareCsv()], { type: 'text/csv;charset=utf-8' }))}>Download CSV</button>
+            <button className="btn btn-sm" onClick={() => exportFile('csv', textBlob(compareCsv(), 'text/csv;charset=utf-8'), 'ai-risk-explorer-compare.csv')}>Download CSV</button>
             <button className="btn btn-sm" onClick={gridPng}>Download PNG</button>
           </div>
         </div>

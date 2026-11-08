@@ -8,15 +8,9 @@ import { EMPTY_PLAN, RECORD_NOTE, buildRecord, decodePlan, encodePlan, loadTeam,
 import { track } from '../lib/track';
 import { BASE, url } from '../lib/util';
 import type { PageProps } from './registry';
+import { exportFile, textBlob } from '../lib/exportFile';
+import { PremiumSlot } from '../components/Premium';
 
-function download(name: string, text: string, type: string) {
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(new Blob([text], { type }));
-  a.download = name;
-  document.body.appendChild(a);
-  a.click();
-  setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 500);
-}
 const stamp = () => new Date().toISOString().slice(0, 10);
 const minutes = (p: TeamPlan) => p.tracks.reduce((a, id) => a + TRACK_BY_ID[id].steps.reduce((b, s) => b + s.min, 0), 0) + p.quizzes.length * 4;
 
@@ -101,8 +95,8 @@ function TeamRecord() {
       <p className="muted">Ask each person to send you the record file they download at the end of their plan. Add the files here to see the whole team, then export the record for your files.</p>
       <div className="reg-tools">
         <button className="btn btn-primary" onClick={() => fileRef.current?.click()}>Add record files</button>
-        <button className="btn" disabled={!records.length} onClick={() => { download(`ai-literacy-record-${stamp()}.md`, teamMarkdown(records), 'text/markdown;charset=utf-8'); track('team-export-md'); }}>Export record (Markdown)</button>
-        <button className="btn" disabled={!records.length} onClick={() => { download(`ai-literacy-record-${stamp()}.csv`, teamCsv(records), 'text/csv;charset=utf-8'); track('team-export-csv'); }}>Export CSV</button>
+        <button className="btn" disabled={!records.length} onClick={() => { exportFile('markdown', textBlob(teamMarkdown(records), 'text/markdown;charset=utf-8'), `ai-literacy-record-${stamp()}.md`); track('team-export-md'); }}>Export record (Markdown)</button>
+        <button className="btn" disabled={!records.length} onClick={() => { exportFile('csv', textBlob(teamCsv(records), 'text/csv;charset=utf-8'), `ai-literacy-record-${stamp()}.csv`); track('team-export-csv'); }}>Export CSV</button>
         <button className="btn" disabled={!records.length} onClick={() => { if (confirm('Remove all records from this browser? Export them first if you need them.')) setRecords([]); }}>Clear</button>
         <input ref={fileRef} type="file" accept="application/json,.json" multiple hidden onChange={(e) => { if (e.target.files?.length) onFiles(e.target.files); e.target.value = ''; }} />
       </div>
@@ -202,7 +196,7 @@ function Learner({ plan }: { plan: TeamPlan }) {
           <label className="wide">One thing I will do differently at work<textarea rows={3} value={reflection} onChange={(e) => setReflection(e.target.value)} maxLength={1000} placeholder="For example: ask our CV-screening vendor for results by group before we renew" /></label>
         </div>
         <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginTop: 12 }}>
-          <button className="btn btn-primary" disabled={!name.trim()} onClick={() => { download(`learning-record-${name.trim().replace(/[^\p{L}\p{N}]+/gu, '-').toLowerCase()}-${stamp()}.json`, JSON.stringify(record, null, 2), 'application/json'); track('team-record-download'); }}>Download my record</button>
+          <button className="btn btn-primary" disabled={!name.trim()} onClick={() => { exportFile('json', textBlob(JSON.stringify(record, null, 2), 'application/json'), `learning-record-${name.trim().replace(/[^\p{L}\p{N}]+/gu, '-').toLowerCase()}-${stamp()}.json`); track('team-record-download'); }}>Download my record</button>
         </div>
         <p className="small muted" style={{ marginTop: 8 }}>{name.trim() ? 'Send the file to the person who shared this plan with you.' : 'Add your name to download your record.'} The file contains your name, role, progress, scores and reflection. Nothing is sent anywhere until you send it yourself.</p>
       </section>
@@ -235,7 +229,7 @@ export default function Team({ query }: PageProps) {
             <button role="tab" aria-selected={tab === 'plan'} className={tab === 'plan' ? 'on' : ''} onClick={() => setTab('plan')}>1. Set up a plan</button>
             <button role="tab" aria-selected={tab === 'record'} className={tab === 'record' ? 'on' : ''} onClick={() => setTab('record')}>2. Team record</button>
           </div>
-          <div role="tabpanel" style={{ marginTop: 18 }}>{tab === 'plan' ? <PlanBuilder /> : <TeamRecord />}</div>
+          <div role="tabpanel" style={{ marginTop: 18 }}>{tab === 'plan' ? <PlanBuilder /> : <PremiumSlot feature="team.shared-workspace"><TeamRecord /></PremiumSlot>}</div>
           <p className="small muted" style={{ marginTop: 22 }}>Running a live session instead? Use the <a href={url('/workshop')}>workshop slides</a>.</p>
         </>
       )}

@@ -6,6 +6,7 @@ import { CONTROLS, type Control } from '../data/crosswalk';
 import { FRAMEWORKS, FW_BY_ID, type FwId } from '../data/frameworks';
 import { LAB_BY_ID } from '../data/labs';
 import { url } from '../lib/util';
+import { exportFile, textBlob } from '../lib/exportFile';
 
 const LEVEL = ['Not addressed', 'Guidance only', 'Required in some cases', 'Detailed binding rule'];
 const DOT = ['var(--line2)', SEV.info, SEV.mid, 'var(--accent)'];
@@ -29,10 +30,7 @@ export default function Crosswalk() {
     return () => document.removeEventListener('keydown', esc);
   }, [pop]);
   const download = () => {
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(new Blob([crosswalkCsv(shown)], { type: 'text/csv;charset=utf-8' }));
-    a.download = 'ai-risk-explorer-crosswalk.csv';
-    document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 500);
+    exportFile('csv', textBlob(crosswalkCsv(shown), 'text/csv;charset=utf-8'), 'ai-risk-explorer-crosswalk.csv');
   };
   const cell = pop ? pop.c.cells[pop.f] : null;
 
