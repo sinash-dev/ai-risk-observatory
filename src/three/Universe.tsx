@@ -165,8 +165,8 @@ function Rig({ hover }: { hover: string | null }) {
       enableDamping
       autoRotate
       autoRotateSpeed={0.35}
-      minPolarAngle={THREE.MathUtils.degToRad(55)}
-      maxPolarAngle={THREE.MathUtils.degToRad(80)}
+      minPolarAngle={MIN_POLAR}
+      maxPolarAngle={MAX_POLAR}
       onStart={() => { last.current = performance.now(); }}
       onEnd={() => { last.current = performance.now(); }}
       target={[0, 0, 0]}
@@ -215,6 +215,59 @@ function Declutter({ ids, hover }: { ids: string[]; hover: string | null }) {
   return null;
 }
 
+const TILT = THREE.MathUtils.degToRad(18);
+const MIN_POLAR = THREE.MathUtils.degToRad(55);
+const MAX_POLAR = THREE.MathUtils.degToRad(80);
+
+/**
+ * Sets the camera distance from the frame's shape, so the whole outer ring, its dots and the labels under them fit
+ * at every turn of the auto-rotation, then centres the drawing vertically (a projection offset, so nothing in the
+ * scene moves). Runs when the frame is resized. The fog moves with the camera, so the far side keeps the same depth.
+ */
+function FitCamera() {
+  const { camera, size, scene } = useThree();
+  useEffect(() => {
+    const cam = camera as THREE.PerspectiveCamera;
+    const W = size.width, H = size.height;
+    if (!W || !H) return;
+    const tilt = new THREE.Matrix4().makeRotationX(TILT);
+    const R = RADII[3] + 0.42; // outer ring plus a dot and its rim
+    const pts: THREE.Vector3[] = [];
+    for (let i = 0; i < 48; i++) {
+      const a = (i / 48) * Math.PI * 2;
+      for (const y of [-0.8, 0.42]) pts.push(new THREE.Vector3(Math.cos(a) * R, y, Math.sin(a) * R).applyMatrix4(tilt)); // -0.8 leaves room for a label
+    }
+    const polar = cam.position.angleTo(new THREE.Vector3(0, 1, 0));
+    const probe = new THREE.PerspectiveCamera(cam.fov, W / H, cam.near, cam.far);
+    const v = new THREE.Vector3();
+    // horizontal extent and vertical range (in screen units, -1..1) over a full turn at distance d
+    const extent = (d: number) => {
+      let x = 0, y0 = Infinity, y1 = -Infinity;
+      for (let k = 0; k < 16; k++) {
+        const az = (k / 16) * Math.PI * 2;
+        probe.position.set(d * Math.sin(polar) * Math.sin(az), d * Math.cos(polar), d * Math.sin(polar) * Math.cos(az));
+        probe.lookAt(0, 0, 0);
+        probe.updateMatrixWorld();
+        for (const p of pts) {
+          v.copy(p).project(probe);
+          x = Math.max(x, Math.abs(v.x)); y0 = Math.min(y0, v.y); y1 = Math.max(y1, v.y);
+        }
+      }
+      return { x, y0, y1 };
+    };
+    const fits = (d: number) => { const e = extent(d); return e.x <= 0.92 && (e.y1 - e.y0) / 2 <= 0.9; };
+    let lo = 5, hi = 40;
+    for (let i = 0; i < 22; i++) { const mid = (lo + hi) / 2; if (fits(mid)) hi = mid; else lo = mid; }
+    const d = hi;
+    const e = extent(d);
+    cam.position.setLength(d);
+    cam.setViewOffset(W, H, 0, -((e.y0 + e.y1) / 2) * (H / 2), W, H); // centre the drawing vertically
+    cam.updateProjectionMatrix();
+    if (scene.fog instanceof THREE.Fog) { scene.fog.near = d + 0.5; scene.fog.far = d + 12.5; }
+  }, [camera, scene, size.width, size.height]);
+  return null;
+}
+
 /** moves the whole system up a little as the page scrolls (reads like the camera dropping) */
 function Parallax({ children }: { children: React.ReactNode }) {
   const g = useRef<THREE.Group>(null);
@@ -257,13 +310,14 @@ export default function Universe({ nodes, rings, onPick, active }: UniverseProps
       <pointLight position={[0, 0, 0]} intensity={18} color={ACCENT} distance={9} />
       <directionalLight position={[4, 6, 5]} intensity={0.9} />
       <Parallax>
-        <group rotation={[THREE.MathUtils.degToRad(18), 0, 0]}>
+        <group rotation={[TILT, 0, 0]}>
           <Core glow={glow} />
           {byRing.map((ns, i) => (
             <RingGroup key={i} i={i} nodes={ns} color={rings[i]} glow={glow} hover={hover} setHover={setHover} onPick={onPick} />
           ))}
         </group>
       </Parallax>
+      <FitCamera />
       <Rig hover={hover} />
       <Declutter ids={nodes.map((n) => n.id)} hover={hover} />
     </Canvas>
