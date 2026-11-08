@@ -1,6 +1,7 @@
-/** First-visit tour: a dismissible pill, then four popovers anchored to real elements. Never blocks the page. */
-import { AnimatePresence, motion } from 'framer-motion';
+/** The 60-second tour: four popovers anchored to real elements on the home page. Started from a button (Start page, footer), never automatically. Never blocks the page. */
+import { motion } from 'framer-motion';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { navigate } from '../lib/util';
 
 const KEY = 'tour-done';
 const STEPS = [
@@ -10,8 +11,14 @@ const STEPS = [
   { sel: '[data-tour="search"]', t: 'Search anything', d: 'Find models, frameworks, articles such as “Art. 27” and terms. Shortcut: Ctrl K, or ⌘K on a Mac, or press /.' },
 ];
 
-const done = () => { try { return localStorage.getItem(KEY) === '1'; } catch { return true; } };
 const finish = () => { try { localStorage.setItem(KEY, '1'); } catch { /* ignore */ } };
+
+const START = 'are-tour-start';
+/** Start the tour: right away on the home page, otherwise open the home page with ?tour=1. */
+export function startTour() {
+  if (document.querySelector('[data-tour="orbit"]')) window.dispatchEvent(new Event(START));
+  else navigate('/?tour=1');
+}
 
 function visible(el: Element | null) {
   if (!el) return false;
@@ -20,15 +27,24 @@ function visible(el: Element | null) {
 }
 
 export function Tour() {
-  const [pill, setPill] = useState(false);
   const [step, setStep] = useState(-1);
   const [pos, setPos] = useState<{ top: number; left: number; w: number } | null>(null);
   const pop = useRef<HTMLDivElement>(null);
   const steps = STEPS;
 
-  useEffect(() => { const t = setTimeout(() => setPill(!done()), 1200); return () => clearTimeout(t); }, []);
+  useEffect(() => {
+    const go = () => setStep(0);
+    window.addEventListener(START, go);
+    // opened from another page with ?tour=1: start once the map has rendered, then tidy the address
+    let t: ReturnType<typeof setTimeout> | undefined;
+    if (new URLSearchParams(location.search).get('tour') === '1') {
+      t = setTimeout(go, 700);
+      history.replaceState(history.state, '', location.pathname + location.hash);
+    }
+    return () => { window.removeEventListener(START, go); if (t) clearTimeout(t); };
+  }, []);
 
-  const close = () => { finish(); setStep(-1); setPill(false); };
+  const close = () => { finish(); setStep(-1); };
 
   // position next to the current anchor; skip anchors that are hidden at this screen size
   useLayoutEffect(() => {
@@ -54,14 +70,6 @@ export function Tour() {
 
   return (
     <>
-      <AnimatePresence>
-        {pill && step < 0 && (
-          <motion.div className="tour-pill no-print" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 12 }}>
-            <button onClick={() => setStep(0)}>New here? Take the 60-second tour</button>
-            <button className="tour-x" onClick={close} aria-label="Dismiss the tour">✕</button>
-          </motion.div>
-        )}
-      </AnimatePresence>
       {step >= 0 && pos && (
         <motion.div
           ref={pop}

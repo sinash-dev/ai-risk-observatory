@@ -5,6 +5,12 @@ export interface Update { date: string; title: string; body: string; fw?: FwId[]
 /** Newest first. Also published as an RSS feed (updates.xml) by scripts/postbuild.ts. */
 export const UPDATES: Update[] = [
   {
+    date: '2026-11-08',
+    title: 'A clearer start',
+    body: 'The home page now says who the site is for and what to do first: check your first AI system in the register. The menu puts My AI register at the top, calls the map of simulations Examples, and shows the framework lens only on pages where it changes something. The Start here page leads with the compliance path as five steps, with the other roles one click away. The guided tour now starts from a button on the Start page or in the footer instead of popping up.',
+    links: [{ label: 'Start here', to: '/start' }, { label: 'My AI register', to: '/register' }],
+  },
+  {
     date: '2026-11-07',
     title: 'Light theme',
     body: 'The site now has a light theme as well as the dark one. It follows your device setting until you choose, and the sun and moon button in the header switches between them; your choice is remembered in this browser. The simulations, the globe and the 3D scenes keep their dark panels in both themes so their charts read the same. Every page was checked for colour contrast in both themes.',

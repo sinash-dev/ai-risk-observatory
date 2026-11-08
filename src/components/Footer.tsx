@@ -3,6 +3,7 @@ import { FW_LIST } from '../data/fwList';
 import { liveNav } from '../data/nav';
 import { SITE, fmtDate } from '../data/site';
 import { Link } from './Link';
+import { startTour } from './Tour';
 import { Logo } from './ui';
 
 const GC = 'https://ai-risk-explorer.goatcounter.com';
@@ -18,7 +19,7 @@ function VisitCount() {
 
 export function Footer() {
   const cols: [string, { to: string; label: string; ext?: boolean }[]][] = [
-    ['Explore', liveNav('main').map((n) => ({ to: n.path, label: n.label })).concat(liveNav('tools').map((n) => ({ to: n.path, label: n.label })))],
+    ['Explore', [...liveNav('main'), ...liveNav('more')].map((n) => ({ to: n.path, label: n.label })).concat(liveNav('tools').map((n) => ({ to: n.path, label: n.label })))],
     ['Learn', liveNav('learn').map((n) => ({ to: n.path, label: n.label }))],
     [
       'About',
@@ -36,6 +37,7 @@ export function Footer() {
           <div className="footer-brand">
             <div className="brand"><Logo /> AI Risk Explorer</div>
             <p className="muted small">Working simulations of how AI systems fail, and what {FW_LIST.length} governance frameworks say about them.</p>
+            <p className="small"><button className="link-btn" onClick={startTour}>Take the 60-second tour</button></p>
           </div>
           {cols.filter(([, l]) => l.length).map(([h, links]) => (
             <nav key={h} aria-label={h}>

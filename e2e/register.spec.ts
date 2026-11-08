@@ -3,12 +3,14 @@ import { readFileSync } from 'node:fs';
 
 const BASE = process.env.E2E_BASE ?? '/ai-risk-observatory/';
 
-test('start here: audience links jump to the right section', async ({ page }) => {
+// E1: the home persona links became one "Start here" link, and other roles are collapsed cards on /start
+test('start here: the home link leads to /start, and old role links open the right card', async ({ page }) => {
   await page.goto(BASE);
-  await page.locator('.hero-aud').getByRole('link', { name: 'runs training' }).click();
-  await expect(page).toHaveURL(/\/start\/#trainers$/);
-  await expect(page.locator('#trainers h2')).toBeInViewport();
-  await expect(page.locator('#trainers .aud-step')).toHaveCount(5);
+  await page.getByRole('link', { name: 'Teaching, building or studying AI? Start here' }).click();
+  await expect(page).toHaveURL(/\/start\/$/);
+  await page.goto(BASE + 'start/#trainers');
+  await expect(page.locator('details#trainers')).toHaveAttribute('open', '');
+  await expect(page.locator('#trainers .start-step')).toHaveCount(5);
 });
 
 test('register: add, classify, tick, export, reload and import', async ({ page }) => {

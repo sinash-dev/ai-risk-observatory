@@ -145,6 +145,7 @@ export function Frameworks() {
         <div className="label accent">Rules and frameworks</div>
         <h1>{FRAMEWORKS.length} ways of governing AI</h1>
         <p className="lead">Some are laws with fines, some are standards you can be certified against, some are practical guides. Most organisations need several at once. Pick one to read its guide, or view the whole site through it.</p>
+        <p className="fw-sub"><a className="btn btn-sm" href={url('/compare')}>Compare frameworks side by side</a></p>
       </div>
 
       <GlobeSection />

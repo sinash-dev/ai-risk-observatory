@@ -14,10 +14,13 @@ import { Logo } from './ui';
 
 const preload = () => { void import('./Search'); };
 
+/** Pages that react to the "View through" lens (the only ones that use useLens): the examples map, example pages and framework guides. */
+export const LENS_PAGES = ['', 'model', 'lab', 'rules'];
+const LENS_HELP = 'Show how one framework classifies everything';
+
 const isActive = (path: string, page: string) =>
   path === '/' ? page === '' || page === 'model' : page === path.slice(1);
 
-/** day/night switch; the label says what pressing it will do */
 /** language switch; hidden until a second language is published (or preview mode is on) */
 function LanguageSwitch() {
   const { hash, locale } = useRoute();
@@ -33,6 +36,7 @@ function LanguageSwitch() {
   );
 }
 
+/** day/night switch; the label says what pressing it will do */
 function ThemeToggle() {
   const t = useTheme();
   const next = t === 'dark' ? 'light' : 'dark';
@@ -50,7 +54,7 @@ function ThemeToggle() {
 function LensSelect({ id }: { id: string }) {
   const lens = useLens();
   return (
-    <label className="lens" htmlFor={id} data-tour="lens">
+    <label className="lens" htmlFor={id} data-tour="lens" title={LENS_HELP}>
       <span>View through</span>
       <select id={id} value={lens} onChange={(e) => setLens(e.target.value as Lens)}>
         <option value="all">All frameworks</option>
@@ -136,7 +140,7 @@ function Sheet({ open, onClose, page }: { open: boolean; onClose: () => void; pa
     if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last?.focus(); }
     else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first?.focus(); }
   };
-  const groups: [string, NavItem[]][] = [['Explore', liveNav('main')], ['Learn', liveNav('learn')], ['Tools', liveNav('tools')], ['About', liveNav('about')]];
+  const groups: [string, NavItem[]][] = [['Explore', [...liveNav('main'), ...liveNav('more')]], ['Learn', liveNav('learn')], ['Tools', liveNav('tools')], ['About', liveNav('about')]];
 
   return (
     <AnimatePresence>
@@ -160,7 +164,7 @@ function Sheet({ open, onClose, page }: { open: boolean; onClose: () => void; pa
               <button className="icon-btn" onClick={onClose} aria-label="Close menu">✕</button>
             </div>
             <button className="btn sheet-search" onClick={() => { onClose(); setTimeout(openSearch, 50); }}>⌕ Search the site</button>
-            <LensSelect id="lens-sheet" />
+            {LENS_PAGES.includes(page) && <><LensSelect id="lens-sheet" /><p className="small muted sheet-help">{LENS_HELP}.</p></>}
             <div className="sheet-lang"><LanguageSwitch /></div>
             {groups.filter(([, items]) => items.length).map(([g, items]) => (
               <nav key={g} aria-label={g}>
@@ -226,14 +230,14 @@ export function Header({ page }: { page: string }) {
             <button className="search-btn" onClick={openSearch} onPointerEnter={preload} onFocus={preload} data-tour="search" aria-keyshortcuts="Control+K Meta+K /">
               <span aria-hidden>⌕</span><span className="search-l">Search</span><kbd aria-hidden>{kbd}</kbd>
             </button>
-            <div className="lens-wide"><LensSelect id="lens-header" /></div>
+            {LENS_PAGES.includes(page) && <div className="lens-wide"><LensSelect id="lens-header" /></div>}
             <LanguageSwitch />
             <ThemeToggle />
             <button className="icon-btn burger" onClick={() => setSheet(true)} aria-label="Open menu" aria-expanded={sheet}>☰</button>
           </div>
         </div>
       </header>
-      <LensBar />
+      {LENS_PAGES.includes(page) && <LensBar />}
       <Sheet open={sheet} onClose={() => setSheet(false)} page={page} />
     </>
   );

@@ -75,7 +75,7 @@ test('mobile sheet opens, traps focus and closes', async ({ page }) => {
   const sheet = page.getByRole('dialog', { name: 'Site menu' });
   await expect(sheet).toBeVisible();
   expect(await serious(page)).toEqual([]);
-  await sheet.getByRole('link', { name: 'Frameworks' }).click();
+  await sheet.getByRole('link', { name: 'Frameworks', exact: true }).click(); // E1: 'Compare frameworks' now also sits in the menu
   await expect(page).toHaveURL(/rules\/$/);
   await expect(sheet).toHaveCount(0);
 });

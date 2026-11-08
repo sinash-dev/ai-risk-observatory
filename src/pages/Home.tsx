@@ -1,11 +1,9 @@
 import { motion } from 'framer-motion';
 import { useCallback, useMemo, useRef, useState } from 'react';
-import { Num } from '../components/ui';
 import { UPDATES } from '../data/updates';
 import { fmtDate } from '../data/site';
 import { Ring } from '../components/model/Panels';
 import { TODAY, parseDate } from '../components/Timeline';
-import { STATIC_PAGES } from '../data/routes';
 import { SceneShell, useOnScreen } from '../three/SceneShell';
 import type { UniverseNode } from '../three/Universe';
 import { prefersReducedMotion, useProgress } from '../lib/util';
@@ -101,11 +99,19 @@ function Orbit() {
 }
 
 const PURPOSES = [
-  { t: 'Learn one framework properly', d: 'Pick it under “View through”. The map, every example and every requirement switch to that framework. Then follow its learning path.', href: url('/rules'), cta: 'Choose a framework' },
-  { t: 'Compare frameworks on a topic', d: 'How do the frameworks treat transparency, human oversight or bias? See it side by side in a strength grid and radar chart.', href: url('/compare'), cta: 'Open the comparison' },
-  { t: 'See how a model fails', d: 'Pick any example below, switch on a problem, then add a safeguard and see whether it helps.', href: url('/model/credit'), cta: 'Start with credit scoring' },
-  { t: 'Run a training session', d: 'Presenter slides for a 60-minute hands-on workshop, with notes for you, and team plans that keep a record of who completed what.', href: url('/workshop'), cta: 'Open the slides' },
+  { t: 'Learn one framework properly', d: 'Read a guide to one law or standard: who it applies to, what it asks for and when. Then follow its learning path through the examples.', href: url('/rules'), cta: 'Choose a framework', icon: 0 },
+  { t: 'Compare frameworks on a topic', d: 'How do the frameworks treat transparency, human oversight or bias? See them side by side in a strength grid and radar chart.', href: url('/compare'), cta: 'Open the comparison', icon: 1 },
+  { t: 'Run a training session', d: 'Presenter slides for a 60-minute hands-on workshop, with notes for you, and team plans that keep a record of who completed what.', href: url('/workshop'), cta: 'Open the slides', icon: 3 },
 ];
+
+/** the three steps of the main journey */
+const HOW = [
+  { t: 'List', d: 'Add each AI tool your organisation builds or uses to your register. It stays in your browser.', to: '/register' },
+  { t: 'Classify', d: 'Answer a few questions about a tool and see where it falls under the EU AI Act and the other rules where you operate.', to: '/classify' },
+  { t: 'Report', d: 'Export a report for your manager, then use the templates for the documents each risk level asks for.', to: '/toolkit' },
+];
+
+const COUNT_WORD: Record<number, string> = { 2: 'two', 3: 'three', 4: 'four', 5: 'five', 6: 'six', 7: 'seven', 8: 'eight', 9: 'nine', 10: 'ten', 11: 'eleven', 12: 'twelve' };
 
 function Icon({ i }: { i: number }) {
   const p = [
@@ -144,94 +150,88 @@ export function Home() {
   const exploredN = LABS.filter((l) => progress.labs?.[l.id]).length;
   const cases = LABS.reduce((n, l) => n + l.incidents.length, 0);
   const upcoming = FRAMEWORKS.flatMap((f) => f.timeline.map((e) => ({ f, e, y: parseDate(e.date) }))).filter((x) => x.y > TODAY).sort((a, b) => a.y - b.y);
-  const hasClassify = STATIC_PAGES.some((p) => p.path === '/classify');
   return (
     <div>
       <section className="hero">
         <div className="wrap hero-grid">
           <motion.div className="hero-text stack" initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
             <div className="eyebrow">{fw ? `Viewing through: ${fw.short}` : 'AI Risk Explorer'}</div>
-            <h1>{fw ? `${LABS.length} AI systems, seen through ${fwName(fw.id)}` : 'Every AI system fails in its own way. Here is how, and what the rules expect you to do about it.'}</h1>
+            <h1 className="hero-h1">{fw ? `${LABS.length} AI systems, seen through ${fwName(fw.id)}` : 'Find out which AI rules apply to you, and what to do about them.'}</h1>
             {fw ? (
-              <p className="lead">{fw.intro.split('. ').slice(0, 2).join('. ')}. Each model is coloured by how {fwName(fw.id)} treats it. <a href={url(`/rules/${fw.id}`)}>Open the full guide</a>, including a learning path through these examples.</p>
+              <p className="lead">{fw.intro.split('. ').slice(0, 2).join('. ')}. Each example is coloured by how {fwName(fw.id)} treats it. <a href={url(`/rules/${fw.id}`)}>Open the full guide</a>, including a learning path through these examples.</p>
             ) : (
-              <p className="lead">{LABS.length} real uses of AI, from a spam filter to a team of buying agents. Each one runs as a small simulation you can break and repair. {FRAMEWORKS.length} governance frameworks, from the EU AI Act to China’s and Korea’s rules, are mapped onto every one of them.</p>
+              <p className="lead">Made for whoever has just been handed AI compliance. List your AI tools, see how the EU AI Act and {COUNT_WORD[FRAMEWORKS.length - 1] ?? FRAMEWORKS.length - 1} other frameworks treat each one, and leave with a report you can give your manager.</p>
             )}
             <div className="hero-ctas">
-              <a className="btn btn-primary" href={url('/model/credit')}>Start with credit scoring</a>
-              {hasClassify ? <a className="btn" href={url('/classify')}>Classify your system</a> : <a className="btn" href={url('/compare')}>Compare frameworks</a>}
+              <a className="btn btn-primary" href={url('/register')}>Check your first AI system</a>
+              <a className="btn" href={url('/model/credit')} data-tour="model-card">See how an AI system fails (5 minutes)</a>
             </div>
-            {!fw && (
-              <nav className="hero-aud" aria-label="Start for your role">
-                <span className="small muted">Start as someone who:</span>
-                <a href={url('/start#compliance')}>looks after compliance</a>
-                <a href={url('/start#trainers')}>runs training</a>
-                <a href={url('/start#builders')}>builds AI systems</a>
-                <a href={url('/register')}>keeps a list of AI systems</a>
-              </nav>
-            )}
-            <dl className="hero-stats">
-              <div><dt>examples</dt><dd><Num v={LABS.length} /></dd></div>
-              <div><dt>frameworks</dt><dd><Num v={FRAMEWORKS.length} /></dd></div>
-              <div><dt>real cases</dt><dd><Num v={cases} /></dd></div>
-              <div><dt>upcoming deadlines</dt><dd><Num v={upcoming.length} /></dd></div>
-            </dl>
-            <div className="explored-row">
-              <Ring n={exploredN} total={LABS.length} size={42} />
-              <span className="small muted">{exploredN ? `${exploredN} of ${LABS.length} explored. Switch on a problem and a safeguard in any example to count it.` : 'Your progress shows here: switch on a problem and a safeguard in any example.'}</span>
-            </div>
+            <p className="small muted hero-counts">{LABS.length} worked examples. {FRAMEWORKS.length} frameworks. {cases} real cases.</p>
+            {!fw && <p className="hero-start"><a href={url('/start')}>Teaching, building or studying AI? Start here</a></p>}
           </motion.div>
-          <div className="hero-map stage" data-tour="orbit">
-            <a className="sr-only skip-map" href="#all-examples">Skip the 3D map</a>
+          <figure className="hero-figure">
             <div className="hero-legend" aria-hidden>
               {fw
                 ? fw.cats.map((c) => { const n = LABS.filter((l) => fwEntry(fw.id, l.id).cat === c.id).length; return n ? <span key={c.id}><span className="swatch" style={{ background: c.color }} />{c.label} ({n})</span> : null; })
                 : TIERS.map((t, i) => <span key={t.id}><span className="swatch" style={{ background: t.color }} />{['Inner', 'Second', 'Third', 'Outer'][i]} ring: {t.label}</span>)}
             </div>
-            <SceneShell
-              className="universe"
-              height="clamp(380px, 44vw, 560px)"
-              load={() => import('../three/Universe')}
-              props={sceneProps}
-              fallback={<div className="orbit-fit"><Orbit /></div>}
-            />
-          </div>
-        </div>
-        {upcoming.length > 0 && (
-          <div className="wrap">
-            <div className="ticker" role="region" aria-label="Upcoming deadlines">
-              <span className="ticker-l">Coming up</span>
-              <ul>
-                {upcoming.slice(0, 4).map(({ f, e }) => (
-                  <li key={f.id + e.date + e.text}>
-                    <a href={url(`/rules/${f.id}`)}><span className="mono ticker-d">{e.date}</span> <b>{f.short}</b> <span className="muted">{e.text}</span></a>
-                  </li>
-                ))}
-              </ul>
+            <div className="hero-map stage" data-tour="orbit">
+              <a className="sr-only skip-map" href="#all-examples">Skip the 3D map</a>
+              <SceneShell
+                className="universe"
+                height="clamp(380px, 44vw, 560px)"
+                load={() => import('../three/Universe')}
+                props={sceneProps}
+                fallback={<div className="orbit-fit"><Orbit /></div>}
+              />
             </div>
-          </div>
-        )}
-      </section>
-
-      <section className="wrap news-strip" aria-label="What’s new">
-        <div className="news-strip-h"><span className="eyebrow">What’s new</span><a className="small" href={url('/updates')}>All updates →</a></div>
-        <div className="grid3">
-          {UPDATES.slice(0, 3).map((u) => (
-            <a key={u.title} className="card card-pad lift" href={url(u.links?.[0]?.to ?? '/updates')} style={{ color: 'inherit' }}>
-              <span className="mono small accent">{fmtDate(u.date)}</span>
-              <b style={{ display: 'block', marginTop: 4 }}>{u.title}</b>
-            </a>
-          ))}
+            <figcaption className="small muted hero-caption">Each dot is a working example. Pick one to break it and repair it.</figcaption>
+            <div className="explored-row">
+              <Ring n={exploredN} total={LABS.length} size={42} />
+              <span className="small muted">{exploredN ? `${exploredN} of ${LABS.length} explored. Switch on a problem and a safeguard in any example to count it.` : 'Your progress shows here: switch on a problem and a safeguard in any example.'}</span>
+            </div>
+          </figure>
         </div>
       </section>
 
       {!fw && (
+        <section className="wrap section how" aria-labelledby="how-h">
+          <h2 id="how-h">How it works</h2>
+          <ol className="how-steps">
+            {HOW.map((h, i) => (
+              <li key={h.t}>
+                <a href={url(h.to)} className="card card-pad lift how-step">
+                  <span className="how-n" aria-hidden>{i + 1}</span>
+                  <span><b>{h.t}</b><span className="muted small" style={{ display: 'block', marginTop: 4 }}>{h.d}</span></span>
+                </a>
+              </li>
+            ))}
+          </ol>
+        </section>
+      )}
+
+      {upcoming.length > 0 && (
+        <div className="wrap">
+          <div className="ticker" role="region" aria-label="Upcoming deadlines">
+            <span className="ticker-l">Coming up</span>
+            <ul>
+              {upcoming.slice(0, 4).map(({ f, e }) => (
+                <li key={f.id + e.date + e.text}>
+                  <a href={url(`/rules/${f.id}`)}><span className="mono ticker-d">{e.date}</span> <b>{f.short}</b> <span className="muted">{e.text}</span></a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      )}
+
+      {!fw && (
         <section className="wrap section">
           <h2>What do you want to do?</h2>
-          <div className="grid4" style={{ marginTop: 20 }}>
+          <div className="grid3" style={{ marginTop: 20 }}>
             {PURPOSES.map((p, i) => (
               <motion.a key={p.t} href={p.href} className="card card-pad lift" style={{ color: 'inherit', display: 'flex', flexDirection: 'column', gap: 10 }} initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.08 }}>
-                <Icon i={i} />
+                <Icon i={p.icon} />
                 <h3>{p.t}</h3>
                 <p className="muted small" style={{ flex: 1 }}>{p.d}</p>
                 <span className="accent small" style={{ fontWeight: 700 }}>{p.cta} →</span>
@@ -241,23 +241,37 @@ export function Home() {
         </section>
       )}
 
-      <section className="wrap section" id="all-examples" tabIndex={-1}>
-        <h2>{fw ? `Grouped by category under ${fwName(fw.id)}` : `All ${LABS.length} examples, by type of model`}</h2>
-        <p className="muted" style={{ marginTop: 6, marginBottom: 20 }}>Every example opens a simulation and shows how the rules apply to it.</p>
-        <div className="grid2" style={{ alignItems: 'start' }}>
-          {groups.map((g, i) => (
-            <motion.div key={g.key} data-tour={i === 0 ? 'model-card' : undefined} className="card" style={{ overflow: 'hidden' }} initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: (i % 2) * 0.08 }}>
-              <div style={{ padding: '18px 18px 14px', display: 'flex', gap: 12 }}>
-                <span className="swatch" style={{ background: g.color, width: 10, height: 10, marginTop: 7 }} />
-                <div>
-                  <h3>{g.title}</h3>
-                  <p className="muted small" style={{ marginTop: 4 }}>{g.desc}</p>
-                </div>
-              </div>
-              {g.labs.map((l) => <Row key={l.id} lab={l} lens={lens} explored={!!progress.labs?.[l.id]} />)}
-            </motion.div>
+      <section className="wrap news-strip" aria-label="What’s new">
+        <div className="news-strip-h"><span className="eyebrow">What’s new</span><a className="small" href={url('/updates')}>All updates →</a></div>
+        <div className="grid2">
+          {UPDATES.slice(0, 2).map((u) => (
+            <a key={u.title} className="card card-pad lift" href={url(u.links?.[0]?.to ?? '/updates')} style={{ color: 'inherit' }}>
+              <span className="mono small accent">{fmtDate(u.date)}</span>
+              <b style={{ display: 'block', marginTop: 4 }}>{u.title}</b>
+            </a>
           ))}
         </div>
+      </section>
+
+      <section className="wrap section" id="all-examples" tabIndex={-1}>
+        <details className="all-ex" open={!!fw}>
+          <summary><h2>{fw ? `All ${LABS.length} examples, grouped by category under ${fwName(fw.id)}` : `Browse all ${LABS.length} examples as a list`}</h2></summary>
+          <p className="muted" style={{ marginTop: 6, marginBottom: 20 }}>Every example opens a simulation and shows how the rules apply to it.</p>
+          <div className="grid2" style={{ alignItems: 'start' }}>
+            {groups.map((g, i) => (
+              <motion.div key={g.key} className="card" style={{ overflow: 'hidden' }} initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: (i % 2) * 0.08 }}>
+                <div style={{ padding: '18px 18px 14px', display: 'flex', gap: 12 }}>
+                  <span className="swatch" style={{ background: g.color, width: 10, height: 10, marginTop: 7 }} />
+                  <div>
+                    <h3>{g.title}</h3>
+                    <p className="muted small" style={{ marginTop: 4 }}>{g.desc}</p>
+                  </div>
+                </div>
+                {g.labs.map((l) => <Row key={l.id} lab={l} lens={lens} explored={!!progress.labs?.[l.id]} />)}
+              </motion.div>
+            ))}
+          </div>
+        </details>
       </section>
     </div>
   );

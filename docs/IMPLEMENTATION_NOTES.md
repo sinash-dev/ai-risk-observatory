@@ -2,6 +2,17 @@
 
 Notes from implementing the "AI Risk Explorer: Implementation Spec" (workstreams WS1–WS11), November 2026. They list where the build differs from the spec, what needs the owner's decision, and what was left out.
 
+## E1: one clear path (November 2026)
+
+From `docs/ENHANCEMENT_PLAN.md`.
+- Home: new headline and lead (the framework count in words is computed), one primary button to `/register`, one secondary to the credit example (now carries the tour's `model-card` anchor), a computed counts line, one link to `/start`, the map as a `<figure>` with caption and progress ring below. Order: hero, How it works, deadlines, three task cards, latest two updates, examples list in a `<details>` (open when a lens is active; `#all-examples` kept).
+- The prerendered first paint (`scripts/postbuild.ts`, `HOME_H1`) carries the new headline; the home description in `routes.ts` matches it.
+- Navigation: Start here, My AI register, Frameworks, Examples, Learn, Tools. Compare moved to a `more` group (footer, mobile menu, search) and a button on `/rules`. The lens select, its mobile copy and the lens bar show only on `''`, `model`, `lab` and `rules` (the pages that call `useLens`).
+- Header width: the nav collapses into the menu below 1240 px (was 1120); the "View through" label is hidden visually at all widths (it never fitted beside the longer nav, as the content width tops out near 1200 px), but stays in the accessibility tree; the select keeps a tooltip. Measured: no overflow from 1241 to 1920 px.
+- `/start`: compliance path first as a five-step stepper (five columns from 1100 px, two from 640 px), other roles as `<details>` cards that open from old `#role` links; chip row and "What you get" labels removed.
+- Tour: no automatic pill; `startTour()` from the Start page and the footer (opens `/?tour=1` when not on the home page).
+- Tests: new `e2e/journey.spec.ts`; `e2e/register.spec.ts` start test rewritten because the persona links it clicked were removed.
+
 ## Light theme (November 2026)
 
 - `:root[data-theme='light']` in `src/styles.css` redefines every colour token; an inline script in `index.html` (same text as `THEME_BOOT` in `src/lib/theme.ts`, checked by a unit test) sets `data-theme` before the first paint from the saved choice (`are-theme`) or the system setting. `useTheme` follows system changes until the visitor chooses. The header button switches and updates the `theme-color` meta tag.

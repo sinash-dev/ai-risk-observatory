@@ -17,7 +17,7 @@ export interface RouteMeta {
 
 /** Top-level pages. New pages are added here so the router, search, sitemap and postbuild all see them. */
 export const STATIC_PAGES: RouteMeta[] = [
-  { path: '/', title: 'AI Risk Explorer', description: `Working simulations of how ${LABS.length} AI and machine learning systems fail, and how ${FRAMEWORKS.length} governance frameworks, from the EU AI Act to China, Korea, Singapore and the UK, deal with them.`, og: 'default' },
+  { path: '/', title: 'AI Risk Explorer', description: `Find out which AI rules apply to the AI systems you use, and what to do about them: a free register, a classification wizard and templates, with ${LABS.length} worked examples and ${FRAMEWORKS.length} frameworks from the EU AI Act to China, Korea, Singapore and the UK.`, og: 'default' },
   { path: '/rules', title: 'Frameworks', description: `${FRAMEWORKS.length} ways of governing AI: laws, standards and security guides, grouped by region, with a worldwide timeline of AI rules.`, og: 'default' },
   { path: '/compare', title: 'Compare frameworks', description: `How ${FRAMEWORKS.length} AI governance frameworks treat transparency, human oversight, bias, risk assessment and more, side by side.`, og: 'default' },
   { path: '/basics', title: 'The basics', description: 'A short guide to how AI models work, where their risks come from, and how laws, standards and security guides deal with them.', og: 'default' },
