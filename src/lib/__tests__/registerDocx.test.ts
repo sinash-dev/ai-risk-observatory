@@ -20,6 +20,8 @@ describe('register Word export', () => {
     expect(xml).toContain('HR &amp; Talent &lt;team&gt;');
     expect(xml).toContain('High-risk (from 2 December 2027)');
     expect(xml).toContain('not legal advice');
+    expect(xml).toContain('Summary for management');
+    expect(xml).toContain('Systems with open actions: 1 of 1');
     expect(xml).toContain(`☑  ${a[0].text.replace(/&/g, '&amp;')}`);
     expect(xml).toContain('2027-12-02');
   });

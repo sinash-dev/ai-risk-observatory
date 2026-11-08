@@ -41,12 +41,15 @@ test('register: add, classify, tick, export, reload and import', async ({ page }
   await expect(page.locator('.reg-row')).toContainText(`1/${total}`);
 
   // Markdown export
-  const [md] = await Promise.all([page.waitForEvent('download'), page.getByRole('button', { name: 'Export report (Markdown)' }).click()]);
+  await page.getByRole('button', { name: 'Export', exact: true }).click();
+  const [md] = await Promise.all([page.waitForEvent('download'), page.getByRole('button', { name: 'Markdown report' }).click()]);
   const text = readFileSync((await md.path())!, 'utf8');
   expect(text).toContain('| CV screening tool | HR, team "talent" | Idea or procurement | High-risk | 1/');
   expect(text).toContain('- [x] ');
+  expect(text).toContain('## Summary for management');
 
   // JSON backup, then import it into an empty register
+  await page.getByRole('button', { name: 'Backup', exact: true }).click();
   const [js] = await Promise.all([page.waitForEvent('download'), page.getByRole('button', { name: 'Back up (JSON)' }).click()]);
   const backup = readFileSync((await js.path())!, 'utf8');
   await page.evaluate(() => localStorage.removeItem('are-register-v1'));
@@ -67,4 +70,27 @@ test('register: add, classify, tick, export, reload and import', async ({ page }
   page.once('dialog', (d) => d.accept());
   await page.getByRole('button', { name: 'Delete system' }).click();
   await expect(page.getByRole('heading', { name: 'No systems yet' })).toBeVisible();
+});
+
+test('register: one button when empty, then keyboard-accessible Export and Backup menus', async ({ page }) => {
+  await page.goto(BASE + 'register/');
+  await expect(page.getByRole('button', { name: 'Export', exact: true })).toHaveCount(0);
+  await expect(page.getByRole('button', { name: 'Add a system' })).toHaveCount(0);
+  await page.getByRole('button', { name: 'Add your first system' }).click();
+  await page.getByLabel('Name of the system').fill('Chat assistant');
+  await expect(page.getByText('Indicative, not legal advice.')).toBeVisible();
+  const exp = page.getByRole('button', { name: 'Export', exact: true });
+  await exp.focus();
+  await page.keyboard.press('ArrowDown');
+  await expect(exp).toHaveAttribute('aria-expanded', 'true');
+  await expect(page.getByRole('button', { name: 'Markdown report' })).toBeFocused();
+  await page.keyboard.press('ArrowDown');
+  await expect(page.getByRole('button', { name: 'Word report' })).toBeFocused();
+  await page.keyboard.press('ArrowUp');
+  await page.keyboard.press('ArrowUp');
+  await expect(page.getByRole('button', { name: 'Print' })).toBeFocused();
+  await page.keyboard.press('Escape');
+  await expect(exp).toHaveAttribute('aria-expanded', 'false');
+  await expect(exp).toBeFocused();
+  await expect(page.getByRole('button', { name: 'Markdown report' })).toHaveCount(0);
 });

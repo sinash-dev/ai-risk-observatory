@@ -280,7 +280,7 @@ export function FrameworkPage({ id }: { id: string }) {
 
       <section className="section" id="definitions">
         <h2>Key definitions</h2>
-        <p className="muted small" style={{ marginTop: 6 }}>In plain words. Check the official text for the exact wording.</p>
+        <p className="muted small" style={{ marginTop: 6 }}>Paraphrased. Check the official text for the exact wording.</p>
         <dl className="defs">
           {g.definitions.map((d, i) => (
             <motion.div key={d.t} className="card card-pad" initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.05 }}>

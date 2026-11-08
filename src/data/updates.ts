@@ -6,6 +6,12 @@ export interface Update { date: string; title: string; body: string; fw?: FwId[]
 export const UPDATES: Update[] = [
   {
     date: '2026-11-08',
+    title: 'A report your manager can read in a minute',
+    body: 'Register reports, in Markdown and Word, now open with a summary for management: how many systems you have, how they fall under the EU AI Act, how many still have open actions, the next three dates and the five actions to take first. The register page itself is simpler: one button to add your first system, then an Export menu and a Backup menu. The classification tool has a shorter introduction and one note on how far to rely on the result.',
+    links: [{ label: 'My AI register', to: '/register' }, { label: 'Classify your system', to: '/classify' }],
+  },
+  {
+    date: '2026-11-08',
     title: 'Easier to read',
     body: 'Text is a little larger and spacing more even across the site. The examples map now hides any label that would overlap another, so the names you can see are readable. Each example lists four frameworks first, with a button to show the rest, and each framework guide opens with a short summary: what it is, who it covers and, where there is one, the next date to watch.',
     links: [{ label: 'EU AI Act guide', to: '/rules/eu' }, { label: 'Credit scoring example', to: '/model/credit' }],

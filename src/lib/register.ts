@@ -79,6 +79,64 @@ export function newSystem(now = new Date()): RegSystem {
   return { id: hash(now.toISOString() + Math.random()), name: '', owner: '', purpose: '', vendor: '', status: 'idea', answers: { ...EMPTY, where: ['eu'] }, done: {}, notes: '', created: d, updated: d, nextReview: '' };
 }
 
+/* ---------- management summary (top of the Markdown and Word reports) ---------- */
+
+/** most severe EU category first; used to rank systems and their open actions */
+const SEVERITY: EuCat[] = ['banned', 'high', 'gpai-systemic', 'gpai', 'limited', 'minimal', 'outside'];
+
+export interface Summary {
+  /** systems in the register, including retired ones */
+  systems: number;
+  retired: number;
+  /** EU AI Act categories that occur, most severe first */
+  byCategory: { cat: EuCat; label: string; n: number }[];
+  /** systems still in use or planned with at least one open action */
+  withOpenActions: number;
+  /** the next three dates from deadlines() */
+  next: Deadline[];
+  /** up to five open actions, from the most severe systems first */
+  topActions: { system: string; source: string; text: string }[];
+}
+
+export function summary(list: RegSystem[], today = new Date()): Summary {
+  const active = list.filter((s) => s.status !== 'retired');
+  const cats = new Map<EuCat, number>();
+  for (const s of list) { const e = resultOf(s).eu; cats.set(e, (cats.get(e) ?? 0) + 1); }
+  const open = active
+    .map((s) => { const r = resultOf(s); return { s, r, acts: actionsOf(s, r).filter((a) => !s.done[a.id]) }; })
+    .filter((x) => x.acts.length > 0);
+  const ranked = [...open].sort((a, b) => SEVERITY.indexOf(a.r.eu) - SEVERITY.indexOf(b.r.eu));
+  const topActions: Summary['topActions'] = [];
+  // one action per system in turn, so a single large system does not fill the list
+  for (let round = 0; topActions.length < 5 && ranked.some((x) => x.acts.length > round); round++) {
+    for (const x of ranked) {
+      if (topActions.length >= 5) break;
+      const a = x.acts[round];
+      if (a) topActions.push({ system: x.s.name || 'Unnamed system', source: a.source, text: a.text });
+    }
+  }
+  return {
+    systems: list.length,
+    retired: list.length - active.length,
+    byCategory: SEVERITY.filter((c) => cats.has(c)).map((c) => ({ cat: c, label: EU_LABEL[c], n: cats.get(c)! })),
+    withOpenActions: open.length,
+    next: deadlines(list, today).slice(0, 3),
+    topActions,
+  };
+}
+
+/** the summary as lines of Markdown; the Word report renders the same content */
+export function summaryLines(m: Summary): { facts: string[]; next: string[]; actions: string[] } {
+  const facts = [
+    `Systems in the register: ${m.systems}${m.retired ? ` (${m.retired} retired)` : ''}`,
+    `EU AI Act categories: ${m.byCategory.length ? m.byCategory.map((c) => `${c.label} ${c.n}`).join(', ') : 'none yet'}`,
+    `Systems with open actions: ${m.withOpenActions} of ${m.systems - m.retired}`,
+  ];
+  const next = m.next.map((d) => `${d.date.toISOString().slice(0, 10)}: ${line(d.system) || 'Unnamed system'}. ${d.label}`);
+  const actions = m.topActions.map((a) => `${line(a.system)} (${a.source}): ${a.text}`);
+  return { facts, next, actions };
+}
+
 /* ---------- reports ---------- */
 
 const line = (s: string) => s.replace(/\r?\n/g, ' ').trim();
@@ -114,6 +172,14 @@ export function systemMarkdown(s: RegSystem, today = new Date()) {
   return out.join('\n');
 }
 
+function summaryMarkdown(list: RegSystem[], today: Date) {
+  const { facts, next, actions } = summaryLines(summary(list, today));
+  const out = ['## Summary for management', '', ...facts.map((f) => `- ${f}`), ''];
+  out.push('Next dates:', '', ...(next.length ? next.map((n) => `- ${n}`) : ['- No upcoming EU AI Act or Colorado dates for these systems.']), '');
+  out.push('Top open actions:', '', ...(actions.length ? actions.map((a, i) => `${i + 1}. ${a}`) : ['- None. Every listed action is ticked off.']), '');
+  return out;
+}
+
 export function registerMarkdown(list: RegSystem[], org: string, today = new Date()) {
   const date = today.toISOString().slice(0, 10);
   const dl = deadlines(list, today);
@@ -121,6 +187,9 @@ export function registerMarkdown(list: RegSystem[], org: string, today = new Dat
     `# AI register${org.trim() ? `: ${line(org)}` : ''}`,
     '',
     `Exported ${date} from AI Risk Explorer. Indicative self-assessment for internal use; not legal advice.`,
+    '',
+    ...summaryMarkdown(list, today),
+    '## Systems at a glance',
     '',
     '| System | Owner | Status | EU AI Act | Actions done |',
     '|---|---|---|---|---|',

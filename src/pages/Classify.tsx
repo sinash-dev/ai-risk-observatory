@@ -20,9 +20,9 @@ function decode(s: string | null | undefined): Answers | null {
 
 interface Step { id: string; legend: string; hint?: string; show?: (a: Answers) => boolean; ok?: (a: Answers) => boolean; body: (a: Answers, set: (p: Partial<Answers>) => void) => JSX.Element; summary: (a: Answers) => string }
 const STEPS: Step[] = [
-  { id: 'where', legend: 'Where will it be used or offered?', hint: 'Pick all that apply.', ok: (a) => a.where.length > 0, body: (a, set) => <Multi opts={WHERE} value={a.where} set={(v) => set({ where: v })} />, summary: (a) => a.where.map((w) => WHERE.find((x) => x.v === w)!.l).join(', ') || '—' },
+  { id: 'where', legend: 'Where will it be used or offered?', hint: 'Select all that apply.', ok: (a) => a.where.length > 0, body: (a, set) => <Multi opts={WHERE} value={a.where} set={(v) => set({ where: v })} />, summary: (a) => a.where.map((w) => WHERE.find((x) => x.v === w)!.l).join(', ') || '—' },
   { id: 'role', legend: 'What is your role?', body: (a, set) => <Radio name="role" opts={ROLE} value={a.role} set={(v) => set({ role: v })} />, summary: (a) => ROLE.find((x) => x.v === a.role)!.d! },
-  { id: 'banned', legend: 'Does it do any of the following?', hint: 'These are the practices the EU AI Act bans, in plain words.', body: (a, set) => <Multi opts={BANNED} value={a.banned} set={(v) => set({ banned: v })} none="None of these" />, summary: (a) => (a.banned.length ? `${a.banned.length} banned practice(s)` : 'None') },
+  { id: 'banned', legend: 'Does it do any of the following?', hint: 'The practices the EU AI Act bans, paraphrased.', body: (a, set) => <Multi opts={BANNED} value={a.banned} set={(v) => set({ banned: v })} none="None of these" />, summary: (a) => (a.banned.length ? `${a.banned.length} banned practice(s)` : 'None') },
   { id: 'product', legend: 'Is it a product, or a safety part of a product, covered by EU product law that needs a third-party check?', hint: 'For example medical devices, machinery, toys, lifts or vehicles.', body: (a, set) => <Radio name="product" opts={[{ v: 'yes', l: 'Yes' }, { v: 'no', l: 'No' }, { v: 'unsure', l: 'Not sure' }]} value={a.product} set={(v) => set({ product: v as Answers['product'] })} />, summary: (a) => ({ yes: 'Yes', no: 'No', unsure: 'Not sure' })[a.product] },
   {
     id: 'area', legend: 'Which area does it make or support decisions in?', hint: 'These are the high-risk areas in Annex III of the EU AI Act.',
@@ -48,7 +48,7 @@ const STEPS: Step[] = [
     summary: (a) => (a.narrow === 'yes' ? 'Narrow task' : 'No'),
   },
   { id: 'gpai', legend: 'Is it a general-purpose AI model that you develop and place on the market?', body: (a, set) => <Radio name="gpai" opts={[{ v: 'no', l: 'No' }, { v: 'yes', l: 'Yes' }, { v: 'systemic', l: 'Yes, trained with more than 10²⁵ floating-point operations' }]} value={a.gpai} set={(v) => set({ gpai: v as Answers['gpai'] })} />, summary: (a) => ({ no: 'No', yes: 'Yes', systemic: 'Yes, above 10²⁵' })[a.gpai] },
-  { id: 'interact', legend: 'Does it do any of these?', hint: 'Pick all that apply.', body: (a, set) => <Multi opts={INTERACT} value={a.interact} set={(v) => set({ interact: v })} none="None of these" />, summary: (a) => (a.interact.length ? a.interact.length + ' selected' : 'None') },
+  { id: 'interact', legend: 'Does it do any of these?', hint: 'Select all that apply.', body: (a, set) => <Multi opts={INTERACT} value={a.interact} set={(v) => set({ interact: v })} none="None of these" />, summary: (a) => (a.interact.length ? a.interact.length + ' selected' : 'None') },
   {
     id: 'data', legend: 'Personal data and automated decisions',
     body: (a, set) => (
@@ -102,9 +102,9 @@ export default function Classify({ query }: PageProps) {
       <div className="narrow stack no-print">
         <Breadcrumbs trail={[{ label: 'Tools' }, { label: 'Classify your system' }]} />
         <h1>Classify your system</h1>
-        <p className="lead">Ten short questions. You get an indicative classification under the EU AI Act and the other frameworks that apply where you operate, with what to do next.</p>
+        <p className="lead">Answer a few questions about one AI system. You will see where it falls under the EU AI Act, which other rules apply where you operate, and what to do next.</p>
       </div>
-      <div className="banner" role="note"><b>Indicative only.</b> Not legal advice. Check the official text and get legal review. For a second opinion on the EU AI Act, try the European Commission’s free <a href="https://ai-act-service-desk.ec.europa.eu/en/eu-ai-act-compliance-checker" target="_blank" rel="noopener noreferrer">AI Act compliance checker ↗</a>.</div>
+      <p className="card quiet card-pad small classify-note" role="note">This is an indication, not legal advice. For a second opinion on the EU AI Act, try the European Commission’s free <a href="https://ai-act-service-desk.ec.europa.eu/en/eu-ai-act-compliance-checker" target="_blank" rel="noopener noreferrer">AI Act compliance checker ↗</a>.</p>
 
       <div className="wiz">
         <div className="wiz-main">
@@ -118,7 +118,7 @@ export default function Classify({ query }: PageProps) {
                   {step.hint && <p className="muted small">{step.hint}</p>}
                   {step.body(a, set)}
                 </fieldset>
-                {!canNext && <p className="small" style={{ color: '#e0b25c' }}>Please choose an answer to continue.</p>}
+                {!canNext && <p className="small" style={{ color: 'var(--c-level-medium, #e0b25c)' }}>Please choose an answer to continue.</p>}
                 <div className="wiz-nav">
                   <button type="button" className="btn" disabled={i === 0} onClick={() => go(-1)}>Back</button>
                   <button type="submit" className="btn btn-primary" disabled={!canNext}>{i === steps.length - 1 ? 'See the result' : 'Next'}</button>

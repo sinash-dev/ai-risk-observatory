@@ -30,7 +30,8 @@ test('register: Word report downloads as a .docx', async ({ page }) => {
   await page.goto(BASE + 'register/');
   await page.getByRole('button', { name: 'Add your first system' }).click();
   await page.getByLabel('Name of the system').fill('Claims triage');
-  const [dl] = await Promise.all([page.waitForEvent('download'), page.getByRole('button', { name: 'Export report (Word)' }).click()]);
+  await page.getByRole('button', { name: 'Export', exact: true }).click();
+  const [dl] = await Promise.all([page.waitForEvent('download'), page.getByRole('button', { name: 'Word report' }).click()]);
   expect(dl.suggestedFilename()).toMatch(/^ai-register-\d{4}-\d{2}-\d{2}\.docx$/);
   const buf = readFileSync((await dl.path())!);
   expect(buf.subarray(0, 2).toString()).toBe('PK'); // a .docx is a zip file

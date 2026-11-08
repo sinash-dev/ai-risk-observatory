@@ -121,7 +121,7 @@ export function LesionViz({ s, m }: VizProps) {
           {skew && <Flag tone="bad">Training data: 90% skin types I–III</Flag>}
           {adv && <Flag tone="bad">Invisible noise flipped a melanoma to “benign 0.97”</Flag>}
           {auto && <Flag tone="warn">{discharged} patients discharged with no clinician review</Flag>}
-          {!ruler && !skew && !adv && !auto && <span>Toggle a risk in <b>Break it</b> to see how this model fails — then switch to “What the model looks at”.</span>}
+          {!ruler && !skew && !adv && !auto && <span>Toggle a risk in <b>Break it</b> to see how this model fails, then switch to “What the model looks at”.</span>}
         </div>
       </div>
       <div className="stats" style={{ marginTop: 12 }}>

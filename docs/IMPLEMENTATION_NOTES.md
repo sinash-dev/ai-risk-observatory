@@ -2,6 +2,16 @@
 
 Notes from implementing the "AI Risk Explorer: Implementation Spec" (workstreams WS1–WS11), November 2026. They list where the build differs from the spec, what needs the owner's decision, and what was left out.
 
+## E3: journey tools and editorial pass (November 2026)
+
+From `docs/ENHANCEMENT_PLAN.md`.
+- Classify: new lead without a hard-coded count ("a few questions"; the wizard shows 9 or 10 questions depending on the answers), the same wording in the route description, "Select all that apply" once per step, and one quiet note ("This is an indication, not legal advice", with the Commission's checker link, `rel="noopener noreferrer"` kept) in place of the yellow banner. It still prints with the result. The "Please choose an answer" text uses the themed amber instead of a fixed dark-theme colour. `src/lib/classify.ts` is unchanged.
+- Register: when empty, only "Add your first system", plus a small "Restore a backup (JSON)" link (without it, someone moving to a new computer could not import). With systems: "Add a system", an Export menu (Markdown report, Word report, CSV, Print) and a Backup menu (Back up (JSON), Import JSON). Both menus use `src/components/ActionMenu.tsx`: `aria-expanded`, arrow keys, Escape returns focus, a click outside or Tab closes. New lead and empty-state copy from the directive, adjusted to say "risk level under the EU AI Act". The yellow box is now one small line under the lead; the short line "Indicative, not legal advice." stays beside each system's classification (the plan's deviation).
+- `summary()` and `summaryLines()` in `src/lib/register.ts`: systems (and retired), EU categories most severe first, systems with open actions, the next three dates from the register's own `deadlines()`, and five open actions taken one per system in turn from the most severe system down. Both the Markdown and Word reports start with "Summary for management"; the old table is now "Systems at a glance". Unit tests: empty, one banned, mixed tiers, deadline order; the Word test checks the new section.
+- Classification logic was already shared (`register.ts` calls `classify()`), so nothing changed there.
+- Editorial pass: em dashes in `src` down from 118 to 48. The four lab data files (`classical`, `genai`, `deep`, `agentic`) now have none; the rest are code comments, simulated screen text inside the examples (chat replies, file titles) and "no value" placeholders. No date, article, figure, URL or case outcome changed. Four memo cards (spam filter, face recognition, emotion recognition, foundation model) were rewritten from third-person descriptions into a person speaking, keeping their own figures; the other 21 already spoke. Announcing phrases ("in plain words") removed from the glossary lead and the guide definitions note. A check for long sentences repeated across files found only two, both intended (a form question shared by classify and the register, and a workshop prompt quoting its example).
+- Tests changed: `e2e/register.spec.ts` and `e2e/phase2.spec.ts` now open the Export or Backup menu before choosing an item (the buttons they clicked moved into the menus); a new test covers the empty state and the menu keyboard behaviour.
+
 ## E2: visual hierarchy and polish (November 2026)
 
 From `docs/ENHANCEMENT_PLAN.md`.

@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Multi, Radio } from '../components/Choice';
 import { Ring } from '../components/model/Panels';
+import { ActionMenu } from '../components/ActionMenu';
 import { Breadcrumbs } from '../components/Nav';
 import { copyText, toast } from '../components/Toast';
 import { LAB_BY_ID } from '../data/labs';
@@ -39,7 +40,7 @@ function Editor({ s, onChange, onDelete }: { s: RegSystem; onChange: (s: RegSyst
       <div className="reg-ed-head">
         <div>
           <h2 style={{ fontSize: 22 }}>{s.name || 'New system'}</h2>
-          <span className="reg-tier"><PyramidMini tier={tierOfCategory(r.eu)} /><span className="tag"><span className="swatch" style={{ background: TONE[r.eu] }} />EU AI Act: {EU_LABEL[r.eu]}{r.euFrom ? ` (from ${r.euFrom})` : ''}</span></span>
+          <span className="reg-tier"><PyramidMini tier={tierOfCategory(r.eu)} /><span className="tag"><span className="swatch" style={{ background: TONE[r.eu] }} />EU AI Act: {EU_LABEL[r.eu]}{r.euFrom ? ` (from ${r.euFrom})` : ''}</span><span className="small muted">Indicative, not legal advice.</span></span>
         </div>
         <Ring n={p.done} total={p.total} size={54} />
       </div>
@@ -146,6 +147,18 @@ export default function Register() {
   const add = () => { const s = newSystem(); setData((d) => ({ ...d, systems: [...d.systems, s] })); setOpen(s.id); track('register-add'); setTimeout(() => document.getElementById('reg-editor')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 60); };
   const remove = (id: string) => { setData((d) => ({ ...d, systems: d.systems.filter((x) => x.id !== id) })); setOpen(null); toast('System deleted'); };
   const stamp = new Date().toISOString().slice(0, 10);
+  const exportMd = () => { download(`ai-register-${stamp}.md`, registerMarkdown(systems, data.org), 'text/markdown;charset=utf-8'); track('register-export-md'); };
+  const exportDocx = async () => {
+    setBusy(true);
+    try {
+      const { registerDocxBlob } = await import('../lib/registerDocx');
+      download(`ai-register-${stamp}.docx`, await registerDocxBlob(systems, data.org), 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
+      track('register-export-docx');
+    } catch { toast('The Word file could not be created. Try the Markdown export instead.'); }
+    setBusy(false);
+  };
+  const exportCsv = () => { download(`ai-register-${stamp}.csv`, registerCsv(systems), 'text/csv;charset=utf-8'); track('register-export-csv'); };
+  const exportJson = () => { download(`ai-register-${stamp}.json`, JSON.stringify({ format: 'ai-risk-explorer-register', version: 1, ...data }, null, 2), 'application/json'); track('register-export-json'); };
   const onImport = async (f: File) => {
     try {
       const { systems: imp, skipped } = parseImport(await f.text());
@@ -163,37 +176,36 @@ export default function Register() {
       <div className="narrow stack no-print">
         <Breadcrumbs trail={[{ label: 'Tools' }, { label: 'My AI register' }]} />
         <h1>My AI register</h1>
-        <p className="lead">List the AI systems your organisation builds or uses. For each one you get its category under the EU AI Act and the other rules that apply where you operate, and a list of things to do that you can tick off.</p>
-        <div className="banner" role="note"><b>Your data stays in this browser.</b> Nothing is sent anywhere. Export the register to keep a copy or move it to another computer. Results are indicative and not legal advice.</div>
+        <p className="lead">This is your inventory of AI systems and the starting point for an audit. Add each tool, answer a few questions, and the register shows its risk level under the EU AI Act and what to do next.</p>
+        <p className="small muted reg-privacy">Stored in this browser only. Nothing is sent anywhere. Use Backup to keep a copy or move it to another computer.</p>
       </div>
 
       <div className="reg-top no-print">
         <label className="reg-org">Organisation<input value={data.org} onChange={(e) => setData((d) => ({ ...d, org: e.target.value }))} placeholder="Optional, appears on exports" maxLength={120} /></label>
-        <div className="reg-tools">
-          <button className="btn btn-primary" onClick={add}>Add a system</button>
-          <button className="btn" disabled={!systems.length} onClick={() => { download(`ai-register-${stamp}.md`, registerMarkdown(systems, data.org), 'text/markdown;charset=utf-8'); track('register-export-md'); }}>Export report (Markdown)</button>
-          <button className="btn" disabled={!systems.length || busy} onClick={async () => {
-            setBusy(true);
-            try {
-              const { registerDocxBlob } = await import('../lib/registerDocx');
-              download(`ai-register-${stamp}.docx`, await registerDocxBlob(systems, data.org), 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
-              track('register-export-docx');
-            } catch { toast('The Word file could not be created. Try the Markdown export instead.'); }
-            setBusy(false);
-          }}>{busy ? 'Preparing…' : 'Export report (Word)'}</button>
-          <button className="btn" disabled={!systems.length} onClick={() => { download(`ai-register-${stamp}.csv`, registerCsv(systems), 'text/csv;charset=utf-8'); track('register-export-csv'); }}>Export CSV</button>
-          <button className="btn" disabled={!systems.length} onClick={() => { download(`ai-register-${stamp}.json`, JSON.stringify({ format: 'ai-risk-explorer-register', version: 1, ...data }, null, 2), 'application/json'); track('register-export-json'); }}>Back up (JSON)</button>
-          <button className="btn" onClick={() => fileRef.current?.click()}>Import JSON</button>
-          <button className="btn" disabled={!systems.length} onClick={() => window.print()}>Print</button>
-          <input ref={fileRef} type="file" accept="application/json,.json" hidden onChange={(e) => { const f = e.target.files?.[0]; if (f) onImport(f); e.target.value = ''; }} />
-        </div>
+        {systems.length > 0 && (
+          <div className="reg-tools">
+            <button className="btn btn-primary" onClick={add}>Add a system</button>
+            <ActionMenu label={busy ? 'Preparing…' : 'Export'} items={[
+              { label: 'Markdown report', onSelect: exportMd },
+              { label: 'Word report', onSelect: exportDocx, disabled: busy },
+              { label: 'CSV', onSelect: exportCsv },
+              { label: 'Print', onSelect: () => window.print() },
+            ]} />
+            <ActionMenu label="Backup" items={[
+              { label: 'Back up (JSON)', onSelect: exportJson },
+              { label: 'Import JSON', onSelect: () => fileRef.current?.click() },
+            ]} />
+          </div>
+        )}
+        <input ref={fileRef} type="file" accept="application/json,.json" hidden onChange={(e) => { const f = e.target.files?.[0]; if (f) onImport(f); e.target.value = ''; }} />
       </div>
 
       {systems.length === 0 ? (
         <div className="card card-pad raised reg-empty">
           <h2 style={{ fontSize: 20 }}>No systems yet</h2>
-          <p className="muted">Start with the AI tools people already use at work: a chatbot, a CV screening tool, a forecasting model. Most organisations find more than they expect.</p>
+          <p className="muted">Begin with what people already use: a chatbot, a CV screener, a sales forecast. Ask around. There are usually more than you think.</p>
           <button className="btn btn-primary" onClick={add}>Add your first system</button>
+          <p className="small muted" style={{ marginTop: 12 }}>Moving from another computer? <button className="link-btn" onClick={() => fileRef.current?.click()}>Restore a backup (JSON)</button></p>
         </div>
       ) : (
         <>

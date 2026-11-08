@@ -11,7 +11,7 @@ export const spamLab: LabDef = {
   euNote: '',
   glyph: 'NB',
   primer: 'Counts how often each word appears in spam and in normal email, then uses those counts to estimate the probability that a new message is spam. It is fast, cheap and easy to retrain, and it has been used in spam filters since the late 1990s.',
-  brief: { from: 'IT department', role: '', text: 'Staff receive about 40,000 emails a day. IT wants a filter that keeps spam and phishing out of inboxes without losing real messages.', kpi: '' },
+  brief: { from: 'IT department', role: '', text: 'We get about 40,000 emails a day and phishing keeps getting through. Keep spam out of the inboxes, but do not lose a single real message.', kpi: '' },
   stakeholders: ['Staff', 'Customers who email us', 'IT security team'],
   baseRisk: { fairness: 4, robustness: 10, transparency: 6, privacy: 10, security: 10, safety: 4, accountability: 6, misuse: 4 },
   stressors: [
@@ -45,7 +45,7 @@ export const faceLab: LabDef = {
   euNote: '',
   glyph: 'FR',
   primer: 'A neural network turns each face into a list of numbers (an embedding). Two faces "match" if their numbers are close enough. The match threshold decides the trade-off between missing people on the list and wrongly matching innocent people.',
-  brief: { from: 'Loss prevention', role: '', text: 'Meridian Retail loses €9M a year to theft. Security wants cameras at every entrance to compare each shopper’s face with a watchlist of known shoplifters and alert staff to a match.', kpi: '' },
+  brief: { from: 'Loss prevention', role: '', text: 'We lose €9M a year to theft. Put cameras at every entrance, check each shopper’s face against our watchlist of known shoplifters, and alert staff the moment there is a match.', kpi: '' },
   stakeholders: ['Every shopper', 'People on the watchlist', 'Store staff', 'Data-protection authority'],
   baseRisk: { fairness: 16, robustness: 12, transparency: 16, privacy: 30, security: 10, safety: 12, accountability: 12, misuse: 12 },
   stressors: [
@@ -80,7 +80,7 @@ export const emotionLab: LabDef = {
   euNote: '',
   glyph: 'ER',
   primer: 'A model trained on recordings labelled with emotions ("angry", "happy", "neutral") predicts the emotion in a new voice or face. The science behind reading inner feelings from outward signals is disputed: the same tone can mean different things across people and cultures.',
-  brief: { from: 'Contact-centre management', role: '', text: 'Management wants software that listens to every call, scores how empathetic each agent sounds, and feeds the scores into monthly performance reviews.', kpi: '' },
+  brief: { from: 'Contact-centre management', role: '', text: 'I want to know which agents actually show empathy. Have the software listen to every call, score each agent, and put the scores into the monthly performance reviews.', kpi: '' },
   stakeholders: ['Call-centre staff', 'Customers on the line', 'Works council', 'Labour and data-protection authorities'],
   baseRisk: { fairness: 18, robustness: 22, transparency: 16, privacy: 22, security: 6, safety: 12, accountability: 14, misuse: 10 },
   stressors: [
@@ -113,7 +113,7 @@ export const foundationLab: LabDef = {
   euNote: '',
   glyph: 'FM',
   primer: 'A very large neural network is trained on trillions of words to predict the next word. The result can be adapted to almost any task, which is why the companies that train these models carry their own duties: what goes into training shapes every product built on top.',
-  brief: { from: 'Meridian AI Labs', role: '', text: 'Meridian wants its own general-purpose model, trained on as much text as possible, released to other companies through an API within nine months.', kpi: '' },
+  brief: { from: 'Meridian AI Labs', role: '', text: 'We want our own general-purpose model, trained on as much text as we can get, and open to other companies through an API within nine months.', kpi: '' },
   stakeholders: ['Authors and rights holders', 'People whose data is online', 'Companies building on the model', 'End users', 'EU AI Office'],
   baseRisk: { fairness: 14, robustness: 14, transparency: 18, privacy: 18, security: 14, safety: 14, accountability: 16, misuse: 18 },
   stressors: [

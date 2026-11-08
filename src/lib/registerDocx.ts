@@ -3,7 +3,7 @@
  * so the docx library never weighs on the register page itself.
  */
 import { AlignmentType, BorderStyle, Document, HeadingLevel, Packer, Paragraph, Table, TableCell, TableRow, TextRun, WidthType } from 'docx';
-import { EU_LABEL, STATUS_LABEL, actionsOf, deadlines, progressOf, resultOf, type RegSystem } from './register';
+import { EU_LABEL, STATUS_LABEL, actionsOf, deadlines, progressOf, resultOf, summary, summaryLines, type RegSystem } from './register';
 
 const FONT = 'Calibri';
 const p = (text: string, opts: { bold?: boolean; italic?: boolean; size?: number } = {}) =>
@@ -54,13 +54,22 @@ function systemSection(s: RegSystem) {
   return out;
 }
 
+function summarySection(list: RegSystem[], today: Date) {
+  const { facts, next, actions } = summaryLines(summary(list, today));
+  const out: Paragraph[] = [h('Summary for management', HeadingLevel.HEADING_1), ...facts.map(bullet)];
+  out.push(p('Next dates', { bold: true }), ...(next.length ? next.map(bullet) : [bullet('No upcoming EU AI Act or Colorado dates for these systems.')]));
+  out.push(p('Top open actions', { bold: true }), ...(actions.length ? actions.map((a, i) => p(`${i + 1}. ${a}`)) : [bullet('None. Every listed action is ticked off.')]));
+  return out;
+}
+
 export function registerDocument(list: RegSystem[], org: string, today = new Date()) {
   const date = today.toISOString().slice(0, 10);
   const dl = deadlines(list, today);
   const children: (Paragraph | Table)[] = [
     new Paragraph({ heading: HeadingLevel.TITLE, children: [new TextRun({ text: `AI register${org.trim() ? `: ${org.trim()}` : ''}`, font: FONT })] }),
     p(`Exported ${date} from AI Risk Explorer. Indicative self-assessment for internal use; not legal advice.`, { italic: true }),
-    h('Summary', HeadingLevel.HEADING_1),
+    ...summarySection(list, today),
+    h('Systems at a glance', HeadingLevel.HEADING_1),
     table([
       ['System', 'Owner', 'Status', 'EU AI Act', 'Actions done'],
       ...list.map((s) => { const pr = progressOf(s); return [s.name || 'Unnamed', s.owner || '-', STATUS_LABEL[s.status], EU_LABEL[resultOf(s).eu], `${pr.done}/${pr.total}`]; }),

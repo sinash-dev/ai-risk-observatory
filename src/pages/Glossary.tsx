@@ -31,7 +31,7 @@ export default function Glossary() {
       <div className="narrow stack">
         <Breadcrumbs trail={[{ label: 'Learn' }, { label: 'Glossary' }]} />
         <h1>Glossary</h1>
-        <p className="lead">{GLOSSARY.length} terms used across the site, in plain words, with links to where you can see each idea at work.</p>
+        <p className="lead">{GLOSSARY.length} terms used across the site, each with links to where you can see the idea at work.</p>
       </div>
       <div className="gl-tools">
         <input type="search" className="gl-search" placeholder="Filter terms…" value={q} onChange={(e) => setQ(e.target.value)} aria-label="Filter terms" />
