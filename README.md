@@ -6,16 +6,19 @@ A training website that shows, with working examples, how AI and machine learnin
 
 ## What is on the site
 
-- **Models** (`/`, `/model/:id/`): 25 AI uses, from a naive Bayes spam filter to a back-office browser agent with MCP tools, in four families (classical machine learning, deep learning, generative AI, AI agents). A 3D map on the home page, with a 2D fallback. Each example is a case study: memo, simulation with problems and safeguards, risk radar, trade-off gauges, residual risk, how each framework classifies it (with Met / Partly met / Not met against the safeguards switched on), real cases, a before-go-live checklist and workshop prompts. Setups can be shared as links (`?p=…&s=…`).
-- **Frameworks** (`/rules/`, `/rules/:fw/`): a 3D globe, a scroll-driven worldwide timeline, and a guide per framework (EU AI Act, US laws, NIST AI RMF, ISO/IEC 42001, OWASP, GDPR, China, Korea, Singapore, UK) with definitions, categories, requirements, timeline, roadmap, who enforces it, myths and a sortable examples table.
+- **Home** (`/`): says who the site is for and what to do first (check an AI system in the register), with the map of examples, how it works, coming deadlines, three task cards, the latest updates and the full list of examples.
+- **Examples** (`/model/:id/`): 25 AI uses, from a naive Bayes spam filter to a back-office browser agent with MCP tools, in four families (classical machine learning, deep learning, generative AI, AI agents). Shown as a 3D map on the home page (labels hide when they would overlap), with a 2D fallback. Each example is a case study: memo, simulation with problems and safeguards, risk radar, trade-off gauges, residual risk, how each framework classifies it (four frameworks first, the rest on request, with Met / Partly met / Not met against the safeguards switched on), real cases, a before-go-live checklist and workshop prompts. Setups can be shared as links (`?p=…&s=…`).
+- **Frameworks** (`/rules/`, `/rules/:fw/`): a 3D globe, a scroll-driven worldwide timeline, and a guide per framework (EU AI Act, US laws, NIST AI RMF, ISO/IEC 42001, OWASP, GDPR, China, Korea, Singapore, UK) that opens with an "In one minute" summary, then definitions, categories, requirements, timeline, roadmap, who enforces it, myths and a sortable examples table.
 - **Compare** (`/compare/`, `/compare/:fw/`): strength grid and radar for 11 topics, scoring rubric, gap finder, CSV and PNG export.
-- **Learn**: Basics (`/basics/`), learning tracks for seven roles (`/tracks/`), glossary of 55 terms (`/glossary/`), 14 quizzes (`/quiz/`, `/quiz/:id/`) and a printable certificate (`/certificate/`).
-- **Start here** (`/start/`): a suggested route through the site for compliance leads, trainers, product teams and students.
+- **Learn**: Basics (`/basics/`), learning tracks for seven roles (`/tracks/`), glossary of 57 terms (`/glossary/`), 14 quizzes (`/quiz/`, `/quiz/:id/`) and a printable certificate (`/certificate/`).
+- **Start here** (`/start/`): a five-step path for the person who has just been handed AI compliance, then shorter routes for trainers, product teams and students.
 - **Training** (`/team/`, `/workshop/`): team plans shared by link, personal learning records and a team record; presenter slides for a 60-minute workshop. Quizzes download as SCORM 1.2 packages from `/quiz/`.
 - **Sector guides** (`/sectors/`, `/sectors/<id>/`): banking, insurance, HR, health care, public sector and education.
-- **Tools**: My AI register (`/register/`, kept in the browser's local storage, with Markdown, Word, CSV and JSON export and JSON import), classify your system (`/classify/`), controls crosswalk (`/crosswalk/`), toolkit of 21 templates, including framework packs for the EU AI Act, ISO/IEC 42001, NYC Local Law 144 and Korea (`/toolkit/`, files in `public/toolkit/`), case library (`/cases/`).
+- **Tools**: My AI register (`/register/`, kept in the browser's local storage; an Export menu for Markdown and Word reports that open with a summary for management, CSV and print, and a Backup menu for JSON backup and import), classify your system (`/classify/`), controls crosswalk (`/crosswalk/`), toolkit of 21 templates, including framework packs for the EU AI Act, ISO/IEC 42001, NYC Local Law 144 and Korea (`/toolkit/`, files in `public/toolkit/`), case library (`/cases/`).
 - **About** (`/about/`) and **Updates** (`/updates/`, RSS at `/updates.xml`).
-- **View through**: a switch in the header that shows the whole site through one framework.
+- **View through**: a switch in the header that shows the site through one framework. It appears only on the pages it changes: home, examples and framework guides.
+
+Navigation: Start here, My AI register, Frameworks, Examples, Learn (menu), Tools (menu). Compare is linked from the Frameworks page, the footer and search. The 60-second tour starts from the Start page or the footer. The site has a light and a dark theme.
 
 Classical models are trained live in the browser on synthetic data. Generative AI and agent behaviour is scripted. Meridian, its people and the headlines in the simulations are fictional.
 
@@ -31,7 +34,8 @@ npm run dev
 | `npm run check` | Type-check, unit tests (Vitest) and production build with postbuild |
 | `npm run e2e` | Playwright smoke and feature tests on mobile and desktop, with axe accessibility checks (run after a build) |
 | `npx tsx scripts/check-links.ts` | Checks every external URL in the data (run by hand, not in CI) |
-| `node scripts/lighthouse.mjs 4174` | Lighthouse (mobile) for four pages against a running `vite preview --port 4174`; reports go to `docs/lighthouse/` |
+| `node scripts/lighthouse.mjs 4174` | Lighthouse (mobile, median of three runs) for ten pages against a running `vite preview --port 4174`; reports go to `docs/lighthouse/`. Needs `npm i --no-save lighthouse@12.2.1` first |
+| `node scripts/audit.mjs 4174` | Checks every route at 375 and 1366 px for console errors, overflow, headings, small targets and broken internal links |
 | `npx tsx scripts/crosswalk-seed.ts` | Prints candidate references per framework for curating the crosswalk |
 
 Every push to `main` runs `npm run check` and the Playwright suite, then deploys to GitHub Pages (`.github/workflows/deploy.yml`).
@@ -43,6 +47,10 @@ Every push to `main` runs `npm run check` and the Playwright suite, then deploys
 - `scripts/postbuild.ts` writes an `index.html` per route (title, description, canonical, Open Graph, a static first paint and module preloads), `404.html`, `sitemap.xml`, `robots.txt`, `route-manifest.json`, `updates.xml` and Open Graph images (`scripts/og.ts`).
 - Pages are code-split; new top-level pages are registered in `src/pages/registry.ts` and listed in `STATIC_PAGES` (`src/data/routes.ts`) and `LIVE_PATHS` (`src/data/nav.ts`).
 - Fonts are self-hosted (@fontsource). A cookieless GoatCounter counter records page views; nothing else is sent anywhere.
+
+## Possible paid features (entitlements)
+
+Everything is free. `src/lib/entitlements.ts` lists the features that could become paid later (`FREE_FOR_NOW = true`, so `hasFeature()` always returns true) and where each one sits in the code (`PREMIUM_SLOTS`). `<PremiumSlot>` (`src/components/Premium.tsx`) marks those places and renders its children unchanged. Every file the browser builds is saved through `exportFile()` (`src/lib/exportFile.ts`), so a limit or sign-in prompt would have one place to go. A static site cannot enforce any of this, since all code runs in the visitor's browser; real gating needs an authenticated backend (Phase 4).
 
 ## Adding an example
 

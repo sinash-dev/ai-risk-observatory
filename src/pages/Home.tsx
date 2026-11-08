@@ -17,6 +17,7 @@ import { go, useClock, url } from '../lib/util';
 
 export { SHORT_NAME } from '../data/shortNames';
 import { SHORT_NAME } from '../data/shortNames';
+import { HOME_H1, HOME_LEAD } from '../data/routes';
 
 const W = 1100, H = 640, CX = 550, CY = 320;
 const RX = [165, 285, 395, 500];
@@ -140,7 +141,6 @@ const HOW = [
   { t: 'Report', d: 'Export a report for your manager, then use the templates for the documents each risk level asks for.', to: '/toolkit' },
 ];
 
-const COUNT_WORD: Record<number, string> = { 2: 'two', 3: 'three', 4: 'four', 5: 'five', 6: 'six', 7: 'seven', 8: 'eight', 9: 'nine', 10: 'ten', 11: 'eleven', 12: 'twelve' };
 
 function Icon({ i }: { i: number }) {
   const p = [
@@ -185,11 +185,11 @@ export function Home() {
         <div className="wrap hero-grid">
           <motion.div className="hero-text stack" initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
             <div className="eyebrow">{fw ? `Viewing through: ${fw.short}` : 'AI Risk Explorer'}</div>
-            <h1 className="hero-h1">{fw ? `${LABS.length} AI systems, seen through ${fwName(fw.id)}` : 'Find out which AI rules apply to you, and what to do about them.'}</h1>
+            <h1 className="hero-h1">{fw ? `${LABS.length} AI systems, seen through ${fwName(fw.id)}` : HOME_H1}</h1>
             {fw ? (
               <p className="lead">{fw.intro.split('. ').slice(0, 2).join('. ')}. Each example is coloured by how {fwName(fw.id)} treats it. <a href={url(`/rules/${fw.id}`)}>Open the full guide</a>, including a learning path through these examples.</p>
             ) : (
-              <p className="lead">Made for whoever has just been handed AI compliance. List your AI tools, see how the EU AI Act and {COUNT_WORD[FRAMEWORKS.length - 1] ?? FRAMEWORKS.length - 1} other frameworks treat each one, and leave with a report you can give your manager.</p>
+              <p className="lead">{HOME_LEAD}</p>
             )}
             <div className="hero-ctas">
               <a className="btn btn-primary" href={url('/register')}>Check your first AI system</a>

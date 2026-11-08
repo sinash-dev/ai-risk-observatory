@@ -4,6 +4,11 @@ import { QUIZZES } from './quizzes';
 import { SECTORS } from './sectors';
 import { TIER_BY_ID } from './risks';
 
+const COUNT_WORD: Record<number, string> = { 2: 'two', 3: 'three', 4: 'four', 5: 'five', 6: 'six', 7: 'seven', 8: 'eight', 9: 'nine', 10: 'ten', 11: 'eleven', 12: 'twelve' };
+/** home headline and lead; also used by scripts/postbuild.ts for the static first paint */
+export const HOME_H1 = 'Find out which AI rules apply to you, and what to do about them.';
+export const HOME_LEAD = `Made for whoever has just been handed AI compliance. List your AI tools, see how the EU AI Act and ${COUNT_WORD[FRAMEWORKS.length - 1] ?? FRAMEWORKS.length - 1} other frameworks treat each one, and leave with a report you can give your manager.`;
+
 export interface RouteMeta {
   /** site path without base, leading slash, no trailing slash ("/" for home) */
   path: string;

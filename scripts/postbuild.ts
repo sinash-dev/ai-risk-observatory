@@ -6,7 +6,7 @@
  */
 import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
-import { allRoutes, type RouteMeta } from '../src/data/routes';
+import { HOME_H1, HOME_LEAD, allRoutes, type RouteMeta } from '../src/data/routes';
 import { SITE } from '../src/data/site';
 import { LOCALES, localePrefix, type LocaleInfo } from '../src/i18n/locales';
 import { renderOgImages } from './og';
@@ -50,7 +50,6 @@ const PUB: LocaleInfo[] = LOCALES.filter((l) => l.published || process.env.ALL_L
 const EN = LOCALES[0];
 
 /** must match the home headline in src/pages/Home.tsx (checked by e2e/journey.spec.ts) */
-const HOME_H1 = 'Find out which AI rules apply to you, and what to do about them.';
 
 const fullTitle = (r: RouteMeta) => (r.path === '/' ? r.title : `${r.title} · ${SITE.name}`);
 const routeUrl = (p: string, l: LocaleInfo = EN) => SITE_URL + localePrefix(l.code) + (p === '/' ? '' : p.replace(/^\//, '') + '/');
@@ -86,7 +85,7 @@ function page(r: RouteMeta, opts: { noindex?: boolean } = {}, l: LocaleInfo = EN
     .replace(/<meta name="description" content="[^"]*" \/>/, `<meta name="description" content="${esc(r.description)}" />`)
     .replace('</head>', `    ${head}\n  </head>`)
     // a static first paint (header, title, description); React replaces it when it starts
-    .replace('<div id="root"></div>', `<div id="root"><div class="shell"><div class="header"><div class="wrap header-in"><span class="brand">AI Risk Explorer</span></div></div><div class="wrap shell-main"><h1>${esc(r.path === '/' ? HOME_H1 : r.title)}</h1><p class="lead">${esc(r.description)}</p></div></div></div>\n    <noscript><p style="padding:16px">This site needs JavaScript for its simulations.</p></noscript>`);
+    .replace('<div id="root"></div>', `<div id="root"><div class="shell"><div class="header"><div class="wrap header-in"><span class="brand">AI Risk Explorer</span></div></div><div class="wrap shell-main"><h1>${esc(r.path === '/' ? HOME_H1 : r.title)}</h1><p class="lead">${esc(r.path === '/' ? HOME_LEAD : r.description)}</p></div></div></div>\n    <noscript><p style="padding:16px">This site needs JavaScript for its simulations.</p></noscript>`);
 }
 
 const routes = allRoutes();

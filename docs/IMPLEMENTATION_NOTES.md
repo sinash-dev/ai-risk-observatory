@@ -2,6 +2,33 @@
 
 Notes from implementing the "AI Risk Explorer: Implementation Spec" (workstreams WS1–WS11), November 2026. They list where the build differs from the spec, what needs the owner's decision, and what was left out.
 
+## E5: verification and release (November 2026)
+
+From `docs/ENHANCEMENT_PLAN.md`.
+- **Layout shift fixed.** On phones the footer sat inside the first screen below the loading skeleton and jumped when the page arrived (CLS 0.085 on most pages). The skeleton now fills the screen height (`PageSkeleton`), so the footer stays below it. CLS is now 0 on all ten measured pages.
+- **First paint matches the page.** The home page's prerendered lead was the route description, so its text changed when the app started. `HOME_H1` and `HOME_LEAD` now live in `src/data/routes.ts` and are used by both `Home.tsx` and `scripts/postbuild.ts`.
+- **Largest contentful paint.** In Chrome with mobile throttling (4x CPU, slow 4G), the LCP element is the lead paragraph of the prerendered first paint, at about 1.1 s; on pages where the app renders a larger paragraph (an example page, the register) LCP moves to about 1.9 to 2.3 s. It is not a heading, so heading-font preloading is not the cause. Lighthouse's simulated LCP stays at 3.2 to 3.5 s because its simulated first paint is already about 2.7 s: the page preloads about 15 script chunks that share bandwidth with the stylesheet in the simulation. Reaching 2.5 s there would mean changing what is preloaded, which could make the page slower to become interactive on real phones. Not changed; recorded as a possible later improvement.
+- Lighthouse (mobile, median of three runs), before (7 November, before E1) and after:
+
+| Page | Performance | LCP | CLS |
+|---|---|---|---|
+| Home | 85 to 87 | 3.4 s to 3.4 s | 0.085 to 0 |
+| Credit scoring example | 85 to 87 | 3.4 s to 3.4 s | 0.085 to 0 |
+| EU AI Act guide | 84 to 86 | 3.4 s to 3.4 s | 0.085 to 0 |
+| Classify | 87 to 88 | 3.3 s to 3.3 s | 0.085 to 0 |
+| Start here | 87 to 89 | 3.4 s to 3.4 s | 0.085 to 0 |
+| Register | 89 to 89 | 3.2 s to 3.2 s | 0.041 to 0 |
+| Sector guide (finance) | 88 to 90 | 3.3 s to 3.2 s | 0.085 to 0 |
+| Toolkit | 87 to 89 | 3.4 s to 3.4 s | 0.085 to 0 |
+| Team | 87 to 88 | 3.3 s to 3.3 s | 0.085 to 0 |
+| Workshop | 89 to 88 | 3.5 s to 3.5 s | 0.041 to 0 |
+
+  Accessibility, best practices and SEO are 100 on every page, before and after. Total blocking time is 0 to 20 ms (it was 0 to 40 ms). Differences of one or two points are within run-to-run variation.
+- **Keyboard.** New `e2e/keyboard.spec.ts`: the Learn and Tools menus open, move and close with the keyboard alone, and Escape returns focus to the button; search opened with Ctrl+K returns focus on Escape to the element that had it; the register Backup menu works by keyboard (the Export menu is covered in `e2e/register.spec.ts`).
+- **Copy and routes.** No hits for "Ten short questions", "Models</" or "Start with credit scoring" in `src` or `e2e`. Route descriptions checked against the pages that changed (home, Start, register, classify). `route-manifest.json` still lists 84 routes, as before E1.
+- **Docs.** README: home, examples, Start, register menus and reports, navigation, the audit and Lighthouse scripts, a section on entitlements, glossary count corrected to 57. `docs/PLAN.md`: structure brought up to date and one "Design and writing rules" section (tokens, card levels, colour and motion, the nine writing rules).
+- Not verified: real devices (all measurements are emulated), screen readers other than the accessibility tree checks, and the Word report in desktop Word (checked by reading the file's XML and in the unit test).
+
 ## E4: monetisation seams (November 2026)
 
 From `docs/ENHANCEMENT_PLAN.md`. Nothing changes for visitors: everything stays free.
