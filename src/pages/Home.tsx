@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { UPDATES } from '../data/updates';
 import { fmtDate } from '../data/site';
 import { Ring } from '../components/model/Panels';
@@ -43,6 +43,16 @@ function Orbit() {
   if (!hover && frozen.current.at) { frozen.current.off += t - frozen.current.at; frozen.current.at = 0; }
   const time = (hover ? frozen.current.at : t) - frozen.current.off;
   const ry = 0.32 + tilt * 0.34;
+  // The drawing is W units wide but often shown at half that or less; scale the labels so they stay about 11 px on screen.
+  const svgRef = useRef<SVGSVGElement>(null);
+  const [lk, setLk] = useState(1);
+  useEffect(() => {
+    const el = svgRef.current;
+    if (!el || typeof ResizeObserver === 'undefined') return;
+    const ro = new ResizeObserver(() => { const w = el.clientWidth; if (w) setLk(Math.min(3, Math.max(1, (11 * W) / (12 * w)))); });
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
 
   const pos = (lab: LabDef) => {
     const ti = TIER_BY_ID[lab.tier].ring - 1;
@@ -54,10 +64,29 @@ function Orbit() {
   };
   const nodes = LABS.map((l) => ({ l, p: pos(l) })).sort((a, b) => a.p.depth - b.p.depth);
   const hl = hover ? nodes.find((n) => n.l.id === hover) : null;
+  // Label placement: nearest nodes first; a label is drawn only if its box clears the labels already placed
+  // and stays inside the frame. The hovered node always gets its label.
+  const labelled = new Set<string>();
+  const boxes: { x0: number; x1: number; y0: number; y1: number }[] = [];
+  // the centre of every dot (where its letters sit) is an obstacle too, so a name never hides another example
+  const dots = nodes.map(({ l, p }) => { const r = (hover === l.id ? 24 : 19) * (0.72 + p.depth * 0.38) * 0.55; return { id: l.id, x0: p.x - r, x1: p.x + r, y0: p.y - r, y1: p.y + r }; });
+  const front = [...nodes].sort((a, b) => b.p.depth - a.p.depth);
+  if (hl) front.unshift(hl);
+  for (const { l, p } of front) {
+    if (labelled.has(l.id)) continue;
+    const sc = 0.72 + p.depth * 0.38;
+    const r = (hover === l.id ? 24 : 19) * sc;
+    const w = SHORT_NAME[l.id].length * 7 * sc * lk + 6;
+    const b = { x0: p.x - w / 2, x1: p.x + w / 2, y0: p.y + r + 2, y1: p.y + r + 6 + 16 * sc * lk };
+    const inside = b.x0 >= 8 && b.x1 <= W - 8 && b.y1 <= H - 4;
+    const apart = (o: typeof b) => b.x1 < o.x0 || b.x0 > o.x1 || b.y1 < o.y0 || b.y0 > o.y1;
+    const clear = boxes.every(apart) && dots.every((d) => d.id === l.id || apart(d));
+    if (hover === l.id || (inside && clear)) { labelled.add(l.id); boxes.push(b); }
+  }
 
   return (
     <div ref={box} className="map-wrap" onMouseMove={(e) => { const r = e.currentTarget.getBoundingClientRect(); setTilt(Math.min(1, Math.max(0, (e.clientY - r.top) / r.height))); }}>
-      <svg viewBox={`0 0 ${W} ${H}`} className="viz-svg" role="img" aria-label="All models orbiting from classical machine learning in the centre to AI agents at the edge">
+      <svg ref={svgRef} viewBox={`0 0 ${W} ${H}`} className="viz-svg" role="img" aria-label="All models orbiting from classical machine learning in the centre to AI agents at the edge">
         <defs>
           <radialGradient id="core"><stop offset="0" stopColor="#ffffff" stopOpacity=".55" /><stop offset=".35" stopColor="var(--accent)" stopOpacity=".18" /><stop offset="1" stopColor="var(--accent)" stopOpacity="0" /></radialGradient>
           <filter id="soft"><feGaussianBlur stdDeviation="1.2" /></filter>
@@ -72,7 +101,7 @@ function Orbit() {
           const on = hover === l.id;
           const s = 0.72 + p.depth * 0.38;
           const r = (on ? 24 : 19) * s;
-          const showLabel = on || p.depth > 0.32;
+          const showLabel = labelled.has(l.id);
           return (
             <g key={l.id} style={{ cursor: 'pointer' }} opacity={on ? 1 : 0.38 + p.depth * 0.62} onMouseEnter={() => setHover(l.id)} onMouseLeave={() => setHover(null)} onClick={() => go(`/model/${l.id}`)}>
               <ellipse cx={p.x} cy={p.y + r + 6} rx={r * 0.9} ry={r * 0.22} fill="#000" opacity={0.35 * p.depth} filter="url(#soft)" />
@@ -80,7 +109,7 @@ function Orbit() {
               <circle cx={p.x} cy={p.y} r={r} fill={c} opacity={lens === 'all' ? 0.08 : 0.28} />
               <circle cx={p.x - r * 0.3} cy={p.y - r * 0.35} r={r * 0.35} fill="#fff" opacity=".06" />
               <text x={p.x} y={p.y + 4 * s} textAnchor="middle" fontSize={11.5 * s} fontWeight={700} fill={c} fontFamily="Sora Variable, Sora, sans-serif" style={{ pointerEvents: 'none' }}>{l.glyph}</text>
-              {showLabel && <text x={p.x} y={p.y + r + 16} textAnchor="middle" fontSize={12 * s} fill="var(--ink2)" stroke="#0c0e11" strokeWidth="4" style={{ paintOrder: 'stroke', pointerEvents: 'none' }}>{SHORT_NAME[l.id]}</text>}
+              {showLabel && <text x={p.x} y={p.y + r + 4 + 11 * s * lk} textAnchor="middle" fontSize={12 * s * lk} fill="var(--ink2)" stroke="#0c0e11" strokeWidth={4 * lk} style={{ paintOrder: 'stroke', pointerEvents: 'none' }}>{SHORT_NAME[l.id]}</text>}
             </g>
           );
         })}

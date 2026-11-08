@@ -190,7 +190,7 @@ export default function Register() {
       </div>
 
       {systems.length === 0 ? (
-        <div className="card card-pad reg-empty">
+        <div className="card card-pad raised reg-empty">
           <h2 style={{ fontSize: 20 }}>No systems yet</h2>
           <p className="muted">Start with the AI tools people already use at work: a chatbot, a CV screening tool, a forecasting model. Most organisations find more than they expect.</p>
           <button className="btn btn-primary" onClick={add}>Add your first system</button>

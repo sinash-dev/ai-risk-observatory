@@ -6,6 +6,12 @@ export interface Update { date: string; title: string; body: string; fw?: FwId[]
 export const UPDATES: Update[] = [
   {
     date: '2026-11-08',
+    title: 'Easier to read',
+    body: 'Text is a little larger and spacing more even across the site. The examples map now hides any label that would overlap another, so the names you can see are readable. Each example lists four frameworks first, with a button to show the rest, and each framework guide opens with a short summary: what it is, who it covers and, where there is one, the next date to watch.',
+    links: [{ label: 'EU AI Act guide', to: '/rules/eu' }, { label: 'Credit scoring example', to: '/model/credit' }],
+  },
+  {
+    date: '2026-11-08',
     title: 'A clearer start',
     body: 'The home page now says who the site is for and what to do first: check your first AI system in the register. The menu puts My AI register at the top, calls the map of simulations Examples, and shows the framework lens only on pages where it changes something. The Start here page leads with the compliance path as five steps, with the other roles one click away. The guided tour now starts from a button on the Start page or in the footer instead of popping up.',
     links: [{ label: 'Start here', to: '/start' }, { label: 'My AI register', to: '/register' }],

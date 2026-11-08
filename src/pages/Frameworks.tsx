@@ -17,7 +17,7 @@ import { HTimeline, Roadmap, TODAY, TODAY_LABEL, parseDate } from '../components
 import { FRAMEWORKS, FW_BY_ID, OTHER_FRAMEWORKS, fwName, type Framework, type FwId } from '../data/frameworks';
 import { LABS, LAB_BY_ID, fwEntry } from '../data/labs';
 import { setLens, useLens } from '../lib/lens';
-import { go, url } from '../lib/util';
+import { go, splitOpening, url } from '../lib/util';
 import { SHORT_NAME } from '../data/shortNames';
 import { fmtDate } from '../data/site';
 
@@ -235,6 +235,10 @@ export function FrameworkPage({ id }: { id: string }) {
     { id: 'examples', label: 'Examples' },
   ];
   const g = FW_GUIDE[f.id];
+  // "In one minute": what it is, who it covers and the next dated event, all from the guide's own data
+  const [whatItIs, introRest] = splitOpening(f.intro);
+  const [whoShort] = splitOpening(f.who);
+  const nextEvent = f.timeline.map((e) => ({ ...e, y: parseDate(e.date) })).filter((e) => e.y > TODAY).sort((a, b) => a.y - b.y)[0];
   const hasQuiz = allRoutes().some((r) => r.path === `/quiz/${f.id}`);
   return (
     <div className="with-rail">
@@ -250,7 +254,15 @@ export function FrameworkPage({ id }: { id: string }) {
           <span className="asks-q">{g.ask}</span>
           <BindMeter n={g.bind} binding={f.binding} />
         </div>
-        <p className="lead">{f.intro}</p>
+        <section className="card card-pad raised one-min" aria-labelledby="one-min-h">
+          <h2 id="one-min-h" className="label">In one minute</h2>
+          <dl>
+            <div><dt>What it is</dt><dd>{whatItIs}</dd></div>
+            <div><dt>Who it covers</dt><dd>{whoShort} <a href="#overview">Full scope</a></dd></div>
+            {nextEvent && <div><dt>Next date</dt><dd><b>{nextEvent.date}:</b> {nextEvent.text} <a href="#timeline">Full timeline</a></dd></div>}
+          </dl>
+        </section>
+        {introRest && <p className="lead">{introRest}</p>}
         <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
           {lens === f.id
             ? <span className="muted small">You are viewing the site through {fwName(f.id)}. <a href="#" onClick={(e) => { e.preventDefault(); setLens('all'); }}>Switch back to all frameworks</a></span>

@@ -195,3 +195,14 @@ export function recordLab(id: string, r: LabResult) {
 /** True when the visitor asked the OS for less motion. */
 export const prefersReducedMotion = () =>
   typeof window !== 'undefined' && !!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+
+/**
+ * Splits text after its opening sentence, taking a second sentence too when the first is shorter than `min`
+ * characters (so the summary says something). Returns [opening, rest]; rest is '' when nothing is left.
+ */
+export function splitOpening(text: string, min = 40): [string, string] {
+  const parts = text.split(/(?<=[.!?])\s+(?=[A-Z“"(])/);
+  let n = 1;
+  if (parts[0].length < min && parts.length > 1) n = 2;
+  return [parts.slice(0, n).join(' '), parts.slice(n).join(' ')];
+}

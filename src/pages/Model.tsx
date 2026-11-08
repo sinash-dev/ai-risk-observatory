@@ -142,6 +142,7 @@ export function ModelPage({ id, query }: { id: string; query?: URLSearchParams }
   const [m, setM] = useState<Set<string>>(() => parseSet(query, 's', lab?.mitigations.map((x) => x.id) ?? []));
   const [tab, setTab] = useState<FwId>('eu');
   const [say, setSay] = useState('');
+  const [allFw, setAllFw] = useState(false); // framework table: four rows until expanded
   const first = useRef(true);
 
   // keep the setup in the address bar so it can be shared
@@ -174,7 +175,9 @@ export function ModelPage({ id, query }: { id: string; query?: URLSearchParams }
   const bars = [...RISKS].sort((a, b) => scores[b.key] - scores[a.key]);
   const active = lab.stressors.filter((x) => s.has(x.id));
   const allHandled = active.length > 0 && active.every((x) => !live(x.id));
-  const shownFw: FwId[] = lens === 'all' ? FRAMEWORKS.map((f) => f.id) : [lens];
+  // the lens first (if any), then the EU AI Act, then the rest in the site's usual order; four shown until expanded
+  const orderedFw: FwId[] = [...new Set<FwId>([...(lens === 'all' ? [] : [lens]), 'eu', ...FRAMEWORKS.map((f) => f.id)])];
+  const shownFw = allFw ? orderedFw : orderedFw.slice(0, 4);
   const curTab = lens === 'all' ? tab : lens;
   const lensFw = lens === 'all' ? null : lens;
   const eu = fwEntry('eu', lab.id);
@@ -238,18 +241,23 @@ export function ModelPage({ id, query }: { id: string; query?: URLSearchParams }
             </div>
           </div>
           <div className="card card-pad">
-            <div className="label" style={{ marginBottom: 10 }}>{lens === 'all' ? 'How each framework classifies this use' : `Under ${fwName(lens)}`}</div>
-            {shownFw.map((fw) => {
+            <div className="label" style={{ marginBottom: 10 }}>How each framework classifies this use</div>
+            <div id="fw-rows">{shownFw.map((fw) => {
               const e = fwEntry(fw, lab.id);
               const cat = FW_BY_ID[fw].cats.find((c) => c.id === e.cat)!;
               return (
-                <button key={fw} className="fw-row" onClick={() => { setTab(fw); document.getElementById('rules')?.scrollIntoView({ behavior: 'smooth' }); }}>
+                <button key={fw} className="fw-row" onClick={() => { if (lens !== 'all' && fw !== lens) setLens('all'); setTab(fw); document.getElementById('rules')?.scrollIntoView({ behavior: 'smooth' }); }}>
                   <span style={{ fontWeight: 600, fontSize: 14 }}>{FW_BY_ID[fw].short}</span>
                   <span className="small" style={{ display: 'flex', gap: 8, alignItems: 'baseline' }}><span className="swatch" style={{ background: cat.color, transform: 'translateY(1px)' }} />{e.status}</span>
                 </button>
               );
-            })}
-            {lens !== 'all' && <p className="small" style={{ marginTop: 12 }}>{fwEntry(lens, lab.id).summary}</p>}
+            })}</div>
+            {orderedFw.length > 4 && (
+              <button className="link-btn fw-more" aria-expanded={allFw} aria-controls="fw-rows" onClick={() => setAllFw((x) => !x)}>
+                {allFw ? 'Show fewer frameworks' : `Show all ${orderedFw.length} frameworks`}
+              </button>
+            )}
+            {lens !== 'all' && <p className="small" style={{ marginTop: 12 }}><b>{fwName(lens)}:</b> {fwEntry(lens, lab.id).summary}</p>}
           </div>
         </div>
       </section>

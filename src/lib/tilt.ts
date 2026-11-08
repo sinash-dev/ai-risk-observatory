@@ -12,7 +12,8 @@ export function useTilt() {
     let raf = 0;
     const reset = (el: HTMLElement) => { el.style.removeProperty('--rx'); el.style.removeProperty('--ry'); el.classList.remove('tilting'); };
     const onMove = (e: PointerEvent) => {
-      const el = (e.target as Element | null)?.closest?.('.card.lift') as HTMLElement | null;
+      // only cards that are links tilt; static cards stay still
+      const el = (e.target as Element | null)?.closest?.('a.card.lift') as HTMLElement | null;
       if (cur && cur !== el) reset(cur);
       cur = el;
       if (!el) return;

@@ -2,7 +2,7 @@
 
 Based on the owner's "Enhancement Directive" of 8 November 2026, checked against the code on the same day. Phases are named E1 to E5 so they do not clash with the earlier Phases 1 to 3 (already shipped) or with Phase 4 (the Hostinger move). Translations stay paused; see `docs/TRANSLATION_PLAN.md`.
 
-**Status:** E1 done and live (commit d5f5b75, 8 November 2026). E2 to E5 not started.
+**Status:** E1 done and live (commit d5f5b75, 8 November 2026). E2 done (8 November 2026; see `docs/IMPLEMENTATION_NOTES.md`). E3 in progress. E4 and E5 not started.
 
 ## 1. What was checked, and the verdict on each part of the directive
 

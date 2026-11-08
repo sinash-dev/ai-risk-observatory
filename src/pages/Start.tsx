@@ -93,7 +93,7 @@ export default function Start() {
         <p className="lead">Most visitors arrive with one job. Find yours below and follow the steps.</p>
       </div>
 
-      <section id={MAIN.id} className="card card-pad start-main" aria-labelledby="start-main-h">
+      <section id={MAIN.id} className="card card-pad raised start-main" aria-labelledby="start-main-h">
         <h2 id="start-main-h">{MAIN.title}</h2>
         <p className="muted">{MAIN.lead}</p>
         <Steps a={MAIN} className="start-steps" />

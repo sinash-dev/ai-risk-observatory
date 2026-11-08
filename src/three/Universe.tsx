@@ -98,7 +98,7 @@ function Node({ n, angle, glow, hovered, setHover, onPick }: { n: UniverseNode; 
         )}
       </group>
       <Html center position={[0, -0.34, 0]} zIndexRange={[20, 0]} style={{ pointerEvents: 'none' }}>
-        <span className={`u-label ${hovered ? 'on' : ''}`}>{n.short}</span>
+        <span className={`u-label ${hovered ? 'on' : ''}`} data-node={n.id}>{n.short}</span>
       </Html>
       {hovered && (
         <Html position={[0.28, 0.2, 0]} zIndexRange={[30, 0]} style={{ pointerEvents: 'none' }}>
@@ -174,6 +174,47 @@ function Rig({ hover }: { hover: string | null }) {
   );
 }
 
+/**
+ * Keeps labels readable: about eight times a second, project every node to the screen, walk them nearest first,
+ * and hide any label whose box overlaps one already shown or falls outside the frame. The hovered label always shows.
+ * Only label opacity changes, directly on the DOM, so React does not re-render.
+ */
+function Declutter({ ids, hover }: { ids: string[]; hover: string | null }) {
+  const { scene, camera, gl } = useThree();
+  const last = useRef(-1);
+  const v = useMemo(() => new THREE.Vector3(), []);
+  useFrame(({ clock }) => {
+    const t = clock.elapsedTime;
+    if (t - last.current < 0.12) return;
+    last.current = t;
+    const host = gl.domElement.closest('.universe');
+    if (!host) return;
+    const W = gl.domElement.clientWidth, H = gl.domElement.clientHeight;
+    const items: { id: string; el: HTMLElement; x: number; y: number; d: number }[] = [];
+    for (const id of ids) {
+      const o = scene.getObjectByName(`node-${id}`);
+      const el = host.querySelector<HTMLElement>(`.u-label[data-node="${id}"]`);
+      if (!o || !el) continue;
+      o.getWorldPosition(v);
+      const d = v.distanceTo(camera.position);
+      v.project(camera);
+      items.push({ id, el, x: ((v.x + 1) / 2) * W, y: ((1 - v.y) / 2) * H, d });
+    }
+    items.sort((a, b) => (a.id === hover ? -1 : b.id === hover ? 1 : a.d - b.d));
+    const placed: { x0: number; x1: number; y0: number; y1: number }[] = [];
+    for (const it of items) {
+      const w = it.el.offsetWidth || 80, h = it.el.offsetHeight || 16;
+      const b = { x0: it.x - w / 2, x1: it.x + w / 2, y0: it.y + 6, y1: it.y + 6 + h + 8 };
+      const inside = b.x0 >= 4 && b.x1 <= W - 4 && b.y1 <= H - 2;
+      const clear = placed.every((o) => b.x1 < o.x0 || b.x0 > o.x1 || b.y1 < o.y0 || b.y0 > o.y1);
+      const show = it.id === hover || (inside && clear);
+      if (show) placed.push(b);
+      it.el.style.opacity = show ? '' : '0';
+    }
+  });
+  return null;
+}
+
 /** moves the whole system up a little as the page scrolls (reads like the camera dropping) */
 function Parallax({ children }: { children: React.ReactNode }) {
   const g = useRef<THREE.Group>(null);
@@ -224,6 +265,7 @@ export default function Universe({ nodes, rings, onPick, active }: UniverseProps
         </group>
       </Parallax>
       <Rig hover={hover} />
+      <Declutter ids={nodes.map((n) => n.id)} hover={hover} />
     </Canvas>
   );
 }

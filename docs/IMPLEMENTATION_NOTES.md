@@ -2,6 +2,18 @@
 
 Notes from implementing the "AI Risk Explorer: Implementation Spec" (workstreams WS1–WS11), November 2026. They list where the build differs from the spec, what needs the owner's decision, and what was left out.
 
+## E2: visual hierarchy and polish (November 2026)
+
+From `docs/ENHANCEMENT_PLAN.md`.
+- Type and spacing tokens at `:root` (shared by both themes): body 17 px (was 16) at 1.65, lead, h1, h2 and h3 sizes, `--section-gap`, `--card-pad`; `--measure` is now 68ch and caps prose in `.narrow` and `.stack` blocks. Headings use `text-wrap: balance`.
+- Section spacing: `.section` gets half the gap as top and bottom padding, so neighbouring sections sit one full gap apart. The directive suggested a `section + section` margin, but many sections sit inside wrappers and grids where a sibling rule would not apply.
+- Cards: `.card` stays flat; `.card.raised` (one featured item per page: the Start path, the empty register, the guide summary) and `.card.quiet` (secondary notes). Tilt now applies only to link cards (`a.card.lift`).
+- Examples map: labels are placed nearest first and drawn only if they clear the labels already placed and stay inside the frame; the hovered node always shows its label. In the SVG this happens at render; in the 3D scene a small `Declutter` component in `src/three/Universe.tsx` checks about eight times a second and changes only label opacity on the DOM, so React does not re-render. Measured in headless Chromium: no overlapping or clipped labels, 13 to 15 of 25 shown. The flat map (shown with reduced motion or without WebGL) also scales its labels to the drawn size, so they stay about 11 px on screen (they were near 6 px once the map moved into the half-width hero), and keeps names off the centre of other dots; it shows about 5 names at 390 px, 12 at 1440 px and 19 at 768 px. The map panel has a border and shadow so it reads as a deliberate frame in the light theme.
+- Example pages: the framework table shows four rows (the lens framework first if one is set, then the EU AI Act, then the site's usual order) and a "Show all {n} frameworks" button with `aria-expanded`. With a lens set, the rules section below shows only that framework, so clicking another framework's row switches the lens back to all frameworks and opens that tab.
+- Framework guides: an "In one minute" card under the header with what it is (opening of `intro`), who it covers (opening of `who`) and the next future entry of `timeline`, omitted when there is none. `splitOpening()` in `src/lib/util.ts` takes the first sentence, or two when the first is under 40 characters; the lead continues with the rest of the intro, so nothing is said twice at the top. A unit test checks the split loses nothing on every framework.
+- Contrast: axe passed in both themes without changing any colour values.
+- Gate: type check, 72 unit tests, 379 browser tests (both themes), site audit of 84 routes at 375 and 1366 px with no issues; screenshots of the six key pages in both themes at 390 and 1440 px reviewed, no horizontal or header overflow on any of them.
+
 ## E1: one clear path (November 2026)
 
 From `docs/ENHANCEMENT_PLAN.md`.
