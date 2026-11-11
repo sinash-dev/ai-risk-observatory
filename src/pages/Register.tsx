@@ -7,9 +7,9 @@ import { ActionMenu } from '../components/ActionMenu';
 import { Breadcrumbs } from '../components/Nav';
 import { copyText, toast } from '../components/Toast';
 import { LAB_BY_ID } from '../data/labs';
-import type { Answers, EuCat } from '../lib/classify';
+import type { Answers } from '../lib/classify';
 import { AREAS, BANNED, INTERACT, ROLE, SERVICES, WHERE } from '../lib/classifyOptions';
-import { EU_LABEL, STATUS_LABEL, actionsOf, deadlines, loadRegister, newSystem, parseImport, progressOf, registerCsv, registerMarkdown, resultOf, saveRegister, systemMarkdown, type RegSystem, type RegisterData, type Status } from '../lib/register';
+import { REG_LABEL, STATUS_LABEL, actionsOf, categoryOf, deadlines, euCell, loadRegister, newSystem, parseImport, progressOf, registerCsv, registerMarkdown, resultOf, saveRegister, systemMarkdown, type RegCat, type RegSystem, type RegisterData, type Status } from '../lib/register';
 import { CategoryBar, DeadlineChart } from '../components/RegisterCharts';
 import { PyramidMini } from '../components/RiskPyramid';
 import { tierOfCategory } from '../data/euTiers';
@@ -19,13 +19,15 @@ import { exportFile, textBlob } from '../lib/exportFile';
 import { PremiumSlot } from '../components/Premium';
 import { hasFeature } from '../lib/entitlements';
 
-const TONE: Record<EuCat, string> = { banned: SEV.severe, high: SEV.high, 'gpai-systemic': SEV.info, gpai: SEV.info, limited: SEV.mid, minimal: 'var(--accent)', outside: SEV.neutral };
+const TONE: Record<RegCat, string> = { unassessed: SEV.soft, banned: SEV.severe, high: SEV.high, 'gpai-systemic': SEV.info, gpai: SEV.info, limited: SEV.mid, minimal: 'var(--accent)', outside: SEV.neutral };
 
 function Editor({ s, onChange, onDelete }: { s: RegSystem; onChange: (s: RegSystem) => void; onDelete: () => void }) {
   const [tab, setTab] = useState<'details' | 'questions' | 'actions'>(s.name ? 'actions' : 'details');
   const set = (p: Partial<RegSystem>) => onChange({ ...s, ...p, updated: new Date().toISOString().slice(0, 10) });
-  const setA = (p: Partial<Answers>) => set({ answers: { ...s.answers, ...p } });
+  // answering any question counts as assessing the system
+  const setA = (p: Partial<Answers>) => set({ answers: { ...s.answers, ...p }, assessed: true });
   const r = resultOf(s);
+  const cat = categoryOf(s);
   const acts = actionsOf(s, r);
   const p = progressOf(s);
   const n = `sys-${s.id}`;
@@ -34,7 +36,7 @@ function Editor({ s, onChange, onDelete }: { s: RegSystem; onChange: (s: RegSyst
       <div className="reg-ed-head">
         <div>
           <h2 style={{ fontSize: 22 }}>{s.name || 'New system'}</h2>
-          <span className="reg-tier"><PyramidMini tier={tierOfCategory(r.eu)} /><span className="tag"><span className="swatch" style={{ background: TONE[r.eu] }} />EU AI Act: {EU_LABEL[r.eu]}{r.euFrom ? ` (from ${r.euFrom})` : ''}</span><span className="small muted">Indicative, not legal advice.</span></span>
+          <span className="reg-tier">{s.assessed && <PyramidMini tier={tierOfCategory(r.eu)} />}<span className="tag"><span className="swatch" style={{ background: TONE[cat] }} />EU AI Act: {euCell(s, r)}</span><span className="small muted">{s.assessed ? 'Indicative, not legal advice.' : 'Answer the questions to see the category.'}</span></span>
         </div>
         <Ring n={p.done} total={p.total} size={54} />
       </div>
@@ -84,10 +86,20 @@ function Editor({ s, onChange, onDelete }: { s: RegSystem; onChange: (s: RegSyst
             <fieldset><legend>Does it process personal data?</legend><Radio name={`${n}-personal`} opts={[{ v: 'yes', l: 'Yes' }, { v: 'no', l: 'No' }]} value={s.answers.personal} set={(v) => setA({ personal: v as 'yes' | 'no' })} /></fieldset>
             <fieldset><legend>Does it make decisions with legal or similarly significant effects without meaningful human involvement?</legend><Radio name={`${n}-auto`} opts={[{ v: 'yes', l: 'Yes' }, { v: 'no', l: 'No' }]} value={s.answers.automated} set={(v) => setA({ automated: v as 'yes' | 'no' })} /></fieldset>
             <fieldset><legend>Does it act on its own with tools, such as payments, email, code or a browser?</legend><Radio name={`${n}-agent`} opts={[{ v: 'yes', l: 'Yes' }, { v: 'no', l: 'No' }]} value={s.answers.agent} set={(v) => setA({ agent: v as 'yes' | 'no' })} /></fieldset>
-            <button className="btn btn-primary" onClick={() => setTab('actions')}>See what to do</button>
+            {/* the answers shown are accepted as they are, even if none was changed */}
+            <button className="btn btn-primary" onClick={() => { if (!s.assessed) set({ assessed: true }); setTab('actions'); }}>See what to do</button>
           </div>
         )}
-        {tab === 'actions' && (
+        {tab === 'actions' && !s.assessed && (
+          <div className="reg-actions">
+            <div className="reg-card">
+              <h3>Not yet assessed</h3>
+              <p>Answer the questions first. Until then this system has no category, actions or dates, and reports list it as not yet assessed.</p>
+              <button className="btn btn-primary" onClick={() => setTab('questions')}>Answer the questions</button>
+            </div>
+          </div>
+        )}
+        {tab === 'actions' && s.assessed && (
           <div className="reg-actions">
             {r.cards.map((c) => (
               <div key={c.id} className="reg-card">
@@ -123,7 +135,16 @@ function Editor({ s, onChange, onDelete }: { s: RegSystem; onChange: (s: RegSyst
 
 export default function Register() {
   const [data, setData] = useState<RegisterData>(loadRegister);
-  const [open, setOpen] = useState<string | null>(null);
+  // ?open=<id> opens that system, e.g. right after "Add to my register" on the Classify result
+  const [open, setOpen] = useState<string | null>(() => {
+    const id = new URLSearchParams(location.search).get('open');
+    return id && data.systems.some((s) => s.id === id) ? id : null;
+  });
+  useEffect(() => {
+    if (!open || !location.search.includes('open=')) return;
+    history.replaceState(history.state, '', location.pathname);
+    setTimeout(() => document.getElementById('reg-editor')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 60);
+  }, []); // first load only
   const fileRef = useRef<HTMLInputElement>(null);
   const [busy, setBusy] = useState(false);
   useEffect(() => { saveRegister(data); }, [data]);
@@ -131,8 +152,8 @@ export default function Register() {
   const sel = systems.find((s) => s.id === open) ?? null;
   const dl = useMemo(() => deadlines(systems), [systems]);
   const counts = useMemo(() => {
-    const c: Partial<Record<EuCat, number>> = {};
-    for (const s of systems) { const e = resultOf(s).eu; c[e] = (c[e] ?? 0) + 1; }
+    const c: Partial<Record<RegCat, number>> = {};
+    for (const s of systems) { const e = categoryOf(s); c[e] = (c[e] ?? 0) + 1; }
     return c;
   }, [systems]);
   const totals = systems.reduce((a, s) => { const p = progressOf(s); return { done: a.done + p.done, total: a.total + p.total }; }, { done: 0, total: 0 });
@@ -207,7 +228,7 @@ export default function Register() {
           <div className="reg-summary no-print">
             <div className="card card-pad">
               <div className="label">Systems by EU AI Act category</div>
-              <CategoryBar items={(Object.keys(EU_LABEL) as EuCat[]).map((k) => ({ key: k, label: EU_LABEL[k], color: TONE[k], n: counts[k] ?? 0 }))} />
+              <CategoryBar items={(Object.keys(REG_LABEL) as RegCat[]).map((k) => ({ key: k, label: REG_LABEL[k], color: TONE[k], n: counts[k] ?? 0 }))} />
             </div>
             <div className="card card-pad reg-prog">
               <Ring n={totals.done} total={totals.total} size={58} />
@@ -225,14 +246,14 @@ export default function Register() {
               <thead><tr><th>System</th><th>Owner</th><th>Status</th><th>EU AI Act</th><th>Actions</th></tr></thead>
               <tbody>
                 {systems.map((s) => {
-                  const r = resultOf(s);
+                  const c = categoryOf(s);
                   const p = progressOf(s);
                   return (
                     <tr key={s.id} className={open === s.id ? 'reg-row on' : 'reg-row'}>
                       <td><button className="reg-open" onClick={() => setOpen(open === s.id ? null : s.id)} aria-expanded={open === s.id}>{s.name || 'Unnamed system'}</button><div className="muted small">{s.purpose.slice(0, 80)}</div></td>
                       <td className="small">{s.owner || '-'}</td>
                       <td className="small">{STATUS_LABEL[s.status]}</td>
-                      <td><span className="tag"><span className="swatch" style={{ background: TONE[r.eu] }} />{EU_LABEL[r.eu]}</span></td>
+                      <td><span className="tag"><span className="swatch" style={{ background: TONE[c] }} />{REG_LABEL[c]}</span></td>
                       <td className="mono small">{p.done}/{p.total}</td>
                     </tr>
                   );
@@ -261,7 +282,7 @@ export default function Register() {
             return (
               <div key={s.id} className="reg-print-sys">
                 <h2>{s.name || 'Unnamed system'}</h2>
-                <p>Owner: {s.owner || '-'} · Status: {STATUS_LABEL[s.status]} · EU AI Act: {EU_LABEL[r.eu]}{r.euFrom ? ` (from ${r.euFrom})` : ''}</p>
+                <p>Owner: {s.owner || '-'} · Status: {STATUS_LABEL[s.status]} · EU AI Act: {euCell(s, r)}</p>
                 {s.purpose && <p>{s.purpose}</p>}
                 <ul>{acts.map((a) => <li key={a.id}>{s.done[a.id] ? '☑' : '☐'} {a.source}: {a.text}</li>)}</ul>
               </div>

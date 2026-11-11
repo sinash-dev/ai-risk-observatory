@@ -4,13 +4,13 @@ import { actionsOf, hash, newSystem, registerMarkdown, resultOf, summary, type R
 
 const NOW = new Date(Date.UTC(2026, 10, 7, 12));
 const sys = (name: string, a: Partial<Answers>, extra: Partial<RegSystem> = {}): RegSystem => ({
-  ...newSystem(NOW), id: hash(name), name, answers: { ...EMPTY, where: ['eu'], ...a }, ...extra,
+  ...newSystem(NOW), id: hash(name), name, answers: { ...EMPTY, where: ['eu'], ...a }, assessed: true, ...extra,
 });
 
 describe('register summary', () => {
   it('handles an empty register', () => {
     const m = summary([], NOW);
-    expect(m).toEqual({ systems: 0, retired: 0, byCategory: [], withOpenActions: 0, next: [], topActions: [] });
+    expect(m).toEqual({ systems: 0, retired: 0, unassessed: 0, byCategory: [], withOpenActions: 0, next: [], topActions: [] });
     const md = registerMarkdown([], '', NOW);
     expect(md).toContain('## Summary for management');
     expect(md).toContain('EU AI Act categories: none yet');

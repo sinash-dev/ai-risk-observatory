@@ -7,6 +7,9 @@ import { EMPTY, classify, type Answers, type EuCat, type Result } from './classi
 export type Status = 'idea' | 'pilot' | 'live' | 'retired';
 export const STATUS_LABEL: Record<Status, string> = { idea: 'Idea or procurement', pilot: 'Pilot', live: 'In use', retired: 'Retired' };
 export const EU_LABEL: Record<EuCat, string> = { banned: 'Banned', high: 'High-risk', 'gpai-systemic': 'GPAI model, systemic risk', gpai: 'GPAI model', limited: 'Transparency duties', minimal: 'Minimal risk', outside: 'EU not selected' };
+/** what the register shows for a system: its EU category, or "not yet assessed" until the questions are answered */
+export type RegCat = EuCat | 'unassessed';
+export const REG_LABEL: Record<RegCat, string> = { unassessed: 'Not yet assessed', ...EU_LABEL };
 
 export interface RegSystem {
   id: string;
@@ -16,6 +19,8 @@ export interface RegSystem {
   vendor: string;
   status: Status;
   answers: Answers;
+  /** false until the questions have been answered; until then the system has no category, actions or dates */
+  assessed: boolean;
   /** action id → done */
   done: Record<string, boolean>;
   notes: string;
@@ -35,10 +40,20 @@ export function hash(s: string) {
 
 export function resultOf(s: RegSystem): Result { return classify(s.answers); }
 
-/** what to do for this system, taken from every framework card of its classification */
+/** the category to show: the EU AI Act category once assessed, otherwise "unassessed" (never a default "Minimal risk") */
+export function categoryOf(s: RegSystem): RegCat { return s.assessed ? resultOf(s).eu : 'unassessed'; }
+
+/** what to do for this system, taken from every framework card of its classification; none until it is assessed */
 export function actionsOf(s: RegSystem, r: Result = resultOf(s)): Action[] {
+  if (!s.assessed) return [];
   return r.cards.flatMap((c) => c.next.map((text) => ({ id: hash(c.id + '|' + text), source: c.title, text })));
 }
+
+/** the answers a new system starts with */
+const START: Answers = { ...EMPTY, where: ['eu'] };
+const canon = (a: Answers) => JSON.stringify(Object.keys(a).sort().filter((k) => a[k as keyof Answers] !== undefined).map((k) => [k, a[k as keyof Answers]]));
+/** true if the answers are still exactly those of a new system (used for registers saved before "assessed" existed) */
+export function untouched(a: Answers) { return canon({ ...EMPTY, ...a }) === canon(START); }
 
 export function progressOf(s: RegSystem) {
   const a = actionsOf(s);
@@ -62,7 +77,7 @@ export interface Deadline { system: string; date: Date; label: string }
 export function deadlines(list: RegSystem[], today = new Date()): Deadline[] {
   const out: Deadline[] = [];
   for (const s of list) {
-    if (s.status === 'retired') continue;
+    if (s.status === 'retired' || !s.assessed) continue;
     const r = resultOf(s);
     const d = r.euFrom ? parseLongDate(r.euFrom) : null;
     if (d && d > today) out.push({ system: s.name, date: d, label: `EU AI Act: ${DUE[r.eu]} from ${r.euFrom}` });
@@ -76,7 +91,7 @@ export function deadlines(list: RegSystem[], today = new Date()): Deadline[] {
 
 export function newSystem(now = new Date()): RegSystem {
   const d = now.toISOString().slice(0, 10);
-  return { id: hash(now.toISOString() + Math.random()), name: '', owner: '', purpose: '', vendor: '', status: 'idea', answers: { ...EMPTY, where: ['eu'] }, done: {}, notes: '', created: d, updated: d, nextReview: '' };
+  return { id: hash(now.toISOString() + Math.random()), name: '', owner: '', purpose: '', vendor: '', status: 'idea', answers: { ...START }, assessed: false, done: {}, notes: '', created: d, updated: d, nextReview: '' };
 }
 
 /* ---------- management summary (top of the Markdown and Word reports) ---------- */
@@ -88,7 +103,9 @@ export interface Summary {
   /** systems in the register, including retired ones */
   systems: number;
   retired: number;
-  /** EU AI Act categories that occur, most severe first */
+  /** systems whose questions are not answered yet; they have no category, actions or dates */
+  unassessed: number;
+  /** EU AI Act categories that occur among assessed systems, most severe first */
   byCategory: { cat: EuCat; label: string; n: number }[];
   /** systems still in use or planned with at least one open action */
   withOpenActions: number;
@@ -101,7 +118,7 @@ export interface Summary {
 export function summary(list: RegSystem[], today = new Date()): Summary {
   const active = list.filter((s) => s.status !== 'retired');
   const cats = new Map<EuCat, number>();
-  for (const s of list) { const e = resultOf(s).eu; cats.set(e, (cats.get(e) ?? 0) + 1); }
+  for (const s of list) { if (!s.assessed) continue; const e = resultOf(s).eu; cats.set(e, (cats.get(e) ?? 0) + 1); }
   const open = active
     .map((s) => { const r = resultOf(s); return { s, r, acts: actionsOf(s, r).filter((a) => !s.done[a.id]) }; })
     .filter((x) => x.acts.length > 0);
@@ -118,6 +135,7 @@ export function summary(list: RegSystem[], today = new Date()): Summary {
   return {
     systems: list.length,
     retired: list.length - active.length,
+    unassessed: list.filter((s) => !s.assessed).length,
     byCategory: SEVERITY.filter((c) => cats.has(c)).map((c) => ({ cat: c, label: EU_LABEL[c], n: cats.get(c)! })),
     withOpenActions: open.length,
     next: deadlines(list, today).slice(0, 3),
@@ -130,6 +148,7 @@ export function summaryLines(m: Summary): { facts: string[]; next: string[]; act
   const facts = [
     `Systems in the register: ${m.systems}${m.retired ? ` (${m.retired} retired)` : ''}`,
     `EU AI Act categories: ${m.byCategory.length ? m.byCategory.map((c) => `${c.label} ${c.n}`).join(', ') : 'none yet'}`,
+    ...(m.unassessed ? [`Not yet assessed: ${m.unassessed}. Their questions are not answered, so they have no category, actions or dates in this report.`] : []),
     `Systems with open actions: ${m.withOpenActions} of ${m.systems - m.retired}`,
   ];
   const next = m.next.map((d) => `${d.date.toISOString().slice(0, 10)}: ${line(d.system) || 'Unnamed system'}. ${d.label}`);
@@ -140,6 +159,10 @@ export function summaryLines(m: Summary): { facts: string[]; next: string[]; act
 /* ---------- reports ---------- */
 
 const line = (s: string) => s.replace(/\r?\n/g, ' ').trim();
+/** shown in reports for a system whose questions are not answered yet */
+export const NOT_ASSESSED = 'Not yet assessed: the questions for this system are not answered, so it has no category, actions or dates yet. Answer them in the register before relying on this report.';
+/** "High-risk (from 2 December 2027)", or "Not yet assessed" */
+export function euCell(s: RegSystem, r: Result = resultOf(s)) { return s.assessed ? `${EU_LABEL[r.eu]}${r.euFrom ? ` (from ${r.euFrom})` : ''}` : REG_LABEL.unassessed; }
 
 export function systemMarkdown(s: RegSystem, today = new Date()) {
   const r = resultOf(s);
@@ -154,11 +177,16 @@ export function systemMarkdown(s: RegSystem, today = new Date()) {
     `| Purpose | ${line(s.purpose) || '-'} |`,
     `| Vendor | ${line(s.vendor) || 'Built in-house'} |`,
     `| Status | ${STATUS_LABEL[s.status]} |`,
-    `| EU AI Act | ${EU_LABEL[r.eu]}${r.euFrom ? ` (from ${r.euFrom})` : ''} |`,
+    `| EU AI Act | ${euCell(s, r)} |`,
     `| Actions done | ${p.done} of ${p.total} |`,
     `| Next review | ${s.nextReview || '-'} |`,
     '',
   ];
+  if (!s.assessed) {
+    out.push(NOT_ASSESSED, '');
+    if (s.notes.trim()) out.push('### Our notes', '', s.notes.trim(), '');
+    return out.join('\n');
+  }
   for (const c of r.cards) {
     out.push(`### ${c.title}: ${c.verdict}`, '');
     for (const w of c.why) out.push(`- ${w}`);
@@ -194,7 +222,7 @@ export function registerMarkdown(list: RegSystem[], org: string, today = new Dat
     '',
     '| System | Owner | Status | EU AI Act | Actions done |',
     '|---|---|---|---|---|',
-    ...list.map((s) => { const r = resultOf(s); const p = progressOf(s); return `| ${line(s.name) || 'Unnamed'} | ${line(s.owner) || '-'} | ${STATUS_LABEL[s.status]} | ${EU_LABEL[r.eu]} | ${p.done}/${p.total} |`; }),
+    ...list.map((s) => { const p = progressOf(s); return `| ${line(s.name) || 'Unnamed'} | ${line(s.owner) || '-'} | ${STATUS_LABEL[s.status]} | ${REG_LABEL[categoryOf(s)]} | ${p.done}/${p.total} |`; }),
     '',
   ];
   if (dl.length) { head.push('## Upcoming dates', ''); for (const d of dl) head.push(`- ${d.date.toISOString().slice(0, 10)}: ${line(d.system)}. ${d.label}`); head.push(''); }
@@ -208,7 +236,7 @@ export function registerCsv(list: RegSystem[]) {
   const rows = list.map((s) => {
     const r = resultOf(s);
     const p = progressOf(s);
-    return [s.id, s.name, s.owner, s.purpose, s.vendor, STATUS_LABEL[s.status], s.answers.where.join(' '), s.answers.role, EU_LABEL[r.eu], r.euFrom ?? '', String(p.done), String(p.total), s.nextReview, s.updated];
+    return [s.id, s.name, s.owner, s.purpose, s.vendor, STATUS_LABEL[s.status], s.answers.where.join(' '), s.answers.role, REG_LABEL[categoryOf(s)], s.assessed ? r.euFrom ?? '' : '', String(p.done), String(p.total), s.nextReview, s.updated];
   });
   return '﻿' + [head, ...rows].map((r) => r.map((v) => csvCell(line(v))).join(',')).join('\r\n') + '\r\n';
 }
@@ -233,6 +261,8 @@ export function parseImport(text: string): { systems: RegSystem[]; skipped: numb
     systems.push({
       id: o.id.slice(0, 40), name: o.name.slice(0, 200), owner: isStr(o.owner) ? o.owner.slice(0, 200) : '', purpose: isStr(o.purpose) ? o.purpose.slice(0, 1000) : '',
       vendor: isStr(o.vendor) ? o.vendor.slice(0, 200) : '', status: STATUSES.includes(o.status as Status) ? (o.status as Status) : 'idea', answers: ans,
+      // registers saved before "assessed" existed: count a system as assessed only if its answers were changed from the start values
+      assessed: typeof o.assessed === 'boolean' ? o.assessed : !untouched(ans),
       done: o.done && typeof o.done === 'object' ? Object.fromEntries(Object.entries(o.done).filter(([, v]) => v === true)) : {},
       notes: isStr(o.notes) ? o.notes.slice(0, 5000) : '', created: isStr(o.created) ? o.created.slice(0, 10) : '', updated: isStr(o.updated) ? o.updated.slice(0, 10) : '',
       nextReview: isStr(o.nextReview) && /^\d{4}-\d{2}-\d{2}$/.test(o.nextReview) ? o.nextReview : '',

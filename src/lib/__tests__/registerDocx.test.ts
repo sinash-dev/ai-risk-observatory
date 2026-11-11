@@ -9,7 +9,7 @@ const NOW = new Date(Date.UTC(2026, 10, 7, 12));
 
 describe('register Word export', () => {
   it('produces a valid .docx with the summary, actions and disclaimer', async () => {
-    const s = { ...newSystem(NOW), id: hash('cv'), name: 'CV screening tool', owner: 'HR & Talent <team>', answers: { ...EMPTY, where: ['eu' as const], area: 'employment' as const, narrow: 'no' as const } };
+    const s = { ...newSystem(NOW), id: hash('cv'), name: 'CV screening tool', owner: 'HR & Talent <team>', answers: { ...EMPTY, where: ['eu' as const], area: 'employment' as const, narrow: 'no' as const }, assessed: true };
     const a = actionsOf(s);
     s.done = { [a[0].id]: true };
     const buf = await Packer.toBuffer(registerDocument([s], 'Acme', NOW));

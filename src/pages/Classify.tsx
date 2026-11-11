@@ -8,7 +8,8 @@ import { AREAS, BANNED, INTERACT, ROLE, SERVICES, WHERE, type Opt } from '../lib
 import { PyramidMini } from '../components/RiskPyramid';
 import { tierOfCategory } from '../data/euTiers';
 import { track } from '../lib/track';
-import { url } from '../lib/util';
+import { navigate, url } from '../lib/util';
+import { loadRegister, newSystem, saveRegister } from '../lib/register';
 import type { PageProps } from './registry';
 import { Multi, Radio } from '../components/Choice';
 
@@ -89,7 +90,9 @@ export default function Classify({ query }: PageProps) {
 
   useEffect(() => { if (done) track('classify-result'); }, [done]);
   useEffect(() => {
-    const t = setTimeout(() => history.replaceState(history.state, '', location.pathname + `?a=${encode(a)}${done ? '&r=1' : ''}`), 200);
+    // only while still on this page: after navigating away (e.g. "Add to my register") the timer must not rewrite the new page's URL
+    const path = location.pathname;
+    const t = setTimeout(() => { if (location.pathname === path) history.replaceState(history.state, '', path + `?a=${encode(a)}${done ? '&r=1' : ''}`); }, 200);
     return () => clearTimeout(t);
   }, [a, done]);
   useEffect(() => { head.current?.focus({ preventScroll: true }); }, [i]);
@@ -150,6 +153,14 @@ export default function Classify({ query }: PageProps) {
                   })}
                 </div>
                 <div className="wiz-nav no-print">
+                  <button className="btn btn-primary" onClick={() => {
+                    // a new register entry with these answers; the register opens it so it can be named
+                    const d = loadRegister();
+                    const s = { ...newSystem(), answers: { ...a }, assessed: true };
+                    saveRegister({ ...d, systems: [...d.systems, s] });
+                    track('classify-to-register');
+                    navigate(`/register?open=${s.id}`);
+                  }}>Add to my register</button>
                   <button className="btn" onClick={() => go(-1)}>Change answers</button>
                   <button className="btn" onClick={async () => { if (await copyText(resultMarkdown(a))) toast('Result copied as Markdown'); }}>Copy as Markdown</button>
                   <button className="btn" onClick={async () => { if (await copyText(location.href)) toast('Link copied'); }}>Copy link</button>

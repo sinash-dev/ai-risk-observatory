@@ -5,6 +5,12 @@ export interface Update { date: string; title: string; body: string; fw?: FwId[]
 /** Newest first. Also published as an RSS feed (updates.xml) by scripts/postbuild.ts. */
 export const UPDATES: Update[] = [
   {
+    date: '2026-11-11',
+    title: 'From one answer to your register in one step',
+    body: 'When you finish the classification, "Add to my register" now saves the system with your answers and opens it in the register, ready to name. A system you add to the register without answering the questions is shown as "Not yet assessed" until you do. Before, it showed as "Minimal risk", and the management summary in the reports counted it that way. Reports now list such systems separately, with no category, actions or dates.',
+    links: [{ label: 'Classify your system', to: '/classify' }, { label: 'My AI register', to: '/register' }],
+  },
+  {
     date: '2026-11-08',
     title: 'A report your manager can read in a minute',
     body: 'Register reports, in Markdown and Word, now open with a summary for management: how many systems you have, how they fall under the EU AI Act, how many still have open actions, the next three dates and the five actions to take first. The register page itself is simpler: one button to add your first system, then an Export menu and a Backup menu. The classification tool has a shorter introduction and one note on how far to rely on the result.',

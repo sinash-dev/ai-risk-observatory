@@ -3,7 +3,7 @@
  * so the docx library never weighs on the register page itself.
  */
 import { AlignmentType, BorderStyle, Document, HeadingLevel, Packer, Paragraph, Table, TableCell, TableRow, TextRun, WidthType } from 'docx';
-import { EU_LABEL, STATUS_LABEL, actionsOf, deadlines, progressOf, resultOf, summary, summaryLines, type RegSystem } from './register';
+import { NOT_ASSESSED, REG_LABEL, STATUS_LABEL, actionsOf, categoryOf, deadlines, euCell, progressOf, resultOf, summary, summaryLines, type RegSystem } from './register';
 
 const FONT = 'Calibri';
 const p = (text: string, opts: { bold?: boolean; italic?: boolean; size?: number } = {}) =>
@@ -39,11 +39,16 @@ function systemSection(s: RegSystem) {
       ['Purpose', s.purpose || '-'],
       ['Vendor', s.vendor || 'Built in-house'],
       ['Status', STATUS_LABEL[s.status]],
-      ['EU AI Act', `${EU_LABEL[r.eu]}${r.euFrom ? ` (from ${r.euFrom})` : ''}`],
+      ['EU AI Act', euCell(s, r)],
       ['Actions done', `${pr.done} of ${pr.total}`],
       ['Next review', s.nextReview || '-'],
     ]),
   ];
+  if (!s.assessed) {
+    out.push(p(NOT_ASSESSED, { italic: true }));
+    if (s.notes.trim()) { out.push(h('Our notes', HeadingLevel.HEADING_3)); for (const line of s.notes.trim().split(/\r?\n/)) out.push(p(line)); }
+    return out;
+  }
   for (const c of r.cards) {
     out.push(h(`${c.title}: ${c.verdict}`, HeadingLevel.HEADING_3));
     for (const w of c.why) out.push(bullet(w));
@@ -72,7 +77,7 @@ export function registerDocument(list: RegSystem[], org: string, today = new Dat
     h('Systems at a glance', HeadingLevel.HEADING_1),
     table([
       ['System', 'Owner', 'Status', 'EU AI Act', 'Actions done'],
-      ...list.map((s) => { const pr = progressOf(s); return [s.name || 'Unnamed', s.owner || '-', STATUS_LABEL[s.status], EU_LABEL[resultOf(s).eu], `${pr.done}/${pr.total}`]; }),
+      ...list.map((s) => { const pr = progressOf(s); return [s.name || 'Unnamed', s.owner || '-', STATUS_LABEL[s.status], REG_LABEL[categoryOf(s)], `${pr.done}/${pr.total}`]; }),
     ]),
   ];
   if (dl.length) {

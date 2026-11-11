@@ -72,13 +72,34 @@ test('register: add, classify, tick, export, reload and import', async ({ page }
   await expect(page.getByRole('heading', { name: 'No systems yet' })).toBeVisible();
 });
 
+test('register: an unanswered system is "Not yet assessed", and a Classify result can be added', async ({ page }) => {
+  await page.goto(BASE + 'register/');
+  await page.getByRole('button', { name: 'Add your first system' }).click();
+  await expect(page.locator('.reg-editor')).toContainText('EU AI Act: Not yet assessed');
+  await expect(page.locator('.reg-summary .cat-legend')).toContainText(/Not yet assessed\s*1/);
+  await expect(page.locator('.reg-summary .cat-legend')).not.toContainText('Minimal risk');
+
+  // a finished Classify result, opened from a shared link, goes straight into the register
+  const answers = { where: ['eu'], role: 'deployer', banned: [], product: 'no', area: 'employment', narrow: 'no', gpai: 'no', interact: [], personal: 'yes', automated: 'no', agent: 'no' };
+  const a = Buffer.from(JSON.stringify(answers)).toString('base64').replace(/=+$/, '');
+  await page.goto(BASE + `classify/?a=${a}&r=1`);
+  await page.getByRole('button', { name: 'Add to my register' }).click();
+  await expect(page).toHaveURL(/\/register\/$/);
+  await expect(page.locator('.reg-row')).toHaveCount(2);
+  await expect(page.locator('.reg-editor')).toContainText('EU AI Act: High-risk (from 2 December 2027)');
+  await expect(page.getByText('Indicative, not legal advice.')).toBeVisible();
+  await expect(page.locator('.reg-summary .cat-legend')).toContainText(/High-risk\s*1/);
+  await expect(page.locator('.reg-summary .cat-legend')).toContainText(/Not yet assessed\s*1/);
+});
+
 test('register: one button when empty, then keyboard-accessible Export and Backup menus', async ({ page }) => {
   await page.goto(BASE + 'register/');
   await expect(page.getByRole('button', { name: 'Export', exact: true })).toHaveCount(0);
   await expect(page.getByRole('button', { name: 'Add a system' })).toHaveCount(0);
   await page.getByRole('button', { name: 'Add your first system' }).click();
   await page.getByLabel('Name of the system').fill('Chat assistant');
-  await expect(page.getByText('Indicative, not legal advice.')).toBeVisible();
+  // a new system is not assessed yet, so the header asks for answers instead of showing a category
+  await expect(page.getByText('Answer the questions to see the category.')).toBeVisible();
   const exp = page.getByRole('button', { name: 'Export', exact: true });
   await exp.focus();
   await page.keyboard.press('ArrowDown');

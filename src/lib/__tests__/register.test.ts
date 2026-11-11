@@ -4,7 +4,7 @@ import { actionsOf, deadlines, hash, newSystem, parseImport, parseLongDate, prog
 
 const NOW = new Date(Date.UTC(2026, 10, 7, 12));
 const sys = (name: string, a: Partial<Answers>, extra: Partial<RegSystem> = {}): RegSystem => ({
-  ...newSystem(NOW), id: hash(name), name, answers: { ...EMPTY, where: ['eu'], ...a }, ...extra,
+  ...newSystem(NOW), id: hash(name), name, answers: { ...EMPTY, where: ['eu'], ...a }, assessed: true, ...extra,
 });
 const credit = () => sys('Credit model', { area: 'services', service: 'credit', narrow: 'no', personal: 'yes', automated: 'yes' }, { owner: 'Risk team', status: 'live' });
 
