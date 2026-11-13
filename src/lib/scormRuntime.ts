@@ -135,12 +135,12 @@ export const SCO_SCRIPT = String.raw`(function () {
 export const SCO_CSS = `
 *{box-sizing:border-box}body{margin:0;font:17px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:#1d1f23;background:#f6f5f1}
 main{max-width:760px;margin:0 auto;padding:28px 20px 48px}h1{font-size:28px;line-height:1.2;margin:.2em 0 .5em}h2{font-size:21px;line-height:1.3}
-h1:focus,h2:focus{outline:none}.kicker{font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#2d7d6c;margin:0}
-button{font:inherit;cursor:pointer;border-radius:10px;min-height:44px}button.primary{background:#2d7d6c;color:#fff;border:0;padding:10px 20px;margin-top:16px;font-weight:600}
+h1:focus,h2:focus{outline:none}.kicker{font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#1c39bb;margin:0}
+button{font:inherit;cursor:pointer;border-radius:10px;min-height:44px}button.primary{background:#1c39bb;color:#fff;border:0;padding:10px 20px;margin-top:16px;font-weight:600}
 button.primary[disabled]{opacity:.45;cursor:default}.opts{display:grid;gap:8px;margin:16px 0}
-.opt{text-align:left;background:#fff;border:1px solid #c9c6bd;padding:12px 14px;color:#1d1f23}.opt:hover{border-color:#2d7d6c}
+.opt{text-align:left;background:#fff;border:1px solid #c9c6bd;padding:12px 14px;color:#1d1f23}.opt:hover{border-color:#1c39bb}
 .opt.right{border-color:#2d7d6c;background:#e3f2ee}.opt.wrong{border-color:#b3453e;background:#f8e4e2}
 .feedback p{margin:.5em 0}.ok{color:#1f6656;font-weight:600}.no{color:#9b3a34;font-weight:600}.note{background:#fff4d6;padding:10px 12px;border-radius:8px}
-a{color:#1f6656}.review{padding-left:20px}.review li{margin-bottom:14px}footer{max-width:760px;margin:0 auto;padding:0 20px 28px;font-size:13px;color:#5b5e64}
-button:focus-visible,a:focus-visible{outline:3px solid #2d7d6c;outline-offset:2px}
+a{color:#1c39bb}.review{padding-left:20px}.review li{margin-bottom:14px}footer{max-width:760px;margin:0 auto;padding:0 20px 28px;font-size:13px;color:#5b5e64}
+button:focus-visible,a:focus-visible{outline:3px solid #1c39bb;outline-offset:2px}
 `;

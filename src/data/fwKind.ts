@@ -6,7 +6,7 @@ export type FwKind = 'Law' | 'Voluntary framework' | 'Certifiable standard' | 'S
 export const KIND_COLOR: Record<FwKind, string> = {
   Law: SEV.high,
   'Voluntary framework': SEV.info,
-  'Certifiable standard': '#6cc5b0',
+  'Certifiable standard': SEV.low,
   'Security guidance': SEV.mid,
   'Principles + existing law': SEV.soft,
 };

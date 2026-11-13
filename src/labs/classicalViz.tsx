@@ -417,7 +417,7 @@ export function FraudViz({ s, m }: VizProps) {
       <svg viewBox={`0 0 ${W} 150`} className="viz-svg" style={{ borderRadius: 12, background: 'rgba(255,255,255,.02)' }}>
         <rect x={W * 0.52} y={8} width="10" height="134" rx="5" fill="url(#gate)" />
         <defs>
-          <linearGradient id="gate" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stopColor="#6fcfc0" /><stop offset="1" stopColor="#6f8ff0" /></linearGradient>
+          <linearGradient id="gate" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stopColor="#6fcfc0" /><stop offset="1" stopColor="#90c5ed" /></linearGradient>
         </defs>
         <text x={W * 0.52 + 5} y={146} textAnchor="middle" fontSize="9" fill="#a3a9b8" fontFamily="IBM Plex Mono">MODEL</text>
         <text x={W - 10} y={30} textAnchor="end" fontSize="10.5" fill="#a3a9b8" fontFamily="IBM Plex Mono">APPROVED</text>
@@ -677,7 +677,7 @@ export function StaffingViz({ s, m }: VizProps) {
       <VizHead title="daily admissions · history | forecast window (90 days) · staffed capacity">
         <div className="legend">
           <span><i className="dot" style={{ background: '#d5d8e0' }} /> actual</span>
-          <span><i className="dot" style={{ background: '#6f8ff0' }} /> forecast ± band</span>
+          <span><i className="dot" style={{ background: '#90c5ed' }} /> forecast ± band</span>
           <span><i className="dot" style={{ background: C.warn }} /> staffed beds</span>
           <span><i className="dot" style={{ background: C.bad }} /> understaffed</span>
         </div>
@@ -695,7 +695,7 @@ export function StaffingViz({ s, m }: VizProps) {
         )}
         <path d={line(actual, T0 - 110, T0)} stroke="#d5d8e0" strokeWidth="1.6" fill="none" />
         <motion.path key={`a${key}`} d={line(actual, T0, T0 + 90)} stroke="#fff" strokeWidth="2" fill="none" initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 1.6, ease: 'easeOut' }} />
-        <path d={line(forecast, T0, T0 + 90)} stroke="#6f8ff0" strokeWidth="2" strokeDasharray="6 4" fill="none" />
+        <path d={line(forecast, T0, T0 + 90)} stroke="#90c5ed" strokeWidth="2" strokeDasharray="6 4" fill="none" />
         <path d={line(cap, T0, T0 + 90)} stroke={C.warn} strokeWidth="2" fill="none" />
         {shock && (
           <g>

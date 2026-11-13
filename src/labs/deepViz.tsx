@@ -284,7 +284,7 @@ export function FeedViz({ s, m }: VizProps) {
       <div style={{ display: 'grid', gridTemplateColumns: '260px minmax(0,1fr)', gap: 16, alignItems: 'center' }}>
         <svg viewBox="0 0 260 260" className="viz-svg">
           <defs>
-            <radialGradient id="bub"><stop offset="0" stopColor="#6f8ff0" stopOpacity=".05" /><stop offset="1" stopColor="#6f8ff0" stopOpacity=".3" /></radialGradient>
+            <radialGradient id="bub"><stop offset="0" stopColor="#90c5ed" stopOpacity=".05" /><stop offset="1" stopColor="#90c5ed" stopOpacity=".3" /></radialGradient>
           </defs>
           {arcs}
           <circle cx="130" cy="130" r={58 - (1 - cur.div) * 26} fill="url(#bub)" stroke="rgba(160,180,255,.5)" />
@@ -361,7 +361,7 @@ export function PricingViz({ s, m }: VizProps) {
       <VizHead title="RL pricing agent · bottled water, 14 days (4 decisions/day) · competitors also algorithmic">
         <div className="legend">
           <span><i className="dot" style={{ background: C.warn }} /> our agent</span>
-          <span><i className="dot" style={{ background: '#6f8ff0' }} /> competitor bots</span>
+          <span><i className="dot" style={{ background: '#90c5ed' }} /> competitor bots</span>
           <span><i className="dot" style={{ background: 'rgba(76,201,240,.6)' }} /> demand</span>
         </div>
       </VizHead>
@@ -377,7 +377,7 @@ export function PricingViz({ s, m }: VizProps) {
             </g>
           )}
           <line x1={l} x2={W - rr} y1={y(100)} y2={y(100)} stroke="rgba(255,255,255,.3)" strokeDasharray="3 4" />
-          <motion.path key={`c1${key}`} d={path('c1')} stroke="#6f8ff0" strokeWidth="1.6" fill="none" opacity=".75" initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 1.4 }} />
+          <motion.path key={`c1${key}`} d={path('c1')} stroke="#90c5ed" strokeWidth="1.6" fill="none" opacity=".75" initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 1.4 }} />
           <motion.path key={`c2${key}`} d={path('c2')} stroke="#9a86e0" strokeWidth="1.6" fill="none" opacity=".75" initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 1.4 }} />
           <motion.path key={`o${key}`} d={path('ours')} stroke={C.warn} strokeWidth="3" fill="none" initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 1.4 }} style={{ filter: 'drop-shadow(0 0 6px rgba(240,180,76,.6))' }} />
           {collude && <text x={x(50)} y={y(series[50].ours) - 12} textAnchor="end" fontSize="10.5" fill="#f39aa4" fontFamily="IBM Plex Mono">prices rise in lock-step — no agreement needed</text>}

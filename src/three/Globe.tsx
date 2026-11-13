@@ -23,7 +23,7 @@ export interface GlobeProps {
 
 const R = 1.6;
 const SAT_R = 2.1;
-const ACCENT = '#6cc5b0';
+const ACCENT = '#7da0f3';
 
 export function latLon(lat: number, lon: number, r = R) {
   const phi = THREE.MathUtils.degToRad(90 - lat);

@@ -19,7 +19,7 @@ import { exportFile, textBlob } from '../lib/exportFile';
 import { PremiumSlot } from '../components/Premium';
 import { hasFeature } from '../lib/entitlements';
 
-const TONE: Record<RegCat, string> = { unassessed: SEV.soft, banned: SEV.severe, high: SEV.high, 'gpai-systemic': SEV.info, gpai: SEV.info, limited: SEV.mid, minimal: 'var(--accent)', outside: SEV.neutral };
+const TONE: Record<RegCat, string> = { unassessed: SEV.soft, banned: SEV.severe, high: SEV.high, 'gpai-systemic': SEV.info, gpai: SEV.info, limited: SEV.mid, minimal: SEV.low, outside: SEV.neutral };
 
 function Editor({ s, onChange, onDelete }: { s: RegSystem; onChange: (s: RegSystem) => void; onDelete: () => void }) {
   const [tab, setTab] = useState<'details' | 'questions' | 'actions'>(s.name ? 'actions' : 'details');

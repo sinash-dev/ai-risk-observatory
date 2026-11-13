@@ -8,7 +8,7 @@ export const themed = (name: string, dark: string) => `var(--c-${name}, ${dark})
 
 export const SEV = {
   severe: themed('severe', '#e0716b'), high: themed('high', '#e09a5c'), mid: themed('mid', '#d6c06a'), low: themed('low', '#6fb59d'),
-  info: themed('info', '#86a7d6'), neutral: themed('neutral', '#7c838e'), soft: themed('soft', '#a9b0ba'),
+  info: themed('info', '#90c5ed'), neutral: themed('neutral', '#7c838e'), soft: themed('soft', '#a9b0ba'),
 };
 
 /** the literal dark hex inside a themed colour: for WebGL and canvas, which cannot read CSS variables */

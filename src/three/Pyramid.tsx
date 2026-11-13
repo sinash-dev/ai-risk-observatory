@@ -86,7 +86,7 @@ export default function Pyramid(props: PyramidProps & SceneProps) {
       <ambientLight intensity={0.6} />
       <directionalLight position={[3, 6, 5]} intensity={1.15} />
       <directionalLight position={[-4, 2, -3]} intensity={0.35} color="#86a7d6" />
-      <pointLight position={[0, -2.2, 2.5]} intensity={6} color="#6cc5b0" distance={7} />
+      <pointLight position={[0, -2.2, 2.5]} intensity={6} color="#7da0f3" distance={7} />
       <Scene {...props} />
       <OrbitControls enableZoom={false} enablePan={false} minPolarAngle={Math.PI / 2.9} maxPolarAngle={Math.PI / 1.9} rotateSpeed={0.6} />
     </Canvas>

@@ -39,7 +39,7 @@ export function VizHead({ title, children }: { title: ReactNode; children?: Reac
 }
 
 export const C = {
-  A: '#6f8ff0',
+  A: '#90c5ed',
   B: '#e07799',
   good: '#3cc6ad',
   bad: '#ef5b6b',
@@ -49,7 +49,7 @@ export const C = {
 };
 
 export function Flag({ tone, children }: { tone: 'bad' | 'good' | 'warn' | 'info'; children: ReactNode }) {
-  const col = tone === 'bad' ? '#ef5b6b' : tone === 'good' ? '#3cc6ad' : tone === 'warn' ? '#f0b44c' : '#6f8ff0';
+  const col = tone === 'bad' ? '#ef5b6b' : tone === 'good' ? '#3cc6ad' : tone === 'warn' ? '#f0b44c' : '#90c5ed';
   return (
     <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 11, fontWeight: 600, padding: '3px 9px', borderRadius: 999, color: col, background: `${col}1f`, border: `1px solid ${col}55`, fontFamily: 'var(--mono)' }}>
       <span className="dot" style={{ background: col, width: 6, height: 6 }} />

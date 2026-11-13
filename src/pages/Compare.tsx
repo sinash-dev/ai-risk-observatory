@@ -58,7 +58,7 @@ function Grid({ topic, setTopic, fwHi }: { topic: string; setTopic: (t: string) 
                 return (
                   <motion.button key={f.id} className="cell" onMouseEnter={() => setHover({ t: t.id, f: f.id })} onMouseLeave={() => setHover(null)} onFocus={() => setHover({ t: t.id, f: f.id })} onBlur={() => setHover(null)} onClick={() => setTopic(t.id)}
                     initial={{ opacity: 0, y: 6 }} animate={seen ? { opacity: hover ? (lit ? 1 : 0.45) : 1, y: 0 } : {}} transition={{ delay: seen && !hover ? 0.15 + (r + c) * 0.018 : 0, duration: 0.3 }}
-                    style={{ borderColor: isH ? 'var(--accent)' : rowOn ? 'rgba(108,197,176,.35)' : 'var(--line)', background: `rgba(108,197,176,${0.03 + lv * 0.07})` }}
+                    style={{ borderColor: isH ? 'var(--accent)' : rowOn ? 'color-mix(in srgb, var(--accent-tint) 35%, transparent)' : 'var(--line)', background: `color-mix(in srgb, var(--accent-tint) ${Math.round((0.03 + lv * 0.07) * 100)}%, transparent)` }}
                     aria-label={`${t.label}, ${f.short}: ${LEVEL[lv]}`}>
                     <Bars lv={lv} delay={0.3 + (r + c) * 0.02} seen={seen} />
                   </motion.button>
@@ -205,10 +205,10 @@ function gridPng() {
     FRAMEWORKS.forEach((f, c) => {
       const lv = COMPARE[t.id][f.id][0];
       const x = pad + lw + cw * c;
-      g.fillStyle = `rgba(108,197,176,${0.03 + lv * 0.07})`;
+      g.fillStyle = `rgba(125,160,243,${0.03 + lv * 0.07})`;
       g.beginPath(); g.roundRect(x + 2, y + 2, cw - 4, rh - 4, 8); g.fill();
       for (let i = 1; i <= 3; i++) {
-        g.fillStyle = i <= lv ? '#6cc5b0' : 'rgba(255,255,255,.12)';
+        g.fillStyle = i <= lv ? '#7da0f3' : 'rgba(255,255,255,.12)';
         const bh = 5 + i * 4;
         g.fillRect(x + cw / 2 - 13 + (i - 1) * 9, y + rh / 2 + 8 - bh, 6, bh);
       }
@@ -283,7 +283,7 @@ export function Compare({ fw, query }: { fw?: string; query?: URLSearchParams })
         <div className="grid2" style={{ marginTop: 20 }}>
           <AnimatePresence mode="popLayout">
             {rows.map(({ f, cell }, i) => (
-              <motion.div layout key={topic + f.id} className="card card-pad" style={{ borderColor: f.id === fwHi ? 'rgba(108,197,176,.5)' : undefined }} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ delay: i * 0.03 }}>
+              <motion.div layout key={topic + f.id} className="card card-pad" style={{ borderColor: f.id === fwHi ? 'color-mix(in srgb, var(--accent-tint) 50%, transparent)' : undefined }} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ delay: i * 0.03 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10 }}>
                   <h3><a href={url(`/rules/${f.id}`)} style={{ color: 'inherit' }}>{f.short}</a></h3>
                   <span style={{ display: 'flex', gap: 10, alignItems: 'center' }}><span className="dim small">{LEVEL[cell[0]]}</span><Bars lv={cell[0]} /></span>

@@ -60,7 +60,7 @@ export function Roadmap({ steps }: { steps: { t: string; d: string }[] }) {
   const [ref, seen] = useInView<HTMLDivElement>();
   return (
     <div ref={ref} style={{ position: 'relative', paddingInlineStart: 46 }}>
-      <motion.div initial={{ height: 0 }} animate={seen ? { height: 'calc(100% - 30px)' } : {}} transition={{ duration: 1.2, ease: 'easeOut' }} style={{ position: 'absolute', insetInlineStart: 17, top: 14, width: 2, background: 'linear-gradient(var(--accent), rgba(108,197,176,.15))' }} />
+      <motion.div initial={{ height: 0 }} animate={seen ? { height: 'calc(100% - 30px)' } : {}} transition={{ duration: 1.2, ease: 'easeOut' }} style={{ position: 'absolute', insetInlineStart: 17, top: 14, width: 2, background: 'linear-gradient(var(--accent), color-mix(in srgb, var(--accent-tint) 15%, transparent))' }} />
       {steps.map((s, i) => (
         <motion.div key={s.t} initial={{ opacity: 0, x: -12 }} animate={seen ? { opacity: 1, x: 0 } : {}} transition={{ delay: 0.15 + i * 0.12 }} style={{ position: 'relative', paddingBottom: 18 }}>
           <span style={{ position: 'absolute', insetInlineStart: -46, top: 0, width: 36, height: 36, borderRadius: '50%', background: 'var(--paper)', border: '1.5px solid var(--accent)', display: 'grid', placeItems: 'center', fontFamily: 'var(--serif)', fontWeight: 700, color: 'var(--accent)', fontSize: 14 }}>{i + 1}</span>

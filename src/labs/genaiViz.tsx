@@ -46,7 +46,7 @@ function Bubble({ who, text, tag, tone, typed }: { who: 'user' | 'bot'; text: st
     <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} style={{ display: 'flex', justifyContent: bot ? 'flex-start' : 'flex-end', gap: 8 }}>
       {bot && <div style={{ width: 28, height: 28, borderRadius: 9, background: 'linear-gradient(135deg,#f0b44c,#ff7a59)', display: 'grid', placeItems: 'center', fontSize: 12, fontWeight: 700, color: '#1a0700', flex: 'none' }}>M</div>}
       <div style={{ maxWidth: '76%' }}>
-        <div style={{ padding: '10px 14px', borderRadius: bot ? '4px 14px 14px 14px' : '14px 4px 14px 14px', background: bot ? (tone === 'bad' ? 'rgba(239,91,107,.13)' : 'rgba(255,255,255,.06)') : 'linear-gradient(120deg,#3b5bdb,#6f8ff0)', border: bot && tone === 'bad' ? '1px solid rgba(239,91,107,.5)' : '1px solid transparent', fontSize: 13.5, lineHeight: 1.5 }}>
+        <div style={{ padding: '10px 14px', borderRadius: bot ? '4px 14px 14px 14px' : '14px 4px 14px 14px', background: bot ? (tone === 'bad' ? 'rgba(239,91,107,.13)' : 'rgba(255,255,255,.06)') : 'linear-gradient(120deg,#3b5bdb,#90c5ed)', border: bot && tone === 'bad' ? '1px solid rgba(239,91,107,.5)' : '1px solid transparent', fontSize: 13.5, lineHeight: 1.5 }}>
           {thinking ? <span className="dots" style={{ letterSpacing: 3 }}>● ● ●</span> : typed ? <Typed text={text} /> : text}
         </div>
         {tag && !thinking && <div style={{ marginTop: 5 }}><Flag tone={tone === 'bad' ? 'bad' : 'good'}>{tag}</Flag></div>}
@@ -155,7 +155,7 @@ export function RagViz({ s, m }: VizProps) {
       </VizHead>
       <svg viewBox="0 0 680 110" className="viz-svg">
         <defs>
-          <linearGradient id="pipe" x1="0" x2="1"><stop offset="0" stopColor="#6f8ff0" stopOpacity=".2" /><stop offset="1" stopColor="#6fcfc0" stopOpacity=".4" /></linearGradient>
+          <linearGradient id="pipe" x1="0" x2="1"><stop offset="0" stopColor="#90c5ed" stopOpacity=".2" /><stop offset="1" stopColor="#6fcfc0" stopOpacity=".4" /></linearGradient>
         </defs>
         <rect x="50" y="52" width="580" height="4" rx="2" fill="url(#pipe)" />
         {[0, 1, 2, 3, 4].map((k) => {

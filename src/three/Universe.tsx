@@ -22,7 +22,9 @@ export interface UniverseProps { nodes: UniverseNode[]; rings: string[]; onPick:
 
 const RADII = [1.6, 2.8, 3.9, 5.0];
 const SPEED = [0.12, 0.085, 0.06, 0.045];
-const ACCENT = '#6cc5b0';
+const ACCENT = '#7da0f3';
+/** lighter step for the additive glow and the core light, so the scene keeps its brightness with the bluer accent */
+const ACCENT_GLOW = '#a6bff7';
 
 function glowTexture() {
   const c = document.createElement('canvas');
@@ -137,7 +139,7 @@ function Core({ glow }: { glow: THREE.Texture }) {
         <meshStandardMaterial color={ACCENT} emissive={ACCENT} emissiveIntensity={0.6} roughness={0.4} />
       </mesh>
       <sprite ref={s}>
-        <spriteMaterial map={glow} color={ACCENT} transparent opacity={0.55} depthWrite={false} blending={THREE.AdditiveBlending} />
+        <spriteMaterial map={glow} color={ACCENT_GLOW} transparent opacity={0.55} depthWrite={false} blending={THREE.AdditiveBlending} />
       </sprite>
     </group>
   );
@@ -307,7 +309,7 @@ export default function Universe({ nodes, rings, onPick, active }: UniverseProps
     >
       <fog attach="fog" args={['#0c0e11', 10, 22]} />
       <ambientLight intensity={0.55} />
-      <pointLight position={[0, 0, 0]} intensity={18} color={ACCENT} distance={9} />
+      <pointLight position={[0, 0, 0]} intensity={18} color={ACCENT_GLOW} distance={9} />
       <directionalLight position={[4, 6, 5]} intensity={0.9} />
       <Parallax>
         <group rotation={[TILT, 0, 0]}>

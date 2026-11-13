@@ -1,4 +1,4 @@
-import { SEV } from '../data/palette';
+import { themed } from '../data/palette';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import { Breadcrumbs } from '../components/Nav';
@@ -9,7 +9,8 @@ import { url } from '../lib/util';
 import { exportFile, textBlob } from '../lib/exportFile';
 
 const LEVEL = ['Not addressed', 'Guidance only', 'Required in some cases', 'Detailed binding rule'];
-const DOT = ['var(--line2)', SEV.info, SEV.mid, 'var(--accent)'];
+// coverage levels as an ordinal Persian blue ramp (light to deep in the light theme)
+const DOT = ['var(--line2)', themed('xw1', '#567eed'), themed('xw2', '#a6bff7'), themed('xw3', '#e1eafc')];
 
 export function crosswalkCsv(fws: FwId[] = FRAMEWORKS.map((f) => f.id)) {
   const q = (s: string) => (/[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s);

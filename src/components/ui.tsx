@@ -41,7 +41,7 @@ export function Logo() {
   return (
     <svg width="26" height="26" viewBox="0 0 64 64" aria-hidden>
       <rect width="64" height="64" rx="14" fill="#14171c" stroke="var(--line2)" />
-      <circle cx="32" cy="32" r="17" fill="none" stroke="var(--accent)" strokeWidth="3" strokeDasharray="6 4" />
+      <circle cx="32" cy="32" r="17" fill="none" stroke="#7da0f3" strokeWidth="3" strokeDasharray="6 4" />
       <circle cx="32" cy="32" r="6" fill="var(--ink)" />
       <circle cx="47" cy="22" r="4" fill="#d9a441" />
     </svg>

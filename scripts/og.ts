@@ -4,7 +4,7 @@ import { mkdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import type { RouteMeta } from '../src/data/routes';
 
-const ACCENT = '#6cc5b0';
+const ACCENT = '#7da0f3';
 const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
 /** Greedy word wrap by approximate character width. */
